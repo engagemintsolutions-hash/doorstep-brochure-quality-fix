@@ -25,5 +25,8 @@ RUN chmod -R 777 uploads brochure_sessions exports_tmp data
 # Expose port (Railway will override this with $PORT)
 EXPOSE 8000
 
-# Start command using shell form to properly expand environment variables
-CMD sh -c "uvicorn backend.main:app --host 0.0.0.0 --port ${PORT:-8000}"
+# Default port (Railway overrides with $PORT)
+ENV PORT=8000
+
+# Start command - Railway sets PORT env var
+CMD ["sh", "-c", "echo Starting server on port $PORT && python -c 'import backend.main' && uvicorn backend.main:app --host 0.0.0.0 --port $PORT"]
