@@ -16,8 +16,7 @@ COPY .env.example .env.example
 COPY auth_data.json auth_data.json
 COPY user_usage_data.json user_usage_data.json
 
-# Create start script with proper line endings
-RUN printf '#!/bin/sh\necho "Starting on port ${PORT:-8000}"\nexec uvicorn backend.main:app --host 0.0.0.0 --port ${PORT:-8000}\n' > /app/start.sh && chmod +x /app/start.sh
+# No start script needed - use Python directly
 
 # Create directories for persistent data
 RUN mkdir -p uploads brochure_sessions exports_tmp data/epc
@@ -31,5 +30,5 @@ EXPOSE 8000
 # Default port (Railway overrides with $PORT)
 ENV PORT=8000
 
-# Start using entrypoint script
-ENTRYPOINT ["/app/start.sh"]
+# Start using Python module - this handles PORT env var properly
+CMD ["python", "-m", "backend.main"]
