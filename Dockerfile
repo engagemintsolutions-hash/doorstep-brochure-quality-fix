@@ -17,7 +17,10 @@ COPY auth_data.json auth_data.json
 COPY user_usage_data.json user_usage_data.json
 
 # Create directories for persistent data
-RUN mkdir -p uploads brochure_sessions
+RUN mkdir -p uploads brochure_sessions exports_tmp data/epc
+
+# Set write permissions for uploads and sessions
+RUN chmod -R 777 uploads brochure_sessions exports_tmp data
 
 # Expose port (Railway will override this with $PORT)
 EXPOSE 8000
