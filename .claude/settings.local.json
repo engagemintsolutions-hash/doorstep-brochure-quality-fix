@@ -38,7 +38,10 @@
       "Bash(railway redeploy:*)",
       "Bash(railway:*)",
       "WebFetch(domain:brochure-social-media-jan2026-production.up.railway.app)",
-      "WebFetch(domain:www.doorstepit.co.uk)"
+      "WebFetch(domain:www.doorstepit.co.uk)",
+      "Bash(pip show:*)",
+      "Bash(pip install:*)",
+      "Bash(where:*)"
     ]
   }
 }

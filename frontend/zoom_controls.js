@@ -11,7 +11,7 @@
     const MAX_ZOOM = 400;
     const ZOOM_STEP = 10;
 
-    let currentZoom = 100;
+    let currentZoom = 60; // Default to 60% for better overview
 
     /**
      * Initialize zoom controls
@@ -19,7 +19,12 @@
     function init() {
         renderZoomToolbar();
         setupKeyboardShortcuts();
-        console.log('Zoom Controls initialized');
+        // Apply initial zoom for better page overview
+        setTimeout(() => {
+            applyZoom();
+            updateZoomDisplay();
+        }, 100);
+        console.log('Zoom Controls initialized at 60%');
     }
 
     /**

@@ -1,0 +1,33 @@
+{
+  "tests_passed": 20,
+  "tests_failed": 2,
+  "bugs": [
+    {
+      "description": "Test 'Login page loads' failed: Message: no such element: Unable to locate element: {\"method\":\"css selector\",\"selector\":\"[id=\"pin\"]\"}\n  (Session info: chrome=144.0.7559.59); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception\nStacktrace:\nSymbols not available. Dumping unresolved backtrace:\n\t0x11fccf3\n\t0x11fcd34\n\t0x101b1e0\n\t0x106561a\n\t0x10658bb\n\t0x10a78e2\n\t0x1087f54\n\t0x10a51f3\n\t0x1087ca6\n\t0x1059409\n\t0x105a1c4\n\t0x146a7b4\n\t0x1465db7\n\t0x148379d\n\t0x1216ca8\n\t0x121e87d\n\t0x1205708\n\t0x12058d2\n\t0x11ef03a\n\t0x76655d49\n\t0x77e3d5db\n\t0x77e3d561\n",
+      "severity": "high",
+      "timestamp": "2026-01-16T09:37:01.367350"
+    },
+    {
+      "description": "Test 'Login flow' failed: Message: no such element: Unable to locate element: {\"method\":\"css selector\",\"selector\":\"[id=\"agentSelect\"]\"}\n  (Session info: chrome=144.0.7559.59); For documentation on this error, please visit: https://www.selenium.dev/documentation/webdriver/troubleshooting/errors#nosuchelementexception\nStacktrace:\nSymbols not available. Dumping unresolved backtrace:\n\t0x11fccf3\n\t0x11fcd34\n\t0x101b1e0\n\t0x106561a\n\t0x10658bb\n\t0x10a78e2\n\t0x1087f54\n\t0x10a51f3\n\t0x1087ca6\n\t0x1059409\n\t0x105a1c4\n\t0x146a7b4\n\t0x1465db7\n\t0x148379d\n\t0x1216ca8\n\t0x121e87d\n\t0x1205708\n\t0x12058d2\n\t0x11ef03a\n\t0x76655d49\n\t0x77e3d5db\n\t0x77e3d561\n",
+      "severity": "high",
+      "timestamp": "2026-01-16T09:37:14.838613"
+    }
+  ],
+  "warnings": [],
+  "screenshots": [
+    "C:\\BrochureAndSocialMedia\\tests\\screenshot_01_login_page_error_1768520221.png",
+    "C:\\BrochureAndSocialMedia\\tests\\screenshot_02_login_error_1768520234.png",
+    "C:\\BrochureAndSocialMedia\\tests\\screenshot_03_dashboard_1768520237.png",
+    "C:\\BrochureAndSocialMedia\\tests\\screenshot_04_brochure_builder_1768520240.png",
+    "C:\\BrochureAndSocialMedia\\tests\\screenshot_05_templates_1768520243.png",
+    "C:\\BrochureAndSocialMedia\\tests\\screenshot_06_color_changer_1768520246.png",
+    "C:\\BrochureAndSocialMedia\\tests\\screenshot_07_property_details_1768520246.png",
+    "C:\\BrochureAndSocialMedia\\tests\\screenshot_08_agent_details_1768520247.png",
+    "C:\\BrochureAndSocialMedia\\tests\\screenshot_09_upload_zone_1768520247.png",
+    "C:\\BrochureAndSocialMedia\\tests\\screenshot_10_generate_button_1768520247.png",
+    "C:\\BrochureAndSocialMedia\\tests\\screenshot_12_brochure_editor_1768520252.png",
+    "C:\\BrochureAndSocialMedia\\tests\\screenshot_13_quick_post_1768520255.png",
+    "C:\\BrochureAndSocialMedia\\tests\\screenshot_14_social_calendar_1768520258.png"
+  ],
+  "timestamp": "2026-01-16T09:36:40.668033"
+}
