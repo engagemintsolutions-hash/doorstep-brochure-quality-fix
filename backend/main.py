@@ -4,6 +4,11 @@ Updated to use Anthropic API key from environment variables.
 Includes postcode autocomplete and full UK address lookup with Ideal Postcodes API.
 Version: 2025-01-27
 """
+import sys
+print("=== MAIN.PY LOADING ===", flush=True)
+print(f"Python: {sys.version}", flush=True)
+print(f"Executable: {sys.executable}", flush=True)
+
 from fastapi import FastAPI, File, UploadFile, HTTPException, Request, Form
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
@@ -4290,11 +4295,15 @@ app = BasicAuthASGIMiddleware(fastapi_app)
 if __name__ == "__main__":
     import uvicorn
     import os
+    print("=== STARTING SERVER ===", flush=True)
     # Railway sets PORT env variable, fall back to settings
     port = int(os.environ.get("PORT", settings.port or settings.backend_port))
+    host = settings.backend_host
+    print(f"Host: {host}, Port: {port}", flush=True)
+    print(f"RAILWAY_ENVIRONMENT: {os.environ.get('RAILWAY_ENVIRONMENT')}", flush=True)
     uvicorn.run(
         "backend.main:app",
-        host=settings.backend_host,
+        host=host,
         port=port,
         reload=os.environ.get("RAILWAY_ENVIRONMENT") is None  # Only reload in dev
     )
