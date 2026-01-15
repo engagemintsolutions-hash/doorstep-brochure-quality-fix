@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2026 British Cosy Modern Palettes</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: #f5f5f5;
+            padding: 40px;
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 40px;
+        }
+        .section-title {
+            font-size: 1.2rem;
+            color: #555;
+            margin: 30px 0 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #ddd;
+        }
+        .palettes {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+        }
+        .palette {
+            background: white;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .palette-colors {
+            display: flex;
+            height: 60px;
+        }
+        .palette-colors span {
+            flex: 1;
+        }
+        .palette-info {
+            padding: 15px;
+        }
+        .palette-name {
+            font-weight: 600;
+            font-size: 1rem;
+            margin-bottom: 8px;
+        }
+        .palette-preview {
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+        .palette-preview h4 {
+            font-size: 0.9rem;
+            margin-bottom: 5px;
+        }
+        .palette-preview p {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+        .color-codes {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+        .color-code {
+            font-size: 0.7rem;
+            padding: 2px 6px;
+            background: #f0f0f0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .trend-badge {
+            display: inline-block;
+            background: #2d4a3e;
+            color: white;
+            font-size: 0.7rem;
+            padding: 3px 8px;
+            border-radius: 12px;
+            margin-left: 8px;
+        }
+        .stats {
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 700;
+            color: #2d4a3e;
+        }
+        .stat-label {
+            color: #666;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>2026 British Cosy Modern Palettes</h1>
+    <p class="subtitle">Warm, inviting, human-centered design for UK estate agents</p>
+
+    <div class="stats">
+        <div class="stats-grid">
+            <div>
+                <div class="stat-number">1,692</div>
+                <div class="stat-label">Total Templates</div>
+            </div>
+            <div>
+                <div class="stat-number">47</div>
+                <div class="stat-label">Color Schemes</div>
+            </div>
+            <div>
+                <div class="stat-number">15</div>
+                <div class="stat-label">NEW 2026 Cosy Styles</div>
+            </div>
+        </div>
+    </div>
+
+    <h2 class="section-title">NEW: 2026 British Cosy Modern <span class="trend-badge">2026 TREND</span></h2>
+    <div class="palettes" id="cosy2026"></div>
+
+    <h2 class="section-title">UK Agency Styles</h2>
+    <div class="palettes" id="ukAgencies"></div>
+
+    <h2 class="section-title">Natural & Earthy</h2>
+    <div class="palettes" id="natural"></div>
+
+    <script>
+        const PALETTES = {
+            cosy2026: [
+                { name: 'British Cottage', primary: '#5d6e5c', secondary: '#a8b5a0', accent: '#d4a574', background: '#faf8f5', text: '#3d3d3d' },
+                { name: 'Cosy Hearth', primary: '#8b4d3b', secondary: '#c9a88e', accent: '#deb887', background: '#fff9f5', text: '#4a3728' },
+                { name: 'Sage & Stone', primary: '#7d8471', secondary: '#b5baa8', accent: '#c49a6c', background: '#f5f5f0', text: '#404040' },
+                { name: 'Dusty Rose', primary: '#b8848c', secondary: '#d4a5a5', accent: '#8b7355', background: '#fdf6f6', text: '#5c4a4a' },
+                { name: 'Warm Taupe', primary: '#8b7d72', secondary: '#a89f94', accent: '#c17f59', background: '#faf7f4', text: '#4a4540' },
+                { name: 'Heritage Green', primary: '#2d4a3e', secondary: '#5c7a6b', accent: '#d4af37', background: '#f4f7f5', text: '#1a2e24' },
+                { name: 'Country Manor', primary: '#4a5568', secondary: '#9ca3af', accent: '#92400e', background: '#f8f6f3', text: '#2d3748' },
+                { name: 'Coastal Calm', primary: '#4a6670', secondary: '#8fa3ad', accent: '#d4a574', background: '#f5f8f9', text: '#2c3e43' },
+                { name: 'Autumn Warm', primary: '#8b5a2b', secondary: '#c49a6c', accent: '#6b4423', background: '#fdf8f3', text: '#4a3520' },
+                { name: 'Soft Linen', primary: '#6b6b5c', secondary: '#a3a390', accent: '#b87333', background: '#faf9f6', text: '#3d3d35' },
+                { name: 'Modern Rustic', primary: '#5c4033', secondary: '#8b7355', accent: '#7d8471', background: '#f8f5f0', text: '#3d2914' },
+                { name: 'Gentle Blush', primary: '#9a7b6d', secondary: '#c4a99a', accent: '#d4a5a5', background: '#fdf8f6', text: '#5c4a42' },
+                { name: 'Twilight Teal', primary: '#3d5a5a', secondary: '#6b8a8a', accent: '#c49a6c', background: '#f4f7f7', text: '#2a3f3f' },
+                { name: 'Velvet Moss', primary: '#4a5d4a', secondary: '#7a8f7a', accent: '#b87333', background: '#f5f7f5', text: '#2d3a2d' },
+                { name: 'Warm Charcoal', primary: '#4a4a4a', secondary: '#6b6b6b', accent: '#c49a6c', background: '#faf9f7', text: '#333333' }
+            ],
+            ukAgencies: [
+                { name: 'Savills', primary: '#1a3c6e', secondary: '#c9a961', accent: '#8b7355', background: '#f8f6f3', text: '#333333' },
+                { name: 'Knight Frank', primary: '#003366', secondary: '#d4af37', accent: '#4a4a4a', background: '#ffffff', text: '#1a1a1a' },
+                { name: 'Foxtons', primary: '#00594c', secondary: '#8dc63f', accent: '#ffffff', background: '#f5f5f5', text: '#333333' },
+                { name: 'Hamptons', primary: '#003057', secondary: '#c5a572', accent: '#666666', background: '#f9f9f9', text: '#1a1a1a' },
+                { name: 'Zoopla', primary: '#6d2077', secondary: '#e95420', accent: '#8a3e91', background: '#ffffff', text: '#333333' },
+                { name: 'Rightmove', primary: '#00deb6', secondary: '#2c2c2c', accent: '#ff5a00', background: '#ffffff', text: '#2c2c2c' }
+            ],
+            natural: [
+                { name: 'Warm Sand', primary: '#92400e', secondary: '#b45309', accent: '#059669', background: '#fefce8', text: '#78350f' },
+                { name: 'Stone Natural', primary: '#57534e', secondary: '#78716c', accent: '#84cc16', background: '#fafaf9', text: '#292524' },
+                { name: 'Woodland Brown', primary: '#5c4033', secondary: '#8b6914', accent: '#4ade80', background: '#fdf6e3', text: '#3d2914' },
+                { name: 'Terracotta', primary: '#c2410c', secondary: '#ea580c', accent: '#16a34a', background: '#fff7ed', text: '#7c2d12' }
+            ]
+        };
+
+        function renderPalette(palette) {
+            return `
+                <div class="palette">
+                    <div class="palette-colors">
+                        <span style="background: ${palette.primary}"></span>
+                        <span style="background: ${palette.secondary}"></span>
+                        <span style="background: ${palette.accent}"></span>
+                        <span style="background: ${palette.background}"></span>
+                        <span style="background: ${palette.text}"></span>
+                    </div>
+                    <div class="palette-info">
+                        <div class="palette-name">${palette.name}</div>
+                        <div class="palette-preview" style="background: ${palette.background}; color: ${palette.text};">
+                            <h4 style="color: ${palette.primary}">Beautiful Property</h4>
+                            <p>A stunning <span style="color: ${palette.accent}">3 bedroom</span> home in a prime location.</p>
+                        </div>
+                        <div class="color-codes">
+                            <span class="color-code" style="background: ${palette.primary}; color: white;">Primary ${palette.primary}</span>
+                            <span class="color-code" style="background: ${palette.accent}; color: white;">Accent ${palette.accent}</span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        Object.keys(PALETTES).forEach(section => {
+            document.getElementById(section).innerHTML = PALETTES[section].map(renderPalette).join('');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marketing Content Generator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            color: white;
+            font-size: 42px;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .subtitle {
+            text-align: center;
+            color: rgba(255,255,255,0.9);
+            font-size: 18px;
+            margin-bottom: 40px;
+        }
+
+        .generator-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            transition: transform 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        .card-icon {
+            font-size: 36px;
+            margin-right: 15px;
+        }
+
+        .card-title {
+            font-size: 24px;
+            color: #333;
+            font-weight: bold;
+        }
+
+        .card-description {
+            color: #666;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .btn {
+            width: 100%;
+            padding: 16px 32px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-rightmove {
+            background: linear-gradient(135deg, #006fb9 0%, #004d80 100%);
+            color: white;
+        }
+
+        .btn-rightmove:hover {
+            box-shadow: 0 6px 20px rgba(0, 111, 185, 0.4);
+        }
+
+        .btn-email {
+            background: linear-gradient(135deg, #0078d4 0%, #005a9e 100%);
+            color: white;
+        }
+
+        .btn-email:hover {
+            box-shadow: 0 6px 20px rgba(0, 120, 212, 0.4);
+        }
+
+        .btn-social {
+            background: linear-gradient(135deg, #e1306c 0%, #c13584 100%);
+            color: white;
+        }
+
+        .btn-social:hover {
+            box-shadow: 0 6px 20px rgba(225, 48, 108, 0.4);
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+            overflow-y: auto;
+            padding: 20px;
+        }
+
+        .modal-content {
+            max-width: 1000px;
+            margin: 40px auto;
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            position: relative;
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            font-size: 32px;
+            cursor: pointer;
+            color: #999;
+            transition: color 0.3s;
+        }
+
+        .modal-close:hover {
+            color: #333;
+        }
+
+        .modal-title {
+            font-size: 32px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+
+        .modal-subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+
+        .mockup-container {
+            background: #f8f9fa;
+            padding: 30px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+
+        /* Portal Listing Styles */
+        .portal-mockup {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+        }
+
+        .portal-headline {
+            font-size: 26px;
+            font-weight: bold;
+            color: #006fb9;
+            margin-bottom: 15px;
+        }
+
+        .portal-overview {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .portal-features {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 6px;
+        }
+
+        .portal-features h3 {
+            font-size: 18px;
+            margin-bottom: 12px;
+            color: #333;
+        }
+
+        .portal-features ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .portal-features li {
+            padding: 8px 0;
+            padding-left: 25px;
+            position: relative;
+            color: #555;
+        }
+
+        .portal-features li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #4CAF50;
+            font-weight: bold;
+        }
+
+        /* Email Mockup Styles */
+        .email-mockup {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .email-header {
+            background: #1a1a1a;
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .email-subject {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .email-preview {
+            font-size: 14px;
+            color: #ccc;
+        }
+
+        .email-hero-image {
+            width: 100%;
+            height: 300px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 48px;
+        }
+
+        .email-body {
+            padding: 30px;
+        }
+
+        .email-price {
+            font-size: 28px;
+            font-weight: bold;
+            color: #1a1a1a;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .email-text {
+            line-height: 1.8;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        .email-cta {
+            display: block;
+            width: 100%;
+            max-width: 300px;
+            margin: 30px auto;
+            padding: 16px;
+            background: #1a1a1a;
+            color: white;
+            text-align: center;
+            text-decoration: none;
+            border-radius: 6px;
+            font-weight: bold;
+        }
+
+        /* Social Media Mockup Styles */
+        .social-platform-selector {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 25px;
+            justify-content: center;
+        }
+
+        .platform-btn {
+            padding: 12px 24px;
+            border: 2px solid #ddd;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s;
+        }
+
+        .platform-btn.active {
+            border-color: #667eea;
+            background: #667eea;
+            color: white;
+        }
+
+        .social-mockup {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .social-header {
+            display: flex;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .social-profile-pic {
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            margin-right: 12px;
+        }
+
+        .social-username {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .social-image {
+            width: 100%;
+            height: 400px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 60px;
+        }
+
+        .social-content {
+            padding: 20px;
+        }
+
+        .social-text {
+            line-height: 1.6;
+            color: #333;
+            margin-bottom: 12px;
+        }
+
+        .social-hashtags {
+            color: #0078d4;
+            font-weight: 500;
+        }
+
+        .social-engagement {
+            display: flex;
+            gap: 20px;
+            padding: 15px 20px;
+            border-top: 1px solid #ddd;
+        }
+
+        .social-engagement-btn {
+            padding: 8px 16px;
+            background: #f0f0f0;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background 0.3s;
+        }
+
+        .social-engagement-btn:hover {
+            background: #e0e0e0;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .stat {
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #667eea;
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+            margin-top: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Marketing Content Generator</h1>
+        <p class="subtitle">Generate professional listings, email newsletters, and social media posts instantly</p>
+
+        <div class="generator-cards">
+            <!-- Portal Listing Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">🏠</div>
+                    <div>
+                        <div class="card-title">Rightmove / Zoopla</div>
+                    </div>
+                </div>
+                <p class="card-description">
+                    Generate formatted property listings with bullet points and professional overview text, optimized for property portals.
+                </p>
+                <button class="btn btn-rightmove" onclick="generatePortalListing()">
+                    Generate Portal Listing
+                </button>
+            </div>
+
+            <!-- Email Newsletter Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">✉️</div>
+                    <div>
+                        <div class="card-title">Email Newsletter</div>
+                    </div>
+                </div>
+                <p class="card-description">
+                    Create engaging email campaigns with HTML templates, perfect for newsletter recipients and viewing requests.
+                </p>
+                <button class="btn btn-email" onclick="generateEmailNewsletter()">
+                    Generate Email Newsletter
+                </button>
+            </div>
+
+            <!-- Social Media Card -->
+            <div class="card">
+                <div class="card-header">
+                    <div class="card-icon">📱</div>
+                    <div>
+                        <div class="card-title">Social Media Post</div>
+                    </div>
+                </div>
+                <p class="card-description">
+                    Generate platform-optimized social media content for Facebook, Twitter, and Instagram with hashtags.
+                </p>
+                <button class="btn btn-social" onclick="showSocialModal()">
+                    Generate Social Post
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Portal Listing Modal -->
+    <div id="portalModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('portalModal')">&times;</span>
+            <h2 class="modal-title">Rightmove / Zoopla Listing</h2>
+            <p class="modal-subtitle">Professional property listing with bullet points</p>
+
+            <div id="portalContent"></div>
+        </div>
+    </div>
+
+    <!-- Email Newsletter Modal -->
+    <div id="emailModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('emailModal')">&times;</span>
+            <h2 class="modal-title">Email Newsletter</h2>
+            <p class="modal-subtitle">HTML template preview</p>
+
+            <div id="emailContent"></div>
+        </div>
+    </div>
+
+    <!-- Social Media Modal -->
+    <div id="socialModal" class="modal">
+        <div class="modal-content">
+            <span class="modal-close" onclick="closeModal('socialModal')">&times;</span>
+            <h2 class="modal-title">Social Media Post</h2>
+            <p class="modal-subtitle">Select platform to generate optimized content</p>
+
+            <div class="social-platform-selector">
+                <button class="platform-btn active" data-platform="facebook" onclick="selectPlatform('facebook')">
+                    Facebook
+                </button>
+                <button class="platform-btn" data-platform="twitter" onclick="selectPlatform('twitter')">
+                    Twitter
+                </button>
+                <button class="platform-btn" data-platform="instagram" onclick="selectPlatform('instagram')">
+                    Instagram
+                </button>
+            </div>
+
+            <div id="socialContent"></div>
+        </div>
+    </div>
+
+    <script>
+        let currentPlatform = 'facebook';
+
+        // Check URL parameters for auto-trigger mode
+        const urlParams = new URLSearchParams(window.location.search);
+        const mode = urlParams.get('mode');
+
+        // Auto-trigger based on URL parameter
+        window.addEventListener('DOMContentLoaded', () => {
+            if (mode === 'portal') {
+                setTimeout(() => generatePortalListing(), 500);
+            } else if (mode === 'email') {
+                setTimeout(() => generateEmailNewsletter(), 500);
+            } else if (mode === 'social') {
+                setTimeout(() => showSocialModal(), 500);
+            }
+        });
+
+        // Sample property data
+        const propertyData = {
+            property_name: "Sefton House",
+            address: "Avenue Road",
+            price: "£1,250,000",
+            bedrooms: 4,
+            bathrooms: 3,
+            property_type: "House",
+            key_features: [
+                "Spacious four-bedroom family home",
+                "Three modern bathrooms",
+                "Large private garden",
+                "Off-street parking",
+                "Close to excellent schools"
+            ],
+            description: "A stunning four-bedroom family home located in the prestigious Avenue Road. This beautiful property offers spacious living accommodation throughout, with modern finishes and excellent natural light. The property benefits from a large private garden, off-street parking, and is within walking distance of local amenities and highly regarded schools."
+        };
+
+        function generatePortalListing() {
+            const modal = document.getElementById('portalModal');
+            const content = document.getElementById('portalContent');
+
+            content.innerHTML = '<div class="loading"><div class="spinner"></div><p>Generating portal listing...</p></div>';
+            modal.style.display = 'block';
+
+            // Make API call
+            fetch('/marketing/portal-listing', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    property_name: propertyData.property_name,
+                    address: propertyData.address,
+                    portal: 'rightmove',
+                    price: propertyData.price,
+                    bedrooms: propertyData.bedrooms,
+                    bathrooms: propertyData.bathrooms,
+                    property_type: propertyData.property_type,
+                    key_features: JSON.stringify(propertyData.key_features),
+                    description: propertyData.description
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                displayPortalListing(data);
+            })
+            .catch(error => {
+                content.innerHTML = '<p style="color: red;">Error generating listing. Please try again.</p>';
+            });
+        }
+
+        function displayPortalListing(data) {
+            const content = document.getElementById('portalContent');
+
+            const featuresHTML = data.key_features.map(f => `<li>${f}</li>`).join('');
+
+            content.innerHTML = `
+                <div class="mockup-container">
+                    <div class="portal-mockup">
+                        <div class="portal-headline">${data.headline}</div>
+                        <div class="portal-overview">${data.overview}</div>
+                        <div class="portal-features">
+                            <h3>Key Features</h3>
+                            <ul>${featuresHTML}</ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat-value">${data.word_count}</div>
+                        <div class="stat-label">Words</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">${data.key_features.length}</div>
+                        <div class="stat-label">Features</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">${data.portal.toUpperCase()}</div>
+                        <div class="stat-label">Platform</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function generateEmailNewsletter() {
+            const modal = document.getElementById('emailModal');
+            const content = document.getElementById('emailContent');
+
+            content.innerHTML = '<div class="loading"><div class="spinner"></div><p>Generating email newsletter...</p></div>';
+            modal.style.display = 'block';
+
+            // Make API call
+            fetch('/marketing/email-newsletter', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    property_name: propertyData.property_name,
+                    address: propertyData.address,
+                    price: propertyData.price,
+                    bedrooms: propertyData.bedrooms,
+                    bathrooms: propertyData.bathrooms,
+                    property_type: propertyData.property_type,
+                    key_features: JSON.stringify(propertyData.key_features),
+                    description: propertyData.description,
+                    agent_name: "James Smith",
+                    agent_phone: "+44 20 1234 5678",
+                    agent_email: "james.smith@agency.com"
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                displayEmailNewsletter(data);
+            })
+            .catch(error => {
+                content.innerHTML = '<p style="color: red;">Error generating newsletter. Please try again.</p>';
+            });
+        }
+
+        function displayEmailNewsletter(data) {
+            const content = document.getElementById('emailContent');
+
+            content.innerHTML = `
+                <div class="mockup-container">
+                    <div class="email-mockup">
+                        <div class="email-header">
+                            <div class="email-subject">${data.subject}</div>
+                            <div class="email-preview">${data.preview_text}</div>
+                        </div>
+                        <div class="email-hero-image">🏡</div>
+                        <div class="email-body">
+                            <div class="email-price">${propertyData.price}</div>
+                            <div class="email-text">${data.body_text.replace(/\n/g, '<br>')}</div>
+                            <a href="#" class="email-cta">${data.call_to_action}</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat-value">${data.word_count}</div>
+                        <div class="stat-label">Words</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">HTML</div>
+                        <div class="stat-label">Template Ready</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function showSocialModal() {
+            const modal = document.getElementById('socialModal');
+            modal.style.display = 'block';
+            generateSocialPost('facebook');
+        }
+
+        function selectPlatform(platform) {
+            currentPlatform = platform;
+
+            // Update button states
+            document.querySelectorAll('.platform-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if (btn.dataset.platform === platform) {
+                    btn.classList.add('active');
+                }
+            });
+
+            generateSocialPost(platform);
+        }
+
+        function generateSocialPost(platform) {
+            const content = document.getElementById('socialContent');
+
+            content.innerHTML = '<div class="loading"><div class="spinner"></div><p>Generating social post...</p></div>';
+
+            // Make API call
+            fetch('/marketing/social-post', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded',
+                },
+                body: new URLSearchParams({
+                    property_name: propertyData.property_name,
+                    address: propertyData.address,
+                    platform: platform,
+                    price: propertyData.price,
+                    bedrooms: propertyData.bedrooms,
+                    bathrooms: propertyData.bathrooms,
+                    property_type: propertyData.property_type,
+                    key_features: JSON.stringify(propertyData.key_features),
+                    description: propertyData.description
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                displaySocialPost(data);
+            })
+            .catch(error => {
+                content.innerHTML = '<p style="color: red;">Error generating post. Please try again.</p>';
+            });
+        }
+
+        function displaySocialPost(data) {
+            const content = document.getElementById('socialContent');
+
+            const platformName = data.mockup_data.platform_name;
+            const username = data.mockup_data.handle || data.mockup_data.username || data.mockup_data.page_name;
+            const hashtags = data.hashtags.join(' ');
+
+            content.innerHTML = `
+                <div class="mockup-container">
+                    <div class="social-mockup">
+                        <div class="social-header">
+                            <div class="social-profile-pic">EA</div>
+                            <div class="social-username">${username}</div>
+                        </div>
+                        <div class="social-image">🏡</div>
+                        <div class="social-content">
+                            <div class="social-text">${data.post_text}</div>
+                            <div class="social-hashtags">${hashtags}</div>
+                        </div>
+                        <div class="social-engagement">
+                            ${data.mockup_data.engagement_buttons.map(btn =>
+                                `<button class="social-engagement-btn">${btn}</button>`
+                            ).join('')}
+                        </div>
+                    </div>
+                </div>
+                <div class="stats">
+                    <div class="stat">
+                        <div class="stat-value">${data.character_count}</div>
+                        <div class="stat-label">Characters</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">${data.hashtags.length}</div>
+                        <div class="stat-label">Hashtags</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">${platformName.toUpperCase()}</div>
+                        <div class="stat-label">Platform</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Close modals when clicking outside
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>

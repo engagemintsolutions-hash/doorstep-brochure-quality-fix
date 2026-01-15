@@ -1,0 +1,36 @@
+{
+  "property_data": {
+    "property_type": "detached",
+    "bedrooms": 5,
+    "bathrooms": 3,
+    "size_sqft": 3500,
+    "condition": "excellent",
+    "features": [
+      "Period country house with modern updates",
+      "Five double bedrooms, master with en-suite",
+      "Large open-plan kitchen/dining room with bi-fold doors",
+      "Beautiful landscaped gardens extending to approximately 0.75 acres",
+      "Double garage and ample parking",
+      "Village location within Surrey Hills AONB"
+    ],
+    "epc_rating": "C"
+  },
+  "location_data": {
+    "address": "The Knowle, Cranleigh",
+    "setting": "village",
+    "proximity_notes": "Surrey Hills Area of Outstanding Natural Beauty",
+    "postcode": "GU6 7HH"
+  },
+  "target_audience": {
+    "audience_type": "families",
+    "lifestyle_framing": "Seeking rural tranquility with excellent schools and commuting access"
+  },
+  "tone": {
+    "tone": "premium"
+  },
+  "channel": {
+    "channel": "brochure",
+    "target_words": 450
+  },
+  "include_enrichment": true
+}

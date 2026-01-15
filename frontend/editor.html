@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Variants - Property Listing Generator</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="stylesheet" href="/static/editor.css">
+</head>
+<body>
+    <div class="editor-container">
+        <!-- Header -->
+        <header class="editor-header">
+            <div class="header-content">
+                <button id="backBtn" class="btn-secondary">
+                    ← Back to Generate
+                </button>
+                <h1>✏️ Edit Variants</h1>
+                <div class="header-meta" id="headerMeta">
+                    <!-- Populated by JS -->
+                </div>
+            </div>
+        </header>
+
+        <!-- Variants Grid -->
+        <div id="variantsGrid" class="variants-grid">
+            <!-- Variant cards populated by JS -->
+        </div>
+
+        <!-- No Data Message -->
+        <div id="noDataMessage" class="no-data-message" style="display: none;">
+            <p>No variants to edit. Please <a href="/static/index.html">generate listings</a> first.</p>
+        </div>
+
+        <!-- Export Panel -->
+        <div class="export-panel" id="exportPanel" style="display: none;">
+            <div class="export-content">
+                <h3>Export Variant</h3>
+                <p>Select a variant to export:</p>
+                <div id="exportVariantSelect">
+                    <!-- Populated by JS -->
+                </div>
+                <div class="export-actions">
+                    <button id="exportTextBtn" class="btn-primary">
+                        📄 Export as Text
+                    </button>
+                    <button id="exportJsonBtn" class="btn-secondary">
+                        📦 Export as JSON
+                    </button>
+                    <button id="closeExportBtn" class="btn-secondary">
+                        Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/editor.js"></script>
+</body>
+</html>

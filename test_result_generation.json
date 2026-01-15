@@ -1,0 +1,46 @@
+{
+  "test": "Claude Text Generation",
+  "status": "SUCCESS",
+  "duration_seconds": 48,
+  "variants_generated": 3,
+  "variant_1": {
+    "headline": "Elegant Three Bedroom Apartment with City Views and Concierge",
+    "word_count": 373,
+    "score": 0.92
+  },
+  "variant_2": {
+    "headline": "Elegant Three Bedroom Westminster Flat with Underground Parking",
+    "word_count": 380,
+    "score": 0.93
+  },
+  "variant_3": {
+    "headline": "Elegant Three Bedroom Westminster Flat with Underground Parking",
+    "word_count": 376,
+    "score": 0.93
+  },
+  "enrichment": {
+    "used": true,
+    "postcode": "SW1A 1AA",
+    "amenities_found": {
+      "stations": 16,
+      "cafes": 346,
+      "supermarkets": 18,
+      "parks": 47,
+      "gyms": 19
+    },
+    "highlights": [
+      "Walking distance to St. James's Park",
+      "Excellent local amenities",
+      "Outstanding transport"
+    ]
+  },
+  "compliance": {
+    "compliant": true,
+    "score": 0.9,
+    "keyword_coverage": 0.74,
+    "warnings": [
+      "Avoid absolute claims (never, always, every, all)",
+      "Superlatives should be backed by evidence"
+    ]
+  }
+}

@@ -1,0 +1,472 @@
+/**
+ * SMART PHOTO SUGGESTIONS STYLING
+ *
+ * Styles for AI-powered photo quality ranking and recommendations
+ */
+
+/* ============================================
+   QUALITY BADGES
+   ============================================ */
+
+.quality-badge-container {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 15;
+    pointer-events: none;
+}
+
+.quality-badge {
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-align: center;
+    white-space: nowrap;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(4px);
+    pointer-events: auto;
+    cursor: help;
+}
+
+/* Recommended Badge */
+.recommended-badge {
+    background: linear-gradient(135deg, #FFD700 0%, #FFA500 100%);
+    color: #000;
+    animation: pulseGlow 2s ease-in-out infinite;
+}
+
+@keyframes pulseGlow {
+    0%, 100% {
+        box-shadow: 0 2px 6px rgba(255, 215, 0, 0.4), 0 0 12px rgba(255, 215, 0, 0.3);
+    }
+    50% {
+        box-shadow: 0 2px 8px rgba(255, 215, 0, 0.6), 0 0 20px rgba(255, 165, 0, 0.5);
+    }
+}
+
+/* Score Badge */
+.score-badge {
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    justify-content: center;
+}
+
+.score-number {
+    font-size: 0.7rem;
+    opacity: 0.8;
+}
+
+/* Grade-specific colors */
+.grade-Aplus,
+.grade-A {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+}
+
+.grade-Aminus {
+    background: linear-gradient(135deg, #34d399 0%, #10b981 100%);
+    color: white;
+}
+
+.grade-Bplus,
+.grade-B {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+    color: white;
+}
+
+.grade-Bminus {
+    background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+    color: white;
+}
+
+.grade-Cplus,
+.grade-C {
+    background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+    color: white;
+}
+
+.grade-Cminus,
+.grade-D {
+    background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+    color: white;
+}
+
+/* ============================================
+   ANALYSIS PROGRESS MODAL
+   ============================================ */
+
+.smart-photo-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 10005;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.smart-photo-modal-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(8px);
+}
+
+.smart-photo-modal-content {
+    position: relative;
+    background: white;
+    border-radius: 16px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+    animation: fadeInScale 0.3s ease-out;
+}
+
+@keyframes fadeInScale {
+    from {
+        transform: scale(0.9);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.smart-photo-modal-header {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    color: white;
+    padding: 1.5rem;
+    border-radius: 16px 16px 0 0;
+    text-align: center;
+}
+
+.smart-photo-modal-header h3 {
+    margin: 0;
+    font-size: 1.3rem;
+}
+
+.smart-photo-modal-body {
+    padding: 2rem;
+    text-align: center;
+}
+
+/* Progress Bar */
+.analysis-progress-bar {
+    width: 100%;
+    height: 12px;
+    background: #e5e7eb;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-bottom: 1rem;
+}
+
+.analysis-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, #6366f1 0%, #8b5cf6 50%, #6366f1 100%);
+    background-size: 200% 100%;
+    border-radius: 6px;
+    transition: width 0.3s ease-out;
+    animation: shimmer 2s linear infinite;
+}
+
+@keyframes shimmer {
+    0% {
+        background-position: 200% 0;
+    }
+    100% {
+        background-position: -200% 0;
+    }
+}
+
+#analysisProgressText {
+    font-size: 1rem;
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 0 0 0.5rem 0;
+}
+
+.analysis-note {
+    font-size: 0.85rem;
+    color: #6c757d;
+    margin: 0;
+}
+
+/* ============================================
+   ANALYSIS TRIGGER BUTTON
+   ============================================ */
+
+.analyze-photos-btn {
+    background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+    color: white;
+    border: none;
+    padding: 0.75rem 1.5rem;
+    border-radius: 10px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    transition: all 0.2s;
+    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+}
+
+.analyze-photos-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+}
+
+.analyze-photos-btn:active {
+    transform: translateY(0);
+}
+
+.analyze-photos-icon {
+    font-size: 1.2rem;
+}
+
+/* ============================================
+   RECOMMENDATIONS PANEL
+   ============================================ */
+
+.recommendations-panel {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin: 1rem 0;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.recommendations-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+}
+
+.recommendations-header h4 {
+    margin: 0;
+    font-size: 1.1rem;
+    color: #2c3e50;
+}
+
+.recommendations-icon {
+    font-size: 1.5rem;
+}
+
+.recommendations-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.recommendation-item {
+    background: white;
+    border-radius: 8px;
+    padding: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    transition: all 0.2s;
+}
+
+.recommendation-item:hover {
+    transform: translateX(4px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.recommendation-category {
+    font-weight: 600;
+    color: #C20430;
+    min-width: 80px;
+}
+
+.recommendation-photos {
+    display: flex;
+    gap: 0.5rem;
+    flex: 1;
+}
+
+.recommendation-photo-thumb {
+    width: 50px;
+    height: 50px;
+    border-radius: 6px;
+    object-fit: cover;
+    border: 2px solid #FFD700;
+}
+
+/* ============================================
+   QUALITY SCORE TOOLTIP
+   ============================================ */
+
+.quality-score-tooltip {
+    position: absolute;
+    background: rgba(0, 0, 0, 0.9);
+    color: white;
+    padding: 0.75rem;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    white-space: nowrap;
+    z-index: 10010;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s;
+}
+
+.quality-badge:hover + .quality-score-tooltip {
+    opacity: 1;
+}
+
+.tooltip-row {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin: 0.25rem 0;
+}
+
+.tooltip-label {
+    color: #9ca3af;
+}
+
+.tooltip-value {
+    font-weight: 600;
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+
+@media (max-width: 768px) {
+    .quality-badge-container {
+        top: 4px;
+        right: 4px;
+        gap: 2px;
+    }
+
+    .quality-badge {
+        padding: 3px 6px;
+        font-size: 0.7rem;
+    }
+
+    .recommended-badge {
+        font-size: 0.65rem;
+    }
+
+    .smart-photo-modal-content {
+        width: 95%;
+    }
+
+    .smart-photo-modal-header {
+        padding: 1rem;
+    }
+
+    .smart-photo-modal-header h3 {
+        font-size: 1.1rem;
+    }
+
+    .smart-photo-modal-body {
+        padding: 1.5rem;
+    }
+
+    .recommendations-panel {
+        padding: 1rem;
+    }
+
+    .recommendation-photo-thumb {
+        width: 40px;
+        height: 40px;
+    }
+}
+
+/* ============================================
+   DARK MODE SUPPORT
+   ============================================ */
+
+@media (prefers-color-scheme: dark) {
+    .smart-photo-modal-content {
+        background: #1e1e1e;
+    }
+
+    .smart-photo-modal-body {
+        color: #e0e0e0;
+    }
+
+    #analysisProgressText {
+        color: #e0e0e0;
+    }
+
+    .analysis-progress-bar {
+        background: #374151;
+    }
+
+    .recommendations-panel {
+        background: linear-gradient(135deg, #2d3748 0%, #1a202c 100%);
+    }
+
+    .recommendations-header h4 {
+        color: #e0e0e0;
+    }
+
+    .recommendation-item {
+        background: #374151;
+    }
+
+    .recommendation-category {
+        color: #60a5fa;
+    }
+}
+
+/* ============================================
+   ACCESSIBILITY
+   ============================================ */
+
+.quality-badge:focus {
+    outline: 2px solid #6366f1;
+    outline-offset: 2px;
+}
+
+.analyze-photos-btn:focus {
+    outline: 3px solid #6366f1;
+    outline-offset: 2px;
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+    .quality-badge {
+        border: 2px solid currentColor;
+    }
+
+    .recommended-badge {
+        border-color: #000;
+    }
+
+    .score-badge {
+        border-color: #fff;
+    }
+}
+
+/* Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+    .recommended-badge,
+    .analysis-progress-fill {
+        animation: none;
+    }
+
+    .quality-badge,
+    .recommendation-item,
+    .analyze-photos-btn {
+        transition: none;
+    }
+}

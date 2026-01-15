@@ -1,0 +1,34 @@
+{
+  "listing_data": {
+    "address": "123 Buckingham Gate, Westminster, SW1A 1AA",
+    "price": "£1,250,000",
+    "headline": "Elegant Three Bedroom Apartment with City Views and Concierge",
+    "main_description": "This beautifully presented three bedroom apartment occupies a prime position within a distinguished period building on prestigious Buckingham Gate. The 1500 square foot residence combines the grandeur of original Victorian architecture with thoughtfully designed modern interiors. Step inside to discover soaring ceilings adorned with original cornicing that immediately establishes the property's impressive proportions. Natural light floods through tall windows, highlighting the quality of the contemporary refurbishment while preserving the building's historic character.",
+    "key_features": [
+      "1500 sq ft of well presented accommodation with high ceilings",
+      "Private balcony offering attractive city views",
+      "Secure underground parking space included",
+      "24 hour concierge service for security and convenience",
+      "Walking distance to St. James's Park station and royal parks"
+    ],
+    "room_captions": [],
+    "epc_rating": "B",
+    "property_type": "Flat",
+    "bedrooms": 3,
+    "bathrooms": 2
+  },
+  "images": [],
+  "branding": {
+    "agency_name": "Savills Westminster",
+    "phone": "+44 20 7499 8644",
+    "email": "westminster@savills.com",
+    "primary_color": "#002B5C",
+    "secondary_color": "#D4AF37",
+    "logo_path": null
+  },
+  "options": {
+    "template": "simple",
+    "enable_qr": false,
+    "qr_target_url": null
+  }
+}

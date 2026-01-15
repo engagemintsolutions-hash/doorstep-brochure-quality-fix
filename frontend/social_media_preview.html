@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Media Post - Preview</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 0.95rem;
+        }
+
+        .content {
+            padding: 2rem;
+        }
+
+        .platform-badge {
+            display: inline-block;
+            background: #1877f2;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+        }
+
+        .post-section {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .post-section h3 {
+            color: #333;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: 600;
+        }
+
+        .post-text {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 1.25rem;
+            font-size: 1rem;
+            line-height: 1.6;
+            color: #333;
+            white-space: pre-wrap;
+            margin-bottom: 1rem;
+        }
+
+        .hashtags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .hashtag {
+            background: #e7f3ff;
+            color: #0066cc;
+            padding: 0.4rem 0.8rem;
+            border-radius: 16px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .stat-box {
+            background: white;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 0.25rem;
+        }
+
+        .actions {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102,126,234,0.4);
+        }
+
+        .btn-secondary {
+            background: #f8f9fa;
+            color: #333;
+            border: 2px solid #dee2e6;
+        }
+
+        .btn-secondary:hover {
+            background: #e9ecef;
+            transform: translateY(-2px);
+        }
+
+        .mockup {
+            background: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+
+        .mockup-label {
+            font-size: 0.85rem;
+            color: #666;
+            margin-bottom: 0.5rem;
+        }
+
+        .mockup-value {
+            color: #333;
+            font-weight: 500;
+        }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #28a745;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            display: none;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            display: block;
+            animation: slideIn 0.3s ease;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Social Media Post Generated</h1>
+            <p>Your property listing is ready to share</p>
+        </div>
+
+        <div class="content">
+            <div class="platform-badge" id="platformBadge">Facebook</div>
+
+            <div class="post-section">
+                <h3>Post Text</h3>
+                <div class="post-text" id="postText">Loading...</div>
+
+                <div class="stats">
+                    <div class="stat-box">
+                        <div class="stat-value" id="charCount">0</div>
+                        <div class="stat-label">Characters</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="wordCount">0</div>
+                        <div class="stat-label">Words</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="post-section">
+                <h3>Hashtags</h3>
+                <div class="hashtags" id="hashtagsContainer">
+                    <div class="hashtag">#Loading</div>
+                </div>
+            </div>
+
+            <div class="post-section">
+                <h3>Platform Mockup</h3>
+                <div class="mockup">
+                    <div class="mockup-label">Image dimensions:</div>
+                    <div class="mockup-value" id="mockupDimensions">1200 x 628</div>
+                </div>
+                <div class="mockup" style="margin-top: 0.5rem;">
+                    <div class="mockup-label">Recommended aspect ratio:</div>
+                    <div class="mockup-value" id="mockupAspect">1.91:1 (Landscape)</div>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button class="btn btn-primary" onclick="copyToClipboard()">
+                    Copy Post Text
+                </button>
+                <button class="btn btn-secondary" onclick="window.close()">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">Copied to clipboard!</div>
+
+    <script>
+        // Load data from opener window
+        window.addEventListener('DOMContentLoaded', () => {
+            const data = window.opener?.socialMediaData;
+
+            if (!data) {
+                document.getElementById('postText').textContent = 'Error: No data received from parent window.';
+                return;
+            }
+
+            console.log('Received social media data:', data);
+
+            // Display platform
+            const platform = data.platform || 'facebook';
+            document.getElementById('platformBadge').textContent = platform.charAt(0).toUpperCase() + platform.slice(1);
+
+            // Display post text (handle both field names)
+            const postText = data.post_text || data.text || 'No post text generated';
+            document.getElementById('postText').textContent = postText;
+
+            // Display character and word counts
+            document.getElementById('charCount').textContent = postText.length;
+            document.getElementById('wordCount').textContent = postText.split(/\s+/).filter(w => w.length > 0).length;
+
+            // Display hashtags
+            const hashtags = data.hashtags || [];
+            const hashtagsContainer = document.getElementById('hashtagsContainer');
+            hashtagsContainer.innerHTML = '';
+
+            if (hashtags.length > 0) {
+                hashtags.forEach(tag => {
+                    const hashtagEl = document.createElement('div');
+                    hashtagEl.className = 'hashtag';
+                    hashtagEl.textContent = tag.startsWith('#') ? tag : '#' + tag;
+                    hashtagsContainer.appendChild(hashtagEl);
+                });
+            } else {
+                hashtagsContainer.innerHTML = '<div class="hashtag">#PropertyListing</div>';
+            }
+
+            // Display mockup data
+            if (data.mockup) {
+                if (data.mockup.dimensions) {
+                    document.getElementById('mockupDimensions').textContent = data.mockup.dimensions;
+                }
+                if (data.mockup.aspect_ratio) {
+                    document.getElementById('mockupAspect').textContent = data.mockup.aspect_ratio;
+                }
+            }
+        });
+
+        function copyToClipboard() {
+            const postText = document.getElementById('postText').textContent;
+            const hashtags = Array.from(document.querySelectorAll('.hashtag'))
+                .map(el => el.textContent)
+                .join(' ');
+
+            const fullText = `${postText}\n\n${hashtags}`;
+
+            navigator.clipboard.writeText(fullText).then(() => {
+                showToast();
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                alert('Failed to copy to clipboard');
+            });
+        }
+
+        function showToast() {
+            const toast = document.getElementById('toast');
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2000);
+        }
+    </script>
+</body>
+</html>

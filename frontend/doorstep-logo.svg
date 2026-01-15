@@ -1,0 +1,31 @@
+<svg width="500" height="300" viewBox="0 0 500 300" xmlns="http://www.w3.org/2000/svg">
+  <!-- Large D letter (teal with inner lighter teal) -->
+  <g id="large-d">
+    <!-- Outer dark teal D -->
+    <path d="M 30 40 L 30 260 L 140 260 C 220 260 260 210 260 150 C 260 90 220 40 140 40 Z"
+          fill="#1B7D8C"/>
+
+    <!-- Inner lighter teal D -->
+    <path d="M 60 70 L 60 230 L 130 230 C 190 230 220 190 220 150 C 220 110 190 70 130 70 Z"
+          fill="#20BCD4"/>
+
+    <!-- White curved highlight -->
+    <path d="M 60 70 C 75 70 82 77 82 92 L 82 208 C 82 223 75 230 60 230 Z"
+          fill="#FFFFFF" opacity="0.9"/>
+
+    <!-- Coral/red 's' in center -->
+    <text x="140" y="165" font-family="Georgia, serif" font-size="70" font-weight="bold"
+          fill="#FF6B6B" text-anchor="middle" dominant-baseline="middle">s</text>
+  </g>
+
+  <!-- DOORSTEP text -->
+  <g id="doorstep-text">
+    <!-- DOOR in teal -->
+    <text x="280" y="140" font-family="Georgia, serif" font-size="65" font-weight="bold"
+          fill="#1B7D8C" letter-spacing="2">DOOR</text>
+
+    <!-- STEP in coral/salmon -->
+    <text x="280" y="210" font-family="Georgia, serif" font-size="65" font-weight="bold"
+          fill="#FF8B7B" letter-spacing="2">STEP</text>
+  </g>
+</svg>

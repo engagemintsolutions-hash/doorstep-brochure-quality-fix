@@ -1,0 +1,833 @@
+diff --git a/frontend/post_export_system.js b/frontend/post_export_system.js
+index bdbf2f3..23fda93 100644
+--- a/frontend/post_export_system.js
++++ b/frontend/post_export_system.js
+@@ -363,6 +363,113 @@ function showRepurposingPopup() {
+     document.body.style.overflow = 'hidden';
+ }
+ 
++/**
++ * Shows the repurposing modal directly (for standalone Repurpose button)
++ */
++function showRepurposingModal() {
++    showRepurposingPopup();
++}
++
++/**
++ * Show the main repurposing menu (used for back button)
++ */
++function showMainRepurposingMenu() {
++    const repurposingContent = document.querySelector('.repurposing-body');
++    if (!repurposingContent) return;
++
++    repurposingContent.innerHTML = `
++        <div class="repurposing-intro">
++            <p>Your brochure is ready! Now transform it into multiple marketing materials:</p>
++        </div>
++
++        <div class="repurposing-options">
++            <!-- Portal Listings -->
++            <div class="repurposing-card repurposing-portals">
++                <div class="repurposing-icon">🏠</div>
++                <h3>Portal Listings</h3>
++                <p>Auto-format for Rightmove, Zoopla, and OnTheMarket</p>
++                <ul class="repurposing-features">
++                    <li>✓ Optimal character counts</li>
++                    <li>✓ SEO-optimized descriptions</li>
++                    <li>✓ Platform-specific formatting</li>
++                </ul>
++                <button class="repurposing-btn" onclick="repurposeForPortals()">
++                    Generate Portal Copy
++                </button>
++            </div>
++
++            <!-- Social Media -->
++            <div class="repurposing-card repurposing-social">
++                <div class="repurposing-icon">📱</div>
++                <h3>Social Media</h3>
++                <p>Create engaging posts for Instagram, Facebook & Twitter</p>
++                <ul class="repurposing-features">
++                    <li>✓ Platform-optimized content</li>
++                    <li>✓ Hashtag suggestions</li>
++                    <li>✓ Multiple post variations</li>
++                </ul>
++                <button class="repurposing-btn" onclick="repurposeForSocial()">
++                    Create Social Posts
++                </button>
++            </div>
++
++            <!-- Email & Newsletters -->
++            <div class="repurposing-card repurposing-email">
++                <div class="repurposing-icon">📧</div>
++                <h3>Email & Newsletters</h3>
++                <p>Professional email campaigns and client newsletters</p>
++                <ul class="repurposing-features">
++                    <li>✓ HTML email templates</li>
++                    <li>✓ Personalization options</li>
++                    <li>✓ Call-to-action buttons</li>
++                </ul>
++                <button class="repurposing-btn" onclick="repurposeForEmail()">
++                    Generate Email Content
++                </button>
++            </div>
++
++            <!-- Advanced Features -->
++            <div class="repurposing-card repurposing-advanced">
++                <div class="repurposing-icon">✨</div>
++                <h3>Advanced Features</h3>
++                <p>AI-powered visual staging and automated video tours</p>
++                <ul class="repurposing-features">
++                    <li>✓ Virtual staging for empty rooms</li>
++                    <li>✓ Auto-generated video tours</li>
++                    <li>✓ AI agent voiceovers</li>
++                </ul>
++                <button class="repurposing-btn repurposing-btn-advanced" onclick="showAdvancedFeatures()">
++                    Explore Advanced Features
++                </button>
++            </div>
++
++            <!-- Physical Brochures -->
++            <div class="repurposing-card repurposing-print">
++                <div class="repurposing-icon">🖨️</div>
++                <h3>Physical Brochures</h3>
++                <p>Order professional printed brochures delivered to your office</p>
++                <ul class="repurposing-features">
++                    <li>✓ Premium quality printing</li>
++                    <li>✓ Multiple paper options</li>
++                    <li>✓ Fast delivery (2-3 days)</li>
++                </ul>
++                <button class="repurposing-btn repurposing-btn-primary" onclick="orderPhysicalBrochures()">
++                    Order Print Brochures
++                </button>
++            </div>
++        </div>
++
++        <div class="repurposing-actions">
++            <button class="btn-secondary" onclick="closeRepurposingModal()">
++                Maybe Later
++            </button>
++            <button class="btn-primary" onclick="selectMultipleRepurposing()">
++                Select Multiple Options
++            </button>
++        </div>
++    `;
++}
++
+ /**
+  * Creates the repurposing modal HTML
+  */
+@@ -429,6 +536,21 @@ function createRepurposingModal() {
+                         </button>
+                     </div>
+ 
++                    <!-- Advanced Features -->
++                    <div class="repurposing-card repurposing-advanced">
++                        <div class="repurposing-icon">✨</div>
++                        <h3>Advanced Features</h3>
++                        <p>AI-powered visual staging and automated video tours</p>
++                        <ul class="repurposing-features">
++                            <li>✓ Virtual staging for empty rooms</li>
++                            <li>✓ Auto-generated video tours</li>
++                            <li>✓ AI agent voiceovers</li>
++                        </ul>
++                        <button class="repurposing-btn repurposing-btn-advanced" onclick="showAdvancedFeatures()">
++                            Explore Advanced Features
++                        </button>
++                    </div>
++
+                     <!-- Physical Brochures -->
+                     <div class="repurposing-card repurposing-print">
+                         <div class="repurposing-icon">🖨️</div>
+@@ -472,6 +594,343 @@ function closeRepurposingModal() {
+     document.body.style.overflow = '';
+ }
+ 
++// ============================================
++// HELPER FUNCTIONS
++// ============================================
++
++/**
++ * Extract property data from brochure editor state
++ */
++function getPropertyDataFromBrochure() {
++    // Try to get data from window.brochureData or editor state
++    const editorTextarea = document.getElementById('editor');
++    const propertyNameInput = document.getElementById('propertyName');
++    const addressInput = document.getElementById('address');
++    const priceInput = document.getElementById('price');
++    const bedroomsInput = document.getElementById('bedrooms');
++    const bathroomsInput = document.getElementById('bathrooms');
++    const propertyTypeInput = document.getElementById('propertyType');
++
++    // Extract key features from editor text (look for bullet points)
++    const editorText = editorTextarea?.value || '';
++    const keyFeatures = [];
++    const bulletMatches = editorText.match(/[•\-\*]\s*([^\n]+)/g);
++    if (bulletMatches) {
++        bulletMatches.forEach(match => {
++            const cleaned = match.replace(/^[•\-\*]\s*/, '').trim();
++            if (cleaned.length > 0) keyFeatures.push(cleaned);
++        });
++    }
++
++    return {
++        name: propertyNameInput?.value || 'Luxury Property',
++        address: addressInput?.value || 'Prime Location',
++        price: priceInput?.value || '',
++        bedrooms: bedroomsInput?.value ? parseInt(bedroomsInput.value) : null,
++        bathrooms: bathroomsInput?.value ? parseInt(bathroomsInput.value) : null,
++        property_type: propertyTypeInput?.value || '',
++        key_features: keyFeatures.length > 0 ? keyFeatures : null,
++        description: editorText
++    };
++}
++
++/**
++ * Display portal listing (Rightmove mockup) in modal
++ */
++function displayPortalListingInModal(result) {
++    const repurposingContent = document.querySelector('.repurposing-body');
++    if (!repurposingContent) return;
++
++    const portal = result.portal || 'Rightmove';
++    const headline = result.headline || 'Property Headline';
++    const overview = result.overview || 'Property overview text...';
++    const keyFeatures = result.key_features || [];
++    const fullDescription = result.full_description || '';
++
++    repurposingContent.innerHTML = `
++        <div class="marketing-result">
++            <div class="marketing-header">
++                <h2>🏠 ${portal} Listing Generated</h2>
++                <button onclick="closeRepurposingModal()" class="marketing-close">&times;</button>
++            </div>
++
++            <!-- Rightmove Mockup -->
++            <div class="portal-mockup">
++                <div class="portal-mockup-header">
++                    <div class="portal-logo">${portal}</div>
++                    <div class="portal-actions">
++                        <button class="portal-btn">💾 Save</button>
++                        <button class="portal-btn">📧 Email</button>
++                        <button class="portal-btn">🖨️ Print</button>
++                    </div>
++                </div>
++
++                <!-- Hero Image Placeholder -->
++                <div class="portal-hero-image">
++                    <div class="image-placeholder">
++                        <span class="placeholder-icon">🏡</span>
++                        <p>Property Hero Image</p>
++                    </div>
++                </div>
++
++                <!-- Property Details -->
++                <div class="portal-details">
++                    <h1 class="portal-headline">${headline}</h1>
++
++                    <div class="portal-overview">
++                        <h3>Overview</h3>
++                        <p>${overview}</p>
++                    </div>
++
++                    <div class="portal-features">
++                        <h3>Key Features</h3>
++                        <ul class="portal-features-list">
++                            ${keyFeatures.map(feat => `<li>${feat}</li>`).join('')}
++                        </ul>
++                    </div>
++
++                    <div class="portal-description">
++                        <h3>Full Description</h3>
++                        <p>${fullDescription}</p>
++                    </div>
++                </div>
++            </div>
++
++            <!-- Action Buttons -->
++            <div class="marketing-actions">
++                <button class="btn-secondary" onclick="showMainRepurposingMenu()">
++                    ← Back
++                </button>
++                <button class="btn-secondary" onclick="repurposeMarketingContent('portal', ${JSON.stringify(result).replace(/'/g, "&apos;")})">
++                    🔄 Repurpose
++                </button>
++                <button class="btn-primary" onclick="exportMarketingContent('portal', ${JSON.stringify(result).replace(/'/g, "&apos;")})">
++                    📥 Export
++                </button>
++                <button class="btn-secondary" onclick="closeRepurposingModal()">
++                    Close
++                </button>
++            </div>
++        </div>
++    `;
++}
++
++/**
++ * Display social media post (Facebook mockup) in modal
++ */
++function displaySocialPostInModal(result) {
++    const repurposingContent = document.querySelector('.repurposing-body');
++    if (!repurposingContent) return;
++
++    const platform = result.platform || 'Facebook';
++    const postText = result.post_text || 'Your social media post text...';
++    const hashtags = result.hashtags || [];
++    const charCount = result.character_count || postText.length;
++
++    // Platform-specific styling
++    const platformColors = {
++        'facebook': '#1877F2',
++        'twitter': '#1DA1F2',
++        'instagram': '#E4405F'
++    };
++    const platformColor = platformColors[platform.toLowerCase()] || '#1877F2';
++
++    repurposingContent.innerHTML = `
++        <div class="marketing-result">
++            <div class="marketing-header">
++                <h2>📱 ${platform} Post Generated</h2>
++                <button onclick="closeRepurposingModal()" class="marketing-close">&times;</button>
++            </div>
++
++            <!-- Social Media Mockup -->
++            <div class="social-mockup" style="border-top: 3px solid ${platformColor};">
++                <div class="social-mockup-header">
++                    <div class="social-profile">
++                        <div class="social-avatar" style="background: ${platformColor};">
++                            ${platform.charAt(0).toUpperCase()}
++                        </div>
++                        <div class="social-info">
++                            <div class="social-name">Your Agency Name</div>
++                            <div class="social-time">Just now</div>
++                        </div>
++                    </div>
++                    <div class="social-platform-badge" style="background: ${platformColor};">
++                        ${platform}
++                    </div>
++                </div>
++
++                <!-- Post Content -->
++                <div class="social-content">
++                    <p class="social-text">${postText}</p>
++                    ${hashtags.length > 0 ? `
++                        <p class="social-hashtags">
++                            ${hashtags.map(tag => `<span class="hashtag">${tag}</span>`).join(' ')}
++                        </p>
++                    ` : ''}
++                </div>
++
++                <!-- Hero Image Placeholder -->
++                <div class="social-image">
++                    <div class="image-placeholder">
++                        <span class="placeholder-icon">🏡</span>
++                        <p>Property Image</p>
++                    </div>
++                </div>
++
++                <!-- Post Stats -->
++                <div class="social-stats">
++                    <div class="stat-item">
++                        <span class="stat-icon">❤️</span>
++                        <span class="stat-label">Like</span>
++                    </div>
++                    <div class="stat-item">
++                        <span class="stat-icon">💬</span>
++                        <span class="stat-label">Comment</span>
++                    </div>
++                    <div class="stat-item">
++                        <span class="stat-icon">📤</span>
++                        <span class="stat-label">Share</span>
++                    </div>
++                </div>
++
++                <div class="social-char-count">
++                    ${charCount} characters
++                </div>
++            </div>
++
++            <!-- Action Buttons -->
++            <div class="marketing-actions">
++                <button class="btn-secondary" onclick="showMainRepurposingMenu()">
++                    ← Back
++                </button>
++                <button class="btn-secondary" onclick="repurposeMarketingContent('social', ${JSON.stringify(result).replace(/'/g, "&apos;")})">
++                    🔄 Repurpose
++                </button>
++                <button class="btn-primary" onclick="exportMarketingContent('social', ${JSON.stringify(result).replace(/'/g, "&apos;")})">
++                    📥 Export
++                </button>
++                <button class="btn-secondary" onclick="closeRepurposingModal()">
++                    Close
++                </button>
++            </div>
++        </div>
++    `;
++}
++
++/**
++ * Display email newsletter (email template mockup) in modal
++ */
++function displayEmailNewsletterInModal(result) {
++    const repurposingContent = document.querySelector('.repurposing-body');
++    if (!repurposingContent) return;
++
++    const subject = result.subject || 'New Property Listing';
++    const previewText = result.preview_text || '';
++    const bodyText = result.body_text || 'Your email content...';
++    const ctaText = result.cta_text || 'View Property';
++    const ctaUrl = result.cta_url || '#';
++
++    repurposingContent.innerHTML = `
++        <div class="marketing-result">
++            <div class="marketing-header">
++                <h2>📧 Email Newsletter Generated</h2>
++                <button onclick="closeRepurposingModal()" class="marketing-close">&times;</button>
++            </div>
++
++            <!-- Email Mockup -->
++            <div class="email-mockup">
++                <!-- Email Client Header -->
++                <div class="email-client-header">
++                    <div class="email-from">
++                        <strong>From:</strong> Your Agency &lt;agency@email.com&gt;
++                    </div>
++                    <div class="email-subject">
++                        <strong>Subject:</strong> ${subject}
++                    </div>
++                    ${previewText ? `
++                        <div class="email-preview">
++                            <strong>Preview:</strong> ${previewText}
++                        </div>
++                    ` : ''}
++                </div>
++
++                <!-- Email Body -->
++                <div class="email-body">
++                    <!-- Email Header -->
++                    <div class="email-header">
++                        <h1>Your Agency Name</h1>
++                        <p class="email-tagline">Premium Property Specialists</p>
++                    </div>
++
++                    <!-- Hero Image -->
++                    <div class="email-hero">
++                        <div class="image-placeholder">
++                            <span class="placeholder-icon">🏡</span>
++                            <p>Property Hero Image</p>
++                        </div>
++                    </div>
++
++                    <!-- Email Content -->
++                    <div class="email-content">
++                        <h2>${subject}</h2>
++                        <div class="email-text">
++                            ${bodyText.split('\n').map(para => `<p>${para}</p>`).join('')}
++                        </div>
++
++                        <!-- CTA Button -->
++                        <div class="email-cta">
++                            <a href="${ctaUrl}" class="email-cta-button">
++                                ${ctaText}
++                            </a>
++                        </div>
++                    </div>
++
++                    <!-- Email Footer -->
++                    <div class="email-footer">
++                        <p>Your Agency Name | Tel: +44 20 1234 5678</p>
++                        <p>123 High Street, London, UK</p>
++                        <p class="email-unsubscribe">
++                            <a href="#">Unsubscribe</a> | <a href="#">View in browser</a>
++                        </p>
++                    </div>
++                </div>
++            </div>
++
++            <!-- Action Buttons -->
++            <div class="marketing-actions">
++                <button class="btn-secondary" onclick="showMainRepurposingMenu()">
++                    ← Back
++                </button>
++                <button class="btn-secondary" onclick="repurposeMarketingContent('email', ${JSON.stringify(result).replace(/'/g, "&apos;")})">
++                    🔄 Repurpose
++                </button>
++                <button class="btn-primary" onclick="exportMarketingContent('email', ${JSON.stringify(result).replace(/'/g, "&apos;")})">
++                    📥 Export
++                </button>
++                <button class="btn-secondary" onclick="closeRepurposingModal()">
++                    Close
++                </button>
++            </div>
++        </div>
++    `;
++}
++
++/**
++ * Export marketing content (non-functional placeholder)
++ */
++function exportMarketingContent(type, data) {
++    showToast('info', `Export functionality coming soon for ${type}!`);
++    console.log('Export data:', data);
++}
++
++/**
++ * Repurpose marketing content (non-functional placeholder)
++ */
++function repurposeMarketingContent(type, data) {
++    showToast('info', `Repurpose functionality coming soon for ${type}!`);
++    console.log('Repurpose data:', data);
++}
++
+ // ============================================
+ // REPURPOSING ACTIONS
+ // ============================================
+@@ -481,10 +940,66 @@ function closeRepurposingModal() {
+  */
+ async function repurposeForPortals() {
+     showToast('info', '🏠 Generating portal listings...');
+-    // TODO: Navigate to portal repurposing interface
+     console.log('📝 Repurposing for portals: Rightmove, Zoopla, OnTheMarket');
+-    closeRepurposingModal();
+-    showToast('success', 'Portal listing generator coming soon!');
++
++    // Show loading in repurposing modal
++    const repurposingContent = document.getElementById('repurposingModalBody');
++    if (repurposingContent) {
++        repurposingContent.innerHTML = `
++            <div style="text-align: center; padding: 40px;">
++                <div class="spinner" style="margin: 0 auto 20px;"></div>
++                <p style="font-size: 18px; color: #666;">Generating Rightmove listing...</p>
++            </div>
++        `;
++    }
++
++    try {
++        // Get property data from brochure
++        const propertyData = getPropertyDataFromBrochure();
++        console.log('Property data extracted:', propertyData);
++
++        // Call API
++        const formData = new URLSearchParams();
++        formData.append('property_name', propertyData.name);
++        formData.append('address', propertyData.address);
++        formData.append('portal', 'rightmove');
++        if (propertyData.price) formData.append('price', propertyData.price);
++        if (propertyData.bedrooms) formData.append('bedrooms', propertyData.bedrooms);
++        if (propertyData.bathrooms) formData.append('bathrooms', propertyData.bathrooms);
++        if (propertyData.property_type) formData.append('property_type', propertyData.property_type);
++        if (propertyData.key_features) formData.append('key_features', JSON.stringify(propertyData.key_features));
++        if (propertyData.description) formData.append('description', propertyData.description);
++
++        console.log('Sending portal listing request...');
++        const response = await fetch('/marketing/portal-listing', {
++            method: 'POST',
++            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
++            body: formData
++        });
++
++        console.log('Response status:', response.status);
++        const result = await response.json();
++        console.log('Response data:', result);
++
++        if (response.ok) {
++            displayPortalListingInModal(result);
++            showToast('success', 'Portal listing generated!');
++        } else {
++            // Handle validation errors
++            let errorMsg = 'Failed to generate listing';
++            if (result.detail && Array.isArray(result.detail)) {
++                errorMsg = result.detail.map(e => `${e.loc.join('.')}: ${e.msg}`).join(', ');
++            } else if (typeof result.detail === 'string') {
++                errorMsg = result.detail;
++            }
++            console.error('API error:', errorMsg);
++            throw new Error(errorMsg);
++        }
++    } catch (error) {
++        console.error('Portal generation error:', error);
++        showToast('error', `Failed to generate portal listing: ${error.message}`);
++        closeRepurposingModal();
++    }
+ }
+ 
+ /**
+@@ -492,10 +1007,63 @@ async function repurposeForPortals() {
+  */
+ async function repurposeForSocial() {
+     showToast('info', '📱 Creating social media posts...');
+-    // TODO: Navigate to social media generator
+     console.log('📱 Repurposing for social media');
+-    closeRepurposingModal();
+-    showToast('success', 'Social media generator coming soon!');
++
++    const repurposingContent = document.getElementById('repurposingModalBody');
++    if (repurposingContent) {
++        repurposingContent.innerHTML = `
++            <div style="text-align: center; padding: 40px;">
++                <div class="spinner" style="margin: 0 auto 20px;"></div>
++                <p style="font-size: 18px; color: #666;">Generating Facebook post...</p>
++            </div>
++        `;
++    }
++
++    try {
++        const propertyData = getPropertyDataFromBrochure();
++        console.log('Property data extracted:', propertyData);
++
++        const formData = new URLSearchParams();
++        formData.append('property_name', propertyData.name);
++        formData.append('address', propertyData.address);
++        formData.append('platform', 'facebook');
++        if (propertyData.price) formData.append('price', propertyData.price);
++        if (propertyData.bedrooms) formData.append('bedrooms', propertyData.bedrooms);
++        if (propertyData.bathrooms) formData.append('bathrooms', propertyData.bathrooms);
++        if (propertyData.property_type) formData.append('property_type', propertyData.property_type);
++        if (propertyData.key_features) formData.append('key_features', JSON.stringify(propertyData.key_features));
++        if (propertyData.description) formData.append('description', propertyData.description);
++
++        console.log('Sending social post request...');
++        const response = await fetch('/marketing/social-post', {
++            method: 'POST',
++            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
++            body: formData
++        });
++
++        console.log('Response status:', response.status);
++        const result = await response.json();
++        console.log('Response data:', result);
++
++        if (response.ok) {
++            displaySocialPostInModal(result);
++            showToast('success', 'Social media post generated!');
++        } else {
++            // Handle validation errors
++            let errorMsg = 'Failed to generate post';
++            if (result.detail && Array.isArray(result.detail)) {
++                errorMsg = result.detail.map(e => `${e.loc.join('.')}: ${e.msg}`).join(', ');
++            } else if (typeof result.detail === 'string') {
++                errorMsg = result.detail;
++            }
++            console.error('API error:', errorMsg);
++            throw new Error(errorMsg);
++        }
++    } catch (error) {
++        console.error('Social generation error:', error);
++        showToast('error', `Failed to generate social media post: ${error.message}`);
++        closeRepurposingModal();
++    }
+ }
+ 
+ /**
+@@ -503,10 +1071,65 @@ async function repurposeForSocial() {
+  */
+ async function repurposeForEmail() {
+     showToast('info', '📧 Generating email content...');
+-    // TODO: Navigate to email generator
+     console.log('📧 Repurposing for email & newsletters');
+-    closeRepurposingModal();
+-    showToast('success', 'Email generator coming soon!');
++
++    const repurposingContent = document.getElementById('repurposingModalBody');
++    if (repurposingContent) {
++        repurposingContent.innerHTML = `
++            <div style="text-align: center; padding: 40px;">
++                <div class="spinner" style="margin: 0 auto 20px;"></div>
++                <p style="font-size: 18px; color: #666;">Generating email newsletter...</p>
++            </div>
++        `;
++    }
++
++    try {
++        const propertyData = getPropertyDataFromBrochure();
++        console.log('Property data extracted:', propertyData);
++
++        const formData = new URLSearchParams();
++        formData.append('property_name', propertyData.name);
++        formData.append('address', propertyData.address);
++        if (propertyData.price) formData.append('price', propertyData.price);
++        if (propertyData.bedrooms) formData.append('bedrooms', propertyData.bedrooms);
++        if (propertyData.bathrooms) formData.append('bathrooms', propertyData.bathrooms);
++        if (propertyData.property_type) formData.append('property_type', propertyData.property_type);
++        if (propertyData.key_features) formData.append('key_features', JSON.stringify(propertyData.key_features));
++        if (propertyData.description) formData.append('description', propertyData.description);
++        formData.append('agent_name', 'Your Agent Name');
++        formData.append('agent_phone', '+44 20 1234 5678');
++        formData.append('agent_email', 'agent@agency.com');
++
++        console.log('Sending email newsletter request...');
++        const response = await fetch('/marketing/email-newsletter', {
++            method: 'POST',
++            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
++            body: formData
++        });
++
++        console.log('Response status:', response.status);
++        const result = await response.json();
++        console.log('Response data:', result);
++
++        if (response.ok) {
++            displayEmailNewsletterInModal(result);
++            showToast('success', 'Email newsletter generated!');
++        } else {
++            // Handle validation errors
++            let errorMsg = 'Failed to generate email';
++            if (result.detail && Array.isArray(result.detail)) {
++                errorMsg = result.detail.map(e => `${e.loc.join('.')}: ${e.msg}`).join(', ');
++            } else if (typeof result.detail === 'string') {
++                errorMsg = result.detail;
++            }
++            console.error('API error:', errorMsg);
++            throw new Error(errorMsg);
++        }
++    } catch (error) {
++        console.error('Email generation error:', error);
++        showToast('error', `Failed to generate email newsletter: ${error.message}`);
++        closeRepurposingModal();
++    }
+ }
+ 
+ /**
+@@ -520,6 +1143,142 @@ async function orderPhysicalBrochures() {
+     showToast('success', 'Print ordering system coming soon!');
+ }
+ 
++/**
++ * Show Advanced Features screen
++ */
++function showAdvancedFeatures() {
++    const repurposingContent = document.querySelector('.repurposing-body');
++    if (!repurposingContent) return;
++
++    repurposingContent.innerHTML = `
++        <div class="advanced-features-container">
++            <div class="advanced-features-header">
++                <h2>✨ Advanced AI Features</h2>
++                <p class="advanced-subtitle">Transform your property marketing with cutting-edge AI</p>
++            </div>
++
++            <div class="advanced-features-grid">
++                <!-- Visual Staging -->
++                <div class="advanced-feature-card">
++                    <div class="feature-icon">🎨</div>
++                    <h3>AI Visual Staging</h3>
++                    <p class="feature-description">
++                        Transform empty or outdated rooms into beautifully furnished spaces using AI.
++                        Our system analyzes your property images and generates photorealistic staged versions
++                        with professional interior design choices.
++                    </p>
++                    <ul class="feature-benefits">
++                        <li>✓ Turn unfurnished photos into furnished showcases</li>
++                        <li>✓ Multiple design styles (modern, classic, minimalist)</li>
++                        <li>✓ Perfect for vacant properties</li>
++                        <li>✓ Increase perceived value instantly</li>
++                    </ul>
++                    <div class="feature-example">
++                        <div class="example-before">
++                            <span class="example-label">Before</span>
++                            <img src="/static/staging_before.png" alt="Before Staging" class="example-image-real" style="width: 100%; max-height: 200px; object-fit: cover; border-radius: 8px;">
++                        </div>
++                        <div class="example-arrow">→</div>
++                        <div class="example-after">
++                            <span class="example-label">After AI Staging</span>
++                            <img src="/static/staging_after.png" alt="After Staging" class="example-image-real" style="width: 100%; max-height: 200px; object-fit: cover; border-radius: 8px;">
++                        </div>
++                    </div>
++                    <button class="feature-btn" onclick="startVisualStaging()">
++                        Start Visual Staging
++                    </button>
++                </div>
++
++                <!-- Automated Video Tours -->
++                <div class="advanced-feature-card">
++                    <div class="feature-icon">🎬</div>
++                    <h3>Automated Video Tours</h3>
++                    <p class="feature-description">
++                        Create professional property video tours automatically from your photos or video footage.
++                        Our AI generates smooth transitions, adds music, and even provides AI agent voiceovers.
++                    </p>
++                    <ul class="feature-benefits">
++                        <li>✓ Generate from uploaded photos OR video files</li>
++                        <li>✓ AI-powered script generation</li>
++                        <li>✓ Choose agent voice for narration (e.g., James Smith)</li>
++                        <li>✓ Professional transitions and music</li>
++                        <li>✓ Export to all marketing channels instantly</li>
++                    </ul>
++                    <div class="feature-note">
++                        <strong>💡 Agent Voiceover:</strong> Select any team member (e.g., James Smith) and our AI will generate
++                        a professional script and narrate the entire video tour in their voice, giving a personal touch
++                        to every property showcase.
++                    </div>
++                    <button class="feature-btn" onclick="startVideoTour()">
++                        Create Video Tour
++                    </button>
++                </div>
++
++                <!-- Hire Photographer/Drone Operator -->
++                <div class="advanced-feature-card">
++                    <div class="feature-icon">📸</div>
++                    <h3>Hire Photographer & Drone Operator</h3>
++                    <p class="feature-description">
++                        Book professional property photographers and licensed drone operators directly through our platform.
++                        Get stunning aerial shots and professional interior photography to make your listings stand out.
++                    </p>
++                    <ul class="feature-benefits">
++                        <li>✓ Network of pre-vetted professional photographers</li>
++                        <li>✓ CAA-licensed drone operators</li>
++                        <li>✓ Same-day or next-day availability</li>
++                        <li>✓ High-resolution images delivered within 24 hours</li>
++                        <li>✓ Competitive pricing with instant quotes</li>
++                    </ul>
++                    <div class="feature-note">
++                        <strong>💡 Complete Package:</strong> Book both photographer and drone operator together for comprehensive
++                        property coverage. Includes exterior shots, interior photography, aerial views, and twilight photography.
++                    </div>
++                    <button class="feature-btn" onclick="hirePhotographer()">
++                        Book Photographer
++                    </button>
++                </div>
++            </div>
++
++            <!-- Action Buttons -->
++            <div class="advanced-actions">
++                <button class="btn-secondary" onclick="showMainRepurposingMenu()">
++                    ← Back to Main Menu
++                </button>
++                <button class="btn-primary" onclick="closeRepurposingModal()">
++                    Done
++                </button>
++            </div>
++        </div>
++    `;
++}
++
++/**
++ * Start Visual Staging workflow
++ */
++function startVisualStaging() {
++    showToast('info', '✨ Visual Staging feature coming soon!');
++    console.log('🎨 Starting visual staging workflow');
++    // TODO: Implement visual staging selection and processing
++}
++
++/**
++ * Start Video Tour creation workflow
++ */
++function startVideoTour() {
++    showToast('info', '🎬 Video Tour feature coming soon!');
++    console.log('🎬 Starting video tour creation');
++    // TODO: Implement video tour creation workflow
++}
++
++/**
++ * Hire Photographer/Drone Operator workflow
++ */
++function hirePhotographer() {
++    showToast('info', '📸 Photographer booking feature coming soon!');
++    console.log('📸 Starting photographer hire workflow');
++    // TODO: Implement photographer/drone operator booking system
++}
++
+ /**
+  * Select multiple repurposing options
+  */

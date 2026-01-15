@@ -1,0 +1,35 @@
+{
+  "property_data": {
+    "property_type": "flat",
+    "bedrooms": 3,
+    "bathrooms": 2,
+    "size_sqft": 1500,
+    "condition": "excellent",
+    "features": [
+      "Period building with modern interiors",
+      "High ceilings and original cornicing",
+      "Secure underground parking",
+      "24-hour concierge service",
+      "Balcony with city views"
+    ],
+    "epc_rating": "B"
+  },
+  "location_data": {
+    "address": "123 Buckingham Gate, Westminster",
+    "setting": "urban",
+    "proximity_notes": "Walking distance to St. James's Park station",
+    "postcode": "SW1A 1AA"
+  },
+  "target_audience": {
+    "audience_type": "professionals",
+    "lifestyle_framing": "Modern city living for career-focused individuals"
+  },
+  "tone": {
+    "tone": "boutique"
+  },
+  "channel": {
+    "channel": "brochure",
+    "target_words": 450
+  },
+  "include_enrichment": true
+}

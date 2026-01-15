@@ -1,0 +1,21 @@
+# Production dependencies for Railway deployment
+fastapi==0.109.0
+uvicorn[standard]==0.27.0
+pydantic==2.5.3
+pydantic-settings==2.1.0
+python-multipart==0.0.6
+httpx==0.26.0
+anthropic==0.18.1
+python-dotenv==1.0.0
+Pillow==10.2.0
+tenacity==8.2.3
+reportlab==4.0.9
+qrcode[pil]==7.4.2
+beautifulsoup4==4.12.2
+requests==2.31.0
+apscheduler==3.10.4
+
+# Database (optional - uncomment if using PostgreSQL)
+# sqlalchemy==2.0.25
+# asyncpg==0.29.0
+# alembic==1.13.1

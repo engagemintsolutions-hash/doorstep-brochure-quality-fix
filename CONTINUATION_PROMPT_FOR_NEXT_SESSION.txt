@@ -1,0 +1,81 @@
+# CONTINUATION PROMPT - Property Listing Generator V10
+# Copy this entire message to Claude when you start your next session
+
+---
+
+Hi Claude! I'm continuing work on the Property Listing Generator V10. Here's the context:
+
+## Current State - V10 Production Ready
+
+**Location:** `C:\Users\billm\Desktop\Listing agent\property-listing-generator-V10`
+**GitHub:** https://github.com/engagemintsolutions-hash/property-listing-generator-V10
+
+**What's Working:**
+✅ Brochure editor with interactive text editing (click to edit any text)
+✅ Transform Text modal with 7 style options
+✅ Floorplan page rendering with proper image display
+✅ Location enrichment enabled (schools, amenities, transport, area info)
+✅ Improved AI text generation with anti-jargon rules (25 total critical rules)
+✅ Advanced AI features in repurpose modal (Visual Staging, Video Tours, Photographer)
+✅ All improvements applied to MAIN generator (not just regenerate endpoint)
+
+## How to Run
+
+**Backend:**
+```bash
+cd "C:\Users\billm\Desktop\Listing agent\property-listing-generator-V10\backend"
+python -m uvicorn main:app --reload --port 8000
+```
+
+**Frontend:**
+Open `C:\Users\billm\Desktop\Listing agent\property-listing-generator-V10\frontend\index.html` in browser
+
+## Key Files Modified in V10
+
+1. **services/generator.py** (lines 355-365) - Added 10 critical anti-jargon writing rules
+2. **frontend/app_v2.js** (line 976) - Enabled location enrichment (`include_enrichment: true`)
+3. **frontend/brochure_editor_v3.js** (lines 592-594, 860-922) - Added floorplan rendering
+4. **frontend/post_export_system.js** (lines 447-490, 765-808) - Added 3 advanced AI features
+5. **backend/main.py** (lines 483-501) - Improved AI prompt already present
+
+## What Needs Work Next
+
+**Immediate Priorities:**
+1. Test advanced AI features (Visual Staging, Video Tours, Photographer) - currently show "coming soon"
+2. Implement backend for visual staging API integration
+3. Test full workflow: Form → Generation → Brochure → Export → Repurpose
+
+**Future Enhancements:**
+- Mobile-responsive brochure templates
+- User authentication & session management
+- Analytics tracking for repurposing workflows
+- EPC data integration refinements
+- Multi-format export improvements
+
+## Recent Changes Summary
+
+- **Removed** regenerate button (was causing photo misalignment)
+- **Applied** all AI improvements to default generator instead
+- **Fixed** floorplan pages not rendering
+- **Enabled** location enrichment by default
+- **Added** Visual Staging, Video Tours, Hire Photographer cards to repurpose modal
+
+## If You Need to Debug
+
+**Check these if issues arise:**
+- Cache-busting versions in `brochure_editor_v3.html` (all set to `20251020_*`)
+- Session data in `brochure_sessions/` directory
+- Exported PDFs in `exports_tmp/` directory
+- Browser console for JavaScript errors
+- Backend logs for API errors
+
+## Important Notes
+
+- V10 is in a SEPARATE directory to avoid "trauma from earlier" (user's words)
+- Old version still at: `C:\Users\billm\Desktop\Listing agent\property-listing-generator`
+- Always work in V10 directory going forward
+- .gitignore excludes: __pycache__, node_modules, .env, sessions, temp files
+
+---
+
+**Ready to continue!** Let me know what you'd like to work on next.

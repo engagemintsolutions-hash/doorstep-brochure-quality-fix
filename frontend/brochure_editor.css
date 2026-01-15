@@ -1,0 +1,695 @@
+/* Brochure Editor Styles */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+    background: #1a3a52;
+    color: #1a1a1a;
+    overflow: hidden;
+    height: 100vh;
+}
+
+/* Top Navigation */
+.editor-nav {
+    background: white;
+    border-bottom: 3px solid #2C5F7C;
+    padding: 0.5rem 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    z-index: 1000;
+}
+
+.nav-left {
+    display: flex;
+    align-items: center;
+    gap: 1.5rem;
+}
+
+.property-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #2C5F7C;
+}
+
+.nav-right {
+    display: flex;
+    gap: 0.75rem;
+}
+
+.btn-nav {
+    padding: 0.6rem 1.2rem;
+    border: 2px solid #2C5F7C;
+    background: white;
+    color: #2C5F7C;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: all 0.3s;
+}
+
+.btn-nav:hover {
+    background: #2C5F7C;
+    color: white;
+    transform: translateY(-1px);
+}
+
+.btn-nav.btn-primary {
+    background: linear-gradient(135deg, #2C5F7C 0%, #1a4d61 100%);
+    color: white;
+}
+
+.btn-nav.btn-primary:hover {
+    background: linear-gradient(135deg, #234a5e 0%, #153a4a 100%);
+}
+
+.btn-nav.btn-secondary {
+    background: #E5A844;
+    border-color: #E5A844;
+    color: white;
+}
+
+.btn-nav.btn-secondary:hover {
+    background: #d99a3a;
+}
+
+/* Main Editor Layout */
+.editor-container {
+    display: grid;
+    grid-template-columns: 180px 1fr 220px;
+    height: calc(100vh - 60px);
+    gap: 0;
+}
+
+/* Left Sidebar - Page Navigator */
+.page-navigator {
+    background: white;
+    border-right: 2px solid #e0e0e0;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    padding: 1rem;
+    padding-bottom: 5rem;
+    height: calc(100vh - 60px);
+}
+
+.page-navigator h3 {
+    color: #2C5F7C;
+    margin-bottom: 1rem;
+    font-size: 1.1rem;
+    border-bottom: 2px solid #E5A844;
+    padding-bottom: 0.5rem;
+}
+
+.page-nav-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    margin-bottom: 2rem;
+}
+
+.page-nav-item {
+    padding: 0.75rem;
+    background: #f8f9fa;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.page-nav-item:hover {
+    border-color: #2C5F7C;
+    background: #f0f7fc;
+}
+
+.page-nav-item.active {
+    border-color: #E5A844;
+    background: linear-gradient(135deg, #fff9f0 0%, #fffbf5 100%);
+    box-shadow: 0 0 0 3px rgba(229, 168, 68, 0.15);
+}
+
+.page-nav-thumbnail {
+    width: 50px;
+    height: 65px;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    flex-shrink: 0;
+    background-size: cover;
+    background-position: center;
+}
+
+.page-nav-info {
+    flex: 1;
+}
+
+.page-nav-title {
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: #333;
+}
+
+.page-nav-desc {
+    font-size: 0.75rem;
+    color: #666;
+    margin-top: 0.25rem;
+}
+
+/* AI Assistant Panel */
+.ai-assistant-panel {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e0e0e0;
+}
+
+.ai-chat-box {
+    background: #f8f9fa;
+    border: 2px solid #2C5F7C;
+    border-radius: 8px;
+    padding: 1rem;
+    margin-top: 0.75rem;
+}
+
+.ai-messages {
+    max-height: 200px;
+    overflow-y: auto;
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+    background: white;
+    border-radius: 6px;
+}
+
+.ai-message {
+    padding: 0.5rem;
+    margin-bottom: 0.5rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    line-height: 1.4;
+}
+
+.ai-message.bot {
+    background: #e3f2fd;
+    border-left: 3px solid #2C5F7C;
+}
+
+.ai-message.user {
+    background: #fff9f0;
+    border-left: 3px solid #E5A844;
+}
+
+.ai-input-area textarea {
+    width: 100%;
+    padding: 0.5rem;
+    border: 2px solid #d1d8dd;
+    border-radius: 6px;
+    font-family: inherit;
+    font-size: 0.85rem;
+    resize: none;
+}
+
+.btn-ai {
+    width: 100%;
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    background: linear-gradient(135deg, #2C5F7C 0%, #1a4d61 100%);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s;
+}
+
+.btn-ai:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(44, 95, 124, 0.3);
+}
+
+/* Center Canvas */
+.brochure-canvas {
+    background: #1a3a52;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    padding: 2rem;
+    padding-bottom: 10rem;
+    position: relative;
+    height: calc(100vh - 60px);
+}
+
+.canvas-wrapper {
+    position: relative;
+    min-height: 100%;
+    padding-bottom: 15rem; /* Extra scroll space */
+}
+
+.zoom-controls {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(255, 255, 255, 0.95);
+    border: 2px solid #2C5F7C;
+    border-radius: 8px;
+    display: inline-flex;
+    gap: 1rem;
+    padding: 0.5rem 1rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.zoom-controls button {
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: #2C5F7C;
+    color: white;
+    font-size: 1.25rem;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+.zoom-controls button:hover {
+    background: #234a5e;
+}
+
+#zoomLevel {
+    font-weight: 600;
+    color: #2C5F7C;
+    min-width: 50px;
+    text-align: center;
+}
+
+.pages-container {
+    transform-origin: top center;
+    transition: transform 0.3s;
+}
+
+/* A4 Page (210mm × 297mm at 96 DPI ≈ 794px × 1123px) */
+.brochure-page {
+    background: white;
+    margin: 0 auto 2rem auto;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.25);
+    position: relative;
+    overflow: hidden;
+    page-break-after: always;
+}
+
+/* Portrait A4 (default) */
+.brochure-page.portrait {
+    width: 794px;
+    height: 1123px;
+}
+
+/* Landscape A4 (rotated dimensions) */
+.brochure-page.landscape {
+    width: 1123px;
+    height: 794px;
+}
+
+.brochure-page.active {
+    box-shadow: 0 0 0 4px #E5A844, 0 8px 32px rgba(0,0,0,0.25);
+}
+
+/* Editable Content */
+.editable {
+    outline: none;
+    padding: 0.5rem;
+    border-radius: 4px;
+    transition: background 0.3s;
+    cursor: text;
+}
+
+.editable:hover {
+    background: rgba(229, 168, 68, 0.1);
+}
+
+.editable:focus {
+    background: rgba(229, 168, 68, 0.2);
+    box-shadow: 0 0 0 2px #E5A844;
+}
+
+.editable.selected {
+    background: rgba(44, 95, 124, 0.1);
+    box-shadow: 0 0 0 3px #2C5F7C;
+}
+
+/* Photo Zones */
+.photo-zone {
+    position: relative;
+    border: 2px dashed #ccc;
+    border-radius: 8px;
+    overflow: hidden;
+    background: #f5f5f5;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.photo-zone:hover {
+    border-color: #2C5F7C;
+    background: #e3f2fd;
+}
+
+.photo-zone.has-photo {
+    border-style: solid;
+    border-color: #2C5F7C;
+}
+
+.photo-zone img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.photo-zone-placeholder {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: #999;
+    font-size: 0.9rem;
+    pointer-events: none;
+}
+
+.photo-zone-actions {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    display: flex;
+    gap: 0.25rem;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.photo-zone:hover .photo-zone-actions {
+    opacity: 1;
+}
+
+.photo-action-btn {
+    width: 32px;
+    height: 32px;
+    background: rgba(255, 255, 255, 0.95);
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 1rem;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+}
+
+.photo-action-btn:hover {
+    background: white;
+    transform: scale(1.1);
+}
+
+/* Right Sidebar - Tools */
+.tools-panel {
+    background: white;
+    border-left: 2px solid #e0e0e0;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    padding: 1rem;
+    padding-bottom: 5rem;
+    height: calc(100vh - 60px);
+}
+
+.tools-panel h3 {
+    color: #2C5F7C;
+    margin-bottom: 1.5rem;
+    font-size: 1.1rem;
+    border-bottom: 2px solid #E5A844;
+    padding-bottom: 0.5rem;
+}
+
+.tool-section {
+    margin-bottom: 2rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+.tool-section:last-child {
+    border-bottom: none;
+}
+
+.tool-section h4 {
+    color: #333;
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+}
+
+/* Photo Library */
+.photo-library {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.library-photo {
+    aspect-ratio: 1;
+    border: 2px solid #e0e0e0;
+    border-radius: 6px;
+    overflow: hidden;
+    cursor: grab;
+    position: relative;
+    transition: all 0.3s;
+}
+
+.library-photo:hover {
+    border-color: #2C5F7C;
+    transform: scale(1.05);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.library-photo:active {
+    cursor: grabbing;
+}
+
+.library-photo img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.photo-category-badge {
+    position: absolute;
+    bottom: 0.25rem;
+    left: 0.25rem;
+    background: rgba(44, 95, 124, 0.9);
+    color: white;
+    padding: 0.15rem 0.4rem;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    font-weight: 600;
+}
+
+.btn-tool {
+    width: 100%;
+    padding: 0.6rem;
+    background: white;
+    border: 2px solid #2C5F7C;
+    color: #2C5F7C;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: all 0.3s;
+}
+
+.btn-tool:hover {
+    background: #2C5F7C;
+    color: white;
+}
+
+/* Format Toolbar */
+.format-toolbar {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.format-toolbar button,
+.format-toolbar select {
+    padding: 0.5rem;
+    border: 2px solid #d1d8dd;
+    background: white;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: all 0.3s;
+}
+
+.format-toolbar button:hover {
+    border-color: #2C5F7C;
+    background: #f0f7fc;
+}
+
+.format-toolbar select {
+    flex: 1;
+    min-width: 100px;
+}
+
+/* Modals */
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 12px;
+    padding: 2rem;
+    max-width: 900px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 12px 48px rgba(0,0,0,0.3);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #e0e0e0;
+}
+
+.modal-header h3 {
+    color: #2C5F7C;
+    font-size: 1.5rem;
+}
+
+.modal-close {
+    width: 36px;
+    height: 36px;
+    border: none;
+    background: #f5f5f5;
+    border-radius: 50%;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #666;
+}
+
+.modal-close:hover {
+    background: #e0e0e0;
+    color: #333;
+}
+
+.loading-spinner {
+    width: 60px;
+    height: 60px;
+    border: 6px solid #f0f7fc;
+    border-top-color: #2C5F7C;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 2rem auto;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* AI Comparison View */
+.comparison-view {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+
+.original-text,
+.refined-text {
+    padding: 1rem;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    background: #f8f9fa;
+}
+
+.original-text h4,
+.refined-text h4 {
+    color: #2C5F7C;
+    margin-bottom: 0.75rem;
+    font-size: 1rem;
+}
+
+.refined-text {
+    border-color: #E5A844;
+    background: #fff9f0;
+}
+
+.modal-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+/* Print Styles */
+@media print {
+    body {
+        background: white;
+    }
+
+    .editor-nav,
+    .page-navigator,
+    .tools-panel,
+    .zoom-controls,
+    .photo-zone-actions,
+    .editable-toolbar {
+        display: none !important;
+    }
+
+    .editor-container {
+        display: block;
+    }
+
+    .brochure-canvas {
+        padding: 0;
+        background: white;
+    }
+
+    .brochure-page {
+        box-shadow: none;
+        margin: 0;
+        page-break-after: always;
+    }
+
+    .editable {
+        padding: 0;
+    }
+}
+
+/* Scrollbar Styling */
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #2C5F7C;
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #234a5e;
+}

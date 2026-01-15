@@ -1,0 +1,119 @@
+================================================================================
+                     IDIOT-PROOF SAFETY NET SYSTEM
+                         For Your Demo Tomorrow
+================================================================================
+
+YOU HAVE 5 MAGIC BUTTONS (Batch Files):
+
+1. SAVE_CHECKPOINT.bat
+   ► Double-click this AFTER each feature works
+   ► Creates a restore point
+   ► Takes 2 seconds
+
+2. UNDO_LAST_CHANGE.bat
+   ► Double-click when something breaks
+   ► Goes back to last checkpoint
+   ► Type YES to confirm
+
+3. VIEW_CHECKPOINTS.bat
+   ► Shows all your saved checkpoints
+   ► Most recent at top
+
+4. SAVE_BASELINE.bat
+   ► Use this when EVERYTHING works perfectly
+   ► Creates a named stable version
+   ► Example names: "before-demo", "all-working", "stable-oct24"
+
+5. GO_BACK_TO_BASELINE.bat
+   ► Nuclear option - goes back to a named baseline
+   ► Use if multiple features broke
+
+
+================================================================================
+                              YOUR WORKFLOW
+================================================================================
+
+STEP 1: Save a baseline RIGHT NOW (before any changes)
+   ► Double-click: SAVE_BASELINE.bat
+   ► Name it: "before-demo-prep"
+
+STEP 2: When Claude implements a feature
+   ► Test it in browser (http://localhost:8000)
+   ► If it works: Double-click SAVE_CHECKPOINT.bat
+   ► If it breaks: Double-click UNDO_LAST_CHANGE.bat
+
+STEP 3: Every hour, save a baseline
+   ► Double-click: SAVE_BASELINE.bat
+   ► Name it: "2am-working" or "5am-stable"
+
+STEP 4: Before demo (8am)
+   ► Double-click: SAVE_BASELINE.bat
+   ► Name it: "demo-ready"
+
+
+================================================================================
+                           EMERGENCY RECOVERY
+================================================================================
+
+If Claude breaks everything and you're panicking:
+
+1. Double-click: UNDO_LAST_CHANGE.bat
+   → Goes back to last checkpoint (5-10 min ago)
+
+2. If that's still broken: GO_BACK_TO_BASELINE.bat
+   → Choose "before-demo-prep" or your last stable version
+
+3. ALWAYS refresh browser: Ctrl+Shift+R
+   → Clears cached JavaScript
+
+
+================================================================================
+                              IMPORTANT NOTES
+================================================================================
+
+✓ Save checkpoint after EVERY working feature
+✓ Save baseline every hour
+✓ Never commit when something is broken
+✓ Always hard refresh browser after rollback (Ctrl+Shift+R)
+✓ These scripts work even if you don't understand git
+
+
+================================================================================
+                           WHAT EACH FILE DOES
+================================================================================
+
+CHECKPOINTS (frequent, auto-named):
+   - Every 5-10 minutes after testing
+   - Named with timestamp automatically
+   - Quick restore points
+
+BASELINES (important, you-named):
+   - Every hour or when everything works
+   - Named by you (e.g., "stable-3am")
+   - Major restore points
+
+
+================================================================================
+                         TELL CLAUDE THIS COMMAND
+================================================================================
+
+After you test a feature and it works, tell Claude:
+
+   "checkpoint this"
+
+Claude will save it for you.
+
+
+================================================================================
+                              YOU'RE PROTECTED!
+================================================================================
+
+You now have:
+✓ Automatic checkpoints every few minutes
+✓ Named baselines you can return to
+✓ One-click undo for mistakes
+✓ Zero git knowledge required
+
+Good luck with your demo!
+
+================================================================================

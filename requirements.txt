@@ -1,0 +1,44 @@
+# Core Framework
+fastapi==0.109.0
+uvicorn[standard]==0.27.0
+pydantic==2.5.3
+pydantic-settings==2.1.0
+python-multipart==0.0.6
+
+# HTTP & API
+httpx==0.26.0
+anthropic==0.18.1
+requests==2.31.0
+tenacity==8.2.3
+
+# Environment
+python-dotenv==1.0.0
+
+# Image Processing
+Pillow==10.2.0
+
+# PDF Generation
+reportlab==4.0.9
+qrcode[pil]==7.4.2
+
+# Parsing
+beautifulsoup4==4.12.2
+
+# Background Jobs
+apscheduler==3.10.4
+
+# Testing (optional - comment out for production)
+# pytest==7.4.4
+# pytest-asyncio==0.23.3
+# respx==0.21.1
+
+# Database (optional - uncomment if using PostgreSQL)
+# sqlalchemy==2.0.25
+# asyncpg==0.29.0
+# alembic==1.13.1
+
+# AI Background Removal (optional - large dependency)
+# rembg==2.0.50
+
+# Google Vision (optional)
+# google-cloud-vision==3.5.0

@@ -1,0 +1,1840 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quick Social Post - Doorstep</title>
+    <script src="/static/auth.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #009BA0 0%, #FF8A80 100%);
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image:
+                radial-gradient(circle at 10% 20%, rgba(0, 155, 160, 0.3) 0%, transparent 50%),
+                radial-gradient(circle at 90% 80%, rgba(255, 138, 128, 0.3) 0%, transparent 50%);
+            pointer-events: none;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        header {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+            text-align: center;
+        }
+
+        header img {
+            height: 80px;
+            width: auto;
+            margin-bottom: 0.5rem;
+        }
+
+        header h1 {
+            color: #2c3e50;
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        header .subtitle {
+            color: #6c757d;
+            font-size: 0.95rem;
+        }
+
+        .back-button {
+            display: inline-block;
+            margin-bottom: 1rem;
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.9);
+            border: 2px solid #009BA0;
+            color: #009BA0;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .back-button:hover {
+            background: #009BA0;
+            color: white;
+        }
+
+        .quick-form {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-section {
+            margin-bottom: 2rem;
+        }
+
+        .form-section h3 {
+            color: #2c3e50;
+            font-size: 1.1rem;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .form-section .step-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            background: linear-gradient(135deg, #009BA0, #007f84);
+            color: white;
+            border-radius: 50%;
+            font-size: 0.85rem;
+            font-weight: 700;
+        }
+
+        .photo-upload {
+            border: 3px dashed #009BA0;
+            border-radius: 12px;
+            padding: 2rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: #f8f9fa;
+        }
+
+        .photo-upload:hover {
+            background: #e8f5f5;
+            border-color: #007f84;
+        }
+
+        .photo-upload.dragging {
+            background: #d4f1f1;
+            border-color: #00b4a1;
+        }
+
+        .photo-upload input[type="file"] {
+            display: none;
+        }
+
+        .photo-upload-text {
+            color: #009BA0;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .photo-upload-hint {
+            color: #6c757d;
+            font-size: 0.85rem;
+        }
+
+        .photo-preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .photo-preview-item {
+            position: relative;
+            aspect-ratio: 1;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            cursor: grab;
+            transition: transform 0.2s ease;
+        }
+
+        .photo-preview-item:active {
+            cursor: grabbing;
+        }
+
+        .photo-preview-item:hover {
+            transform: scale(1.05);
+        }
+
+        .photo-preview-item .drag-handle {
+            position: absolute;
+            top: 5px;
+            left: 5px;
+            background: rgba(0, 0, 0, 0.6);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 16px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+        }
+
+        .photo-preview-item:hover .drag-handle {
+            opacity: 1;
+        }
+
+        .photo-preview-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .photo-preview-item .remove-photo {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: rgba(255, 107, 107, 0.95);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            font-size: 1.2rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+        }
+
+        .photo-preview-item .remove-photo:hover {
+            background: #ee5a5a;
+            transform: scale(1.1);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-group label {
+            color: #2c3e50;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            padding: 0.75rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.3s ease;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #009BA0;
+            box-shadow: 0 0 0 3px rgba(0, 155, 160, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .form-group small {
+            color: #6c757d;
+            font-size: 0.8rem;
+            margin-top: 0.25rem;
+        }
+
+        .generate-button {
+            width: 100%;
+            padding: 1.25rem;
+            background: linear-gradient(135deg, #FF8A80 0%, #ff6b6b 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .generate-button:hover:not(:disabled) {
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a5a 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(255, 138, 128, 0.3);
+        }
+
+        .generate-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .loading-spinner {
+            display: none;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top: 3px solid white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 1s linear infinite;
+        }
+
+        .generate-button.loading .loading-spinner {
+            display: inline-block;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .variants-container {
+            display: none;
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            margin-top: 2rem;
+        }
+
+        .variants-container.show {
+            display: block;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .variants-container h2 {
+            color: #2c3e50;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .variant-card {
+            background: #f8f9fa;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1rem;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .variant-card:hover {
+            border-color: #009BA0;
+            background: #fff;
+            transform: translateX(4px);
+        }
+
+        .variant-card.selected {
+            border-color: #009BA0;
+            background: #e8f5f5;
+            box-shadow: 0 4px 16px rgba(0, 155, 160, 0.2);
+        }
+
+        .variant-card .variant-label {
+            display: inline-block;
+            background: linear-gradient(135deg, #009BA0, #007f84);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            margin-bottom: 0.75rem;
+        }
+
+        .variant-card .variant-text {
+            color: #2c3e50;
+            line-height: 1.6;
+            font-size: 1rem;
+        }
+
+        /* Hashtag Selector Section */
+        .hashtag-section {
+            margin: 2rem 0;
+            padding: 2rem;
+            background: #f8f9fa;
+            border-radius: 12px;
+            border: 2px dashed #e0e0e0;
+        }
+
+        .hashtag-section h3 {
+            color: #2c3e50;
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .hashtag-hint {
+            color: #6c757d;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+
+        .hashtag-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .hashtag-chip {
+            padding: 0.5rem 1rem;
+            background: white;
+            border: 2px solid #e0e0e0;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            user-select: none;
+        }
+
+        .hashtag-chip:hover {
+            border-color: #009BA0;
+            transform: translateY(-2px);
+        }
+
+        .hashtag-chip.selected {
+            background: #009BA0;
+            color: white;
+            border-color: #009BA0;
+        }
+
+        .hashtag-chip.custom {
+            background: #FF8A80;
+            color: white;
+            border-color: #FF8A80;
+            position: relative;
+            padding-right: 2.5rem;
+        }
+
+        .hashtag-chip.custom .remove-custom {
+            position: absolute;
+            right: 0.5rem;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .custom-hashtag-input {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .custom-hashtag-input input {
+            flex: 1;
+            padding: 0.75rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .custom-hashtag-input input:focus {
+            outline: none;
+            border-color: #009BA0;
+        }
+
+        .custom-hashtag-input button {
+            padding: 0.75rem 1.5rem;
+            background: #009BA0;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .custom-hashtag-input button:hover {
+            background: #007f84;
+        }
+
+        .hashtag-preview {
+            padding: 1rem;
+            background: white;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            color: #6c757d;
+        }
+
+        .hashtag-preview strong {
+            color: #2c3e50;
+            margin-right: 0.5rem;
+        }
+
+        #selectedHashtagsPreview {
+            color: #009BA0;
+            font-weight: 500;
+        }
+
+        /* Agent Signature Section */
+        .agent-signature-section {
+            margin: 2rem 0;
+            padding: 2rem;
+            background: #e8f5f5;
+            border-radius: 12px;
+            border: 2px solid #009BA0;
+        }
+
+        .signature-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .signature-header h3 {
+            color: #2c3e50;
+            font-size: 1.25rem;
+            margin: 0;
+        }
+
+        .signature-toggle {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            font-size: 0.95rem;
+            color: #6c757d;
+        }
+
+        .signature-toggle input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .signature-preview {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            border-left: 4px solid #009BA0;
+        }
+
+        .signature-preview p {
+            margin: 0.5rem 0;
+            color: #2c3e50;
+        }
+
+        .signature-preview p:first-child {
+            color: #009BA0;
+            font-size: 1.05rem;
+            margin-bottom: 1rem;
+        }
+
+        .variant-card .char-count {
+            color: #6c757d;
+            font-size: 0.85rem;
+            margin-top: 0.75rem;
+            text-align: right;
+        }
+
+        .variant-card .selected-badge {
+            display: none;
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: #00b4a1;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+        }
+
+        .variant-card.selected .selected-badge {
+            display: block;
+        }
+
+        .action-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .action-buttons button {
+            padding: 1rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-schedule {
+            background: linear-gradient(135deg, #009BA0, #007f84);
+            color: white;
+        }
+
+        .btn-schedule:hover:not(:disabled) {
+            background: linear-gradient(135deg, #007f84, #006669);
+            transform: scale(1.02);
+        }
+
+        .btn-copy {
+            background: #f8f9fa;
+            color: #2c3e50;
+            border: 2px solid #e0e0e0;
+        }
+
+        .btn-copy:hover {
+            background: #e0e0e0;
+        }
+
+        .btn-copy.copied {
+            background: #00b4a1;
+            color: white;
+            border-color: #00b4a1;
+        }
+
+        .action-buttons button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .success-message {
+            display: none;
+            background: #d4edda;
+            border: 2px solid #00b4a1;
+            color: #155724;
+            padding: 1.5rem;
+            border-radius: 12px;
+            margin-top: 2rem;
+            text-align: center;
+        }
+
+        .success-message.show {
+            display: block;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .success-message h3 {
+            font-size: 1.25rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .success-message .buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+
+        .success-message button {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-view-calendar {
+            background: #009BA0;
+            color: white;
+        }
+
+        .btn-view-calendar:hover {
+            background: #007f84;
+        }
+
+        .btn-new-post {
+            background: #f8f9fa;
+            color: #2c3e50;
+            border: 2px solid #e0e0e0;
+        }
+
+        .btn-new-post:hover {
+            background: #e0e0e0;
+        }
+
+        /* Robot Loader Animation */
+        .robot-loader {
+            background: white;
+            border-radius: 16px;
+            padding: 3rem;
+            margin-top: 2rem;
+            text-align: center;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .robot-animation {
+            font-size: 4rem;
+            animation: spin 2s linear infinite;
+            margin-bottom: 1.5rem;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .robot-loader h3 {
+            color: #009BA0;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .robot-loader p {
+            color: #6c757d;
+            font-size: 1rem;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Edit Mode Styles */
+        .variant-card.editing {
+            background: #f8f9fa;
+            border-color: #009BA0;
+        }
+
+        .variant-text-editable {
+            padding: 1rem;
+            border: 2px solid #009BA0;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            width: 100%;
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .edit-actions {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .edit-actions button {
+            flex: 1;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-save-edit {
+            background: #00b4a1;
+            color: white;
+        }
+
+        .btn-save-edit:hover {
+            background: #009BA0;
+        }
+
+        .btn-cancel-edit {
+            background: #f8f9fa;
+            color: #6c757d;
+            border: 2px solid #e0e0e0;
+        }
+
+        .btn-cancel-edit:hover {
+            background: #e0e0e0;
+        }
+
+        .btn-edit {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            padding: 0.4rem 0.8rem;
+            background: rgba(0, 155, 160, 0.1);
+            color: #009BA0;
+            border: 1px solid #009BA0;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            opacity: 0;
+        }
+
+        .variant-card:hover .btn-edit {
+            opacity: 1;
+        }
+
+        .btn-edit:hover {
+            background: #009BA0;
+            color: white;
+        }
+
+        /* Scheduling Modal */
+        .schedule-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .schedule-modal-content {
+            background: white;
+            border-radius: 16px;
+            padding: 2.5rem;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .schedule-modal-content h3 {
+            color: #2c3e50;
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .schedule-modal-content > p {
+            color: #6c757d;
+            margin-bottom: 2rem;
+        }
+
+        .schedule-form {
+            margin-bottom: 2rem;
+        }
+
+        .schedule-form label {
+            display: block;
+            color: #2c3e50;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .schedule-form input[type="datetime-local"] {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-family: inherit;
+            transition: all 0.2s;
+        }
+
+        .schedule-form input[type="datetime-local"]:focus {
+            outline: none;
+            border-color: #009BA0;
+            box-shadow: 0 0 0 3px rgba(0, 155, 160, 0.1);
+        }
+
+        .schedule-form small {
+            display: block;
+            color: #999;
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+        }
+
+        .schedule-actions {
+            display: flex;
+            gap: 0.75rem;
+            flex-direction: column;
+        }
+
+        .schedule-actions button {
+            padding: 1rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .btn-schedule-now {
+            background: linear-gradient(135deg, #009BA0, #007f84);
+            color: white;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-schedule-now:hover:not(:disabled) {
+            background: linear-gradient(135deg, #007f84, #006669);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 155, 160, 0.3);
+        }
+
+        .btn-schedule-now:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-schedule-now.loading .button-text {
+            opacity: 0;
+        }
+
+        .btn-schedule-now .button-spinner {
+            display: none;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 0.8s linear infinite;
+            position: absolute;
+        }
+
+        .btn-schedule-now.loading .button-spinner {
+            display: block;
+        }
+
+        .btn-save-draft {
+            background: #f8f9fa;
+            color: #2c3e50;
+            border: 2px solid #e0e0e0;
+        }
+
+        .btn-save-draft:hover {
+            background: #e0e0e0;
+        }
+
+        .btn-cancel-schedule {
+            background: transparent;
+            color: #6c757d;
+            border: none;
+            padding: 0.75rem;
+        }
+
+        .btn-cancel-schedule:hover {
+            background: #f8f9fa;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .action-buttons {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/static/dashboard.html" class="back-button">← Back to Dashboard</a>
+
+        <header>
+            <img src="/static/doorstep-logo.png" alt="Doorstep Logo">
+            <h1>Quick Social Post</h1>
+            <p class="subtitle">Create a social media post in under a minute</p>
+        </header>
+
+        <div class="quick-form">
+            <form id="quickPostForm">
+                <!-- Step 1: Photos -->
+                <div class="form-section">
+                    <h3><span class="step-number">1</span> Upload Photos (1-3)</h3>
+                    <div class="photo-upload" id="photoUpload">
+                        <input type="file" id="photoInput" accept="image/*" multiple>
+                        <div class="photo-upload-text">📸 Click or drag photos here</div>
+                        <div class="photo-upload-hint">Maximum 3 photos • JPG, PNG</div>
+                    </div>
+                    <div class="photo-preview" id="photoPreview"></div>
+                </div>
+
+                <!-- Step 2: Basic Details -->
+                <div class="form-section">
+                    <h3><span class="step-number">2</span> Basic Details</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label for="address">Property Address *</label>
+                            <input type="text" id="address" required placeholder="e.g., 123 High Street">
+                        </div>
+                        <div class="form-group">
+                            <label for="price">Price *</label>
+                            <input type="text" id="price" required placeholder="e.g., £750,000">
+                        </div>
+                        <div class="form-group">
+                            <label for="bedrooms">Bedrooms</label>
+                            <input type="number" id="bedrooms" min="0" placeholder="e.g., 3">
+                        </div>
+                        <div class="form-group">
+                            <label for="bathrooms">Bathrooms</label>
+                            <input type="number" id="bathrooms" min="0" placeholder="e.g., 2">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 3: Highlights (Optional) -->
+                <div class="form-section">
+                    <h3><span class="step-number">3</span> Key Highlights (Optional)</h3>
+                    <div class="form-group">
+                        <label for="highlights">What makes this property special?</label>
+                        <textarea id="highlights" placeholder="e.g., Garden, Parking, Recently renovated, Walking distance to station..."></textarea>
+                        <small>Add a few key selling points to make the caption more compelling</small>
+                    </div>
+                </div>
+
+                <!-- Step 4: Platform -->
+                <div class="form-section">
+                    <h3><span class="step-number">4</span> Social Platform</h3>
+                    <div class="form-group">
+                        <label for="platform">Where will you post this?</label>
+                        <select id="platform" required>
+                            <option value="instagram">Instagram</option>
+                            <option value="facebook">Facebook</option>
+                            <option value="linkedin">LinkedIn</option>
+                            <option value="twitter">Twitter/X</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Agent Signature Option -->
+                <div class="form-group" style="margin-top: 1.5rem;">
+                    <label style="display: flex; align-items: center; gap: 0.75rem; cursor: pointer; font-size: 0.95rem;">
+                        <input type="checkbox" id="includeAgentSignature" checked style="width: 18px; height: 18px; cursor: pointer;">
+                        <span>Include agent signature in posts</span>
+                    </label>
+                    <small style="display: block; margin-left: 2rem; margin-top: 0.5rem; color: #6c757d;">
+                        Automatically adds your contact info to the end of each post
+                    </small>
+                </div>
+
+                <button type="submit" class="generate-button" id="generateButton">
+                    <span class="button-text">✨ Generate Captions</span>
+                    <div class="loading-spinner"></div>
+                </button>
+            </form>
+        </div>
+
+        <!-- Loading Robot Animation -->
+        <div class="robot-loader" id="robotLoader" style="display: none;">
+            <div class="robot-animation">🤖</div>
+            <h3>AI is crafting your captions...</h3>
+            <p>Analyzing photos and generating engaging content</p>
+        </div>
+
+        <!-- Variants Section -->
+        <div class="variants-container" id="variantsContainer">
+            <h2>Choose Your Caption</h2>
+            <div id="variantsContent"></div>
+
+            <!-- Hashtag Selector Section -->
+            <div class="hashtag-section" id="hashtagSection" style="display: none;">
+                <h3>Select Hashtags</h3>
+                <p class="hashtag-hint">Click to select/deselect recommended hashtags</p>
+                <div class="hashtag-chips" id="hashtagChips"></div>
+                <div class="custom-hashtag-input">
+                    <input type="text" id="customHashtagInput" placeholder="Add custom hashtag (e.g., #YourTag)">
+                    <button type="button" id="addCustomHashtagBtn">+ Add</button>
+                </div>
+                <div class="hashtag-preview">
+                    <strong>Selected:</strong> <span id="selectedHashtagsPreview">None selected</span>
+                </div>
+            </div>
+
+            <!-- Agent Signature Section -->
+            <div class="agent-signature-section" id="agentSignatureSection" style="display: none;">
+                <div class="signature-header">
+                    <h3>Agent Signature</h3>
+                    <label class="signature-toggle">
+                        <input type="checkbox" id="includeSignatureCheckbox" checked>
+                        <span>Include signature in post</span>
+                    </label>
+                </div>
+                <div class="signature-preview" id="signaturePreview">
+                    <p><strong>📞 Contact us today to arrange a viewing!</strong></p>
+                    <p id="agentNameDisplay">Agent Name</p>
+                    <p id="agentPhoneDisplay">📱 Phone</p>
+                    <p id="agentEmailDisplay">✉️ Email</p>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <button class="btn-schedule" id="scheduleButton" disabled>
+                    📅 Schedule Post
+                </button>
+                <button class="btn-copy" id="copyButton" disabled>
+                    📋 Copy to Clipboard
+                </button>
+            </div>
+        </div>
+
+        <!-- Scheduling Modal -->
+        <div class="schedule-modal" id="scheduleModal" style="display: none;">
+            <div class="schedule-modal-content">
+                <h3>📅 Schedule Your Post</h3>
+                <p>Choose when to publish this post, or save as draft</p>
+
+                <div class="schedule-form">
+                    <label for="scheduleDateTime">Schedule Date & Time:</label>
+                    <input type="datetime-local" id="scheduleDateTime" />
+                    <small>Leave empty to save as draft</small>
+                </div>
+
+                <div class="schedule-actions">
+                    <button class="btn-schedule-now" id="scheduleNowButton">
+                        <span class="button-text">🚀 Schedule Post</span>
+                        <div class="button-spinner"></div>
+                    </button>
+                    <button class="btn-save-draft" id="saveDraftButton">
+                        📝 Save as Draft
+                    </button>
+                    <button class="btn-cancel-schedule" id="cancelScheduleButton">
+                        ✕ Cancel
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Success Message -->
+        <div class="success-message" id="successMessage">
+            <h3>🎉 Post Saved Successfully!</h3>
+            <p id="successMessageText">Your social media post has been added to your calendar</p>
+            <div class="buttons">
+                <button class="btn-view-calendar" onclick="window.location.href='/static/social_media_calendar.html'">
+                    View Calendar
+                </button>
+                <button class="btn-new-post" onclick="location.reload()">
+                    Create Another Post
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Photo upload handling
+        const photoUpload = document.getElementById('photoUpload');
+        const photoInput = document.getElementById('photoInput');
+        const photoPreview = document.getElementById('photoPreview');
+        let uploadedPhotos = [];
+
+        photoUpload.addEventListener('click', () => photoInput.click());
+
+        photoUpload.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            photoUpload.classList.add('dragging');
+        });
+
+        photoUpload.addEventListener('dragleave', () => {
+            photoUpload.classList.remove('dragging');
+        });
+
+        photoUpload.addEventListener('drop', (e) => {
+            e.preventDefault();
+            photoUpload.classList.remove('dragging');
+            handleFiles(e.dataTransfer.files);
+        });
+
+        photoInput.addEventListener('change', (e) => {
+            handleFiles(e.target.files);
+        });
+
+        function handleFiles(files) {
+            const newFiles = Array.from(files).slice(0, 3 - uploadedPhotos.length);
+
+            newFiles.forEach(file => {
+                if (file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        uploadedPhotos.push({
+                            file: file,
+                            dataUrl: e.target.result
+                        });
+                        renderPhotoPreview();
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
+        function renderPhotoPreview() {
+            photoPreview.innerHTML = uploadedPhotos.map((photo, index) => `
+                <div class="photo-preview-item" data-index="${index}">
+                    <img src="${photo.dataUrl}" alt="Photo ${index + 1}">
+                    <button type="button" class="remove-photo" onclick="removePhoto(${index})">×</button>
+                    <div class="drag-handle">⋮⋮</div>
+                </div>
+            `).join('');
+
+            // Initialize Sortable for drag & drop reordering
+            if (typeof Sortable !== 'undefined' && uploadedPhotos.length > 1) {
+                new Sortable(photoPreview, {
+                    animation: 150,
+                    handle: '.photo-preview-item',
+                    onEnd: function(evt) {
+                        // Reorder array based on new positions
+                        const item = uploadedPhotos.splice(evt.oldIndex, 1)[0];
+                        uploadedPhotos.splice(evt.newIndex, 0, item);
+                        console.log('Photos reordered:', uploadedPhotos.map((p, i) => `${i + 1}`).join(', '));
+                    }
+                });
+            }
+
+            // Update upload text
+            if (uploadedPhotos.length >= 3) {
+                photoUpload.style.display = 'none';
+            } else {
+                photoUpload.style.display = 'block';
+            }
+        }
+
+        function removePhoto(index) {
+            uploadedPhotos.splice(index, 1);
+            renderPhotoPreview();
+        }
+
+        // Form submission
+        const form = document.getElementById('quickPostForm');
+        const generateButton = document.getElementById('generateButton');
+        const variantsContainer = document.getElementById('variantsContainer');
+        const variantsContent = document.getElementById('variantsContent');
+        const scheduleButton = document.getElementById('scheduleButton');
+        const copyButton = document.getElementById('copyButton');
+        const successMessage = document.getElementById('successMessage');
+
+        let selectedVariant = null;
+        let generatedVariants = [];
+        let recommendedHashtags = [];
+        let selectedHashtags = [];
+        let customHashtags = [];
+
+        const robotLoader = document.getElementById('robotLoader');
+        const hashtagSection = document.getElementById('hashtagSection');
+        const hashtagChips = document.getElementById('hashtagChips');
+        const selectedHashtagsPreview = document.getElementById('selectedHashtagsPreview');
+        const customHashtagInput = document.getElementById('customHashtagInput');
+        const addCustomHashtagBtn = document.getElementById('addCustomHashtagBtn');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            if (uploadedPhotos.length === 0) {
+                alert('Please upload at least one photo');
+                return;
+            }
+
+            // Show robot loader
+            generateButton.disabled = true;
+            generateButton.classList.add('loading');
+            generateButton.querySelector('.button-text').textContent = 'Generating...';
+            robotLoader.style.display = 'block';
+            robotLoader.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+            // Collect form data
+            const formData = {
+                address: document.getElementById('address').value,
+                price: document.getElementById('price').value,
+                bedrooms: document.getElementById('bedrooms').value || null,
+                bathrooms: document.getElementById('bathrooms').value || null,
+                highlights: document.getElementById('highlights').value,
+                platform: document.getElementById('platform').value,
+                photos: uploadedPhotos.map(p => p.dataUrl)
+            };
+
+            try {
+                // Call backend API
+                const response = await fetch('/api/quick-social-post', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to generate captions');
+                }
+
+                const data = await response.json();
+                console.log('📊 API Response:', data);
+                console.log(`📝 Received ${data.variants?.length || 0} variants`);
+                generatedVariants = data.variants;
+
+                // Extract hashtags - try multiple sources
+                let hashtags = [];
+
+                // First try: top-level hashtags from response
+                if (data.hashtags && Array.isArray(data.hashtags) && data.hashtags.length > 0) {
+                    hashtags = data.hashtags;
+                }
+                // Second try: hashtags from first variant
+                else if (data.variants && data.variants[0] && data.variants[0].hashtags && data.variants[0].hashtags.length > 0) {
+                    hashtags = data.variants[0].hashtags;
+                }
+                // Fallback: generate basic hashtags from form data
+                else {
+                    hashtags = generateDefaultHashtags();
+                }
+
+                recommendedHashtags = hashtags;
+                selectedHashtags = []; // Reset selected
+                customHashtags = []; // Reset custom
+                displayHashtags();
+
+                // Hide robot loader
+                robotLoader.style.display = 'none';
+
+                // Display variants
+                displayVariants(generatedVariants);
+
+            } catch (error) {
+                console.error('Error generating captions:', error);
+                alert('Failed to generate captions. Please try again.');
+                robotLoader.style.display = 'none';
+            } finally {
+                // Reset button
+                generateButton.disabled = false;
+                generateButton.classList.remove('loading');
+                generateButton.querySelector('.button-text').textContent = '✨ Generate Captions';
+            }
+        });
+
+        function displayVariants(variants) {
+            // Define style names for each variant
+            const styleNames = [
+                '🎯 Premium Lifestyle',
+                '📋 Feature Highlights',
+                '⚡ Punchy & Engaging',
+                '💼 Professional Sales',
+                '📖 Story-Driven'
+            ];
+
+            variantsContent.innerHTML = variants.map((variant, index) => {
+                const charCount = variant.text.length;
+                const styleName = styleNames[index] || `Option ${index + 1}`;
+
+                return `
+                <div class="variant-card" data-index="${index}">
+                    <button class="btn-edit" onclick="event.stopPropagation(); editVariant(${index})">✏️ Edit</button>
+                    <div class="variant-label">${styleName}</div>
+                    <div class="variant-text" id="variant-text-${index}">${variant.text}</div>
+                    <div class="char-count" id="char-count-${index}">${charCount} characters</div>
+                    <div class="selected-badge">✓ Selected</div>
+                </div>
+            `;
+            }).join('');
+
+            // Add click handlers to variant cards
+            document.querySelectorAll('.variant-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    // Don't select if editing
+                    if (card.classList.contains('editing')) return;
+
+                    document.querySelectorAll('.variant-card').forEach(c => c.classList.remove('selected'));
+                    card.classList.add('selected');
+                    selectedVariant = parseInt(card.dataset.index);
+                    scheduleButton.disabled = false;
+                    copyButton.disabled = false;
+                });
+            });
+
+            // Show variants container
+            variantsContainer.classList.add('show');
+            variantsContainer.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+            // Load and show agent signature section if checkbox is checked
+            const includeAgentSignature = document.getElementById('includeAgentSignature');
+            if (includeAgentSignature && includeAgentSignature.checked) {
+                loadAgentSignature();
+            }
+        }
+
+        // Edit variant functionality
+        window.editVariant = function(index) {
+            const card = document.querySelector(`.variant-card[data-index="${index}"]`);
+            const textDiv = document.getElementById(`variant-text-${index}`);
+            const charCountDiv = document.getElementById(`char-count-${index}`);
+            const currentText = generatedVariants[index].text;
+
+            // Mark as editing
+            card.classList.add('editing');
+
+            // Replace text with textarea
+            textDiv.innerHTML = `
+                <textarea class="variant-text-editable" id="edit-textarea-${index}">${currentText}</textarea>
+                <div class="edit-actions">
+                    <button class="btn-save-edit" onclick="saveVariantEdit(${index})">💾 Save</button>
+                    <button class="btn-cancel-edit" onclick="cancelVariantEdit(${index})">✕ Cancel</button>
+                </div>
+            `;
+
+            // Update character count on input
+            const textarea = document.getElementById(`edit-textarea-${index}`);
+            textarea.addEventListener('input', () => {
+                charCountDiv.textContent = `${textarea.value.length} characters`;
+            });
+
+            // Focus textarea
+            textarea.focus();
+            textarea.setSelectionRange(textarea.value.length, textarea.value.length);
+        };
+
+        window.saveVariantEdit = function(index) {
+            const textarea = document.getElementById(`edit-textarea-${index}`);
+            const newText = textarea.value.trim();
+
+            if (!newText) {
+                alert('Caption cannot be empty');
+                return;
+            }
+
+            // Update the variant data
+            generatedVariants[index].text = newText;
+
+            // Restore the card display
+            const card = document.querySelector(`.variant-card[data-index="${index}"]`);
+            const textDiv = document.getElementById(`variant-text-${index}`);
+            const charCountDiv = document.getElementById(`char-count-${index}`);
+
+            card.classList.remove('editing');
+            textDiv.innerHTML = newText;
+            charCountDiv.textContent = `${newText.length} characters`;
+
+            console.log(`✅ Variant ${index + 1} updated`);
+        };
+
+        window.cancelVariantEdit = function(index) {
+            const card = document.querySelector(`.variant-card[data-index="${index}"]`);
+            const textDiv = document.getElementById(`variant-text-${index}`);
+            const originalText = generatedVariants[index].text;
+
+            card.classList.remove('editing');
+            textDiv.innerHTML = originalText;
+
+            console.log(`✕ Edit cancelled for variant ${index + 1}`);
+        };
+
+        // Load and display agent signature
+        function loadAgentSignature() {
+            const agentSignatureSection = document.getElementById('agentSignatureSection');
+            const agentNameDisplay = document.getElementById('agentNameDisplay');
+            const agentPhoneDisplay = document.getElementById('agentPhoneDisplay');
+            const agentEmailDisplay = document.getElementById('agentEmailDisplay');
+
+            // Get agent data from localStorage
+            const userName = localStorage.getItem('userName') || 'Agent Name';
+            const userEmail = localStorage.getItem('userEmail') || '';
+
+            // Note: Phone number is not currently stored in the auth system
+            // For now, we'll use a placeholder. In the future, this could be added to user profile
+            const userPhone = localStorage.getItem('userPhone') || '';
+
+            // Populate the signature fields
+            agentNameDisplay.textContent = userName;
+
+            if (userPhone) {
+                agentPhoneDisplay.textContent = `📱 ${userPhone}`;
+            } else {
+                agentPhoneDisplay.textContent = '📱 [Add phone in profile]';
+            }
+
+            if (userEmail) {
+                agentEmailDisplay.textContent = `✉️ ${userEmail}`;
+            } else {
+                agentEmailDisplay.textContent = '✉️ [Add email in profile]';
+            }
+
+            // Show the signature section
+            agentSignatureSection.style.display = 'block';
+
+            console.log('✅ Agent signature loaded:', userName);
+        }
+
+        // Generate default hashtags from form data
+        function generateDefaultHashtags() {
+            const platform = document.getElementById('platform').value;
+            const bedrooms = document.getElementById('bedrooms').value;
+            const price = document.getElementById('price').value;
+
+            const hashtags = [];
+
+            // Platform-specific
+            hashtags.push(`#${platform.charAt(0).toUpperCase() + platform.slice(1)}RealEstate`);
+
+            // Property type based on bedrooms
+            if (bedrooms) {
+                if (bedrooms === '1') hashtags.push('#Studio', '#Apartment');
+                else if (bedrooms === '2') hashtags.push('#TwoBed', '#Apartment');
+                else if (bedrooms === '3') hashtags.push('#ThreeBed', '#FamilyHome');
+                else if (bedrooms >= '4') hashtags.push('#LuxuryHome', '#FamilyHome');
+            }
+
+            // Generic tags
+            hashtags.push('#Property', '#ForSale', '#RealEstate', '#DreamHome', '#Investment');
+
+            // Price-based
+            if (price && price.toLowerCase().includes('aed')) {
+                hashtags.push('#Dubai', '#UAEProperty');
+            }
+
+            return hashtags.slice(0, 8); // Limit to 8
+        }
+
+        // Hashtag management
+        function displayHashtags() {
+            if (recommendedHashtags.length === 0) {
+                hashtagSection.style.display = 'none';
+                return;
+            }
+
+            // Show hashtag section
+            hashtagSection.style.display = 'block';
+
+            // Render hashtag chips
+            hashtagChips.innerHTML = '';
+
+            // Add recommended hashtags
+            recommendedHashtags.forEach(hashtag => {
+                const chip = document.createElement('div');
+                chip.className = 'hashtag-chip';
+                if (selectedHashtags.includes(hashtag)) {
+                    chip.classList.add('selected');
+                }
+                chip.textContent = hashtag;
+                chip.addEventListener('click', () => toggleHashtag(hashtag));
+                hashtagChips.appendChild(chip);
+            });
+
+            // Add custom hashtags
+            customHashtags.forEach(hashtag => {
+                const chip = document.createElement('div');
+                chip.className = 'hashtag-chip custom selected';
+                chip.innerHTML = `${hashtag} <span class="remove-custom" data-hashtag="${hashtag}">×</span>`;
+
+                // Add click handler for the remove button
+                const removeBtn = chip.querySelector('.remove-custom');
+                removeBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    removeCustomHashtag(hashtag);
+                });
+
+                hashtagChips.appendChild(chip);
+            });
+
+            // Update preview
+            updateHashtagPreview();
+
+            // Scroll to hashtag section
+            hashtagSection.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function toggleHashtag(hashtag) {
+            const index = selectedHashtags.indexOf(hashtag);
+            if (index === -1) {
+                selectedHashtags.push(hashtag);
+            } else {
+                selectedHashtags.splice(index, 1);
+            }
+            displayHashtags();
+        }
+
+        function addCustomHashtag() {
+            let value = customHashtagInput.value.trim();
+
+            if (!value) return;
+
+            // Ensure hashtag starts with #
+            if (!value.startsWith('#')) {
+                value = '#' + value;
+            }
+
+            // Check if already exists
+            if (customHashtags.includes(value) || recommendedHashtags.includes(value)) {
+                alert('This hashtag already exists');
+                return;
+            }
+
+            // Add to custom hashtags
+            customHashtags.push(value);
+            customHashtagInput.value = '';
+            displayHashtags();
+        }
+
+        function removeCustomHashtag(hashtag) {
+            const index = customHashtags.indexOf(hashtag);
+            if (index !== -1) {
+                customHashtags.splice(index, 1);
+                displayHashtags();
+            }
+        }
+
+        function updateHashtagPreview() {
+            const allSelected = [...selectedHashtags, ...customHashtags];
+            if (allSelected.length === 0) {
+                selectedHashtagsPreview.textContent = 'None selected';
+            } else {
+                selectedHashtagsPreview.textContent = allSelected.join(' ');
+            }
+        }
+
+        function getFullPostText() {
+            if (selectedVariant === null) return '';
+
+            const caption = generatedVariants[selectedVariant].text;
+            const allHashtags = [...selectedHashtags, ...customHashtags];
+
+            let fullText = caption;
+
+            // Add hashtags if any
+            if (allHashtags.length > 0) {
+                fullText += `\n\n${allHashtags.join(' ')}`;
+            }
+
+            // Add agent signature if checkbox is checked
+            const includeAgentSignature = document.getElementById('includeAgentSignature');
+            if (includeAgentSignature && includeAgentSignature.checked) {
+                const agentName = localStorage.getItem('userName') || '';
+                const agentEmail = localStorage.getItem('userEmail') || '';
+                const agentPhone = localStorage.getItem('userPhone') || '';
+
+                if (agentName) {
+                    fullText += `\n\n📞 Contact us today to arrange a viewing!\n${agentName}`;
+                    if (agentPhone) {
+                        fullText += `\n📱 ${agentPhone}`;
+                    }
+                    if (agentEmail) {
+                        fullText += `\n✉️ ${agentEmail}`;
+                    }
+                }
+            }
+
+            return fullText;
+        }
+
+        // Add custom hashtag button handler
+        addCustomHashtagBtn.addEventListener('click', addCustomHashtag);
+
+        // Agent signature checkbox handler
+        const includeAgentSignature = document.getElementById('includeAgentSignature');
+        if (includeAgentSignature) {
+            includeAgentSignature.addEventListener('change', (e) => {
+                const agentSignatureSection = document.getElementById('agentSignatureSection');
+                if (e.target.checked) {
+                    loadAgentSignature();
+                } else {
+                    // Hide agent signature section
+                    agentSignatureSection.style.display = 'none';
+                }
+            });
+        }
+
+        // Add enter key handler for custom hashtag input
+        customHashtagInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                addCustomHashtag();
+            }
+        });
+
+        // Copy to clipboard
+        copyButton.addEventListener('click', async () => {
+            if (selectedVariant === null) return;
+
+            const text = getFullPostText();
+
+            try {
+                await navigator.clipboard.writeText(text);
+                copyButton.textContent = '✓ Copied!';
+                copyButton.classList.add('copied');
+
+                setTimeout(() => {
+                    copyButton.textContent = '📋 Copy to Clipboard';
+                    copyButton.classList.remove('copied');
+                }, 2000);
+            } catch (error) {
+                console.error('Failed to copy:', error);
+                alert('Failed to copy to clipboard');
+            }
+        });
+
+        // Schedule post - open modal
+        const scheduleModal = document.getElementById('scheduleModal');
+        const scheduleDateTime = document.getElementById('scheduleDateTime');
+        const scheduleNowButton = document.getElementById('scheduleNowButton');
+        const saveDraftButton = document.getElementById('saveDraftButton');
+        const cancelScheduleButton = document.getElementById('cancelScheduleButton');
+        const successMessageText = document.getElementById('successMessageText');
+
+        scheduleButton.addEventListener('click', () => {
+            if (selectedVariant === null) return;
+
+            // Set minimum datetime to now
+            const now = new Date();
+            now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+            scheduleDateTime.min = now.toISOString().slice(0, 16);
+
+            // Show modal
+            scheduleModal.style.display = 'flex';
+        });
+
+        // Schedule with date/time
+        scheduleNowButton.addEventListener('click', () => {
+            const scheduledTime = scheduleDateTime.value;
+
+            if (!scheduledTime) {
+                alert('Please select a date and time to schedule your post');
+                return;
+            }
+
+            // Show loading state
+            scheduleNowButton.classList.add('loading');
+            scheduleNowButton.disabled = true;
+
+            // Simulate small delay for visual feedback
+            setTimeout(() => {
+                savePost('scheduled', scheduledTime);
+                scheduleNowButton.classList.remove('loading');
+                scheduleNowButton.disabled = false;
+            }, 500);
+        });
+
+        // Save as draft
+        saveDraftButton.addEventListener('click', () => {
+            savePost('draft', null);
+        });
+
+        // Cancel scheduling
+        cancelScheduleButton.addEventListener('click', () => {
+            scheduleModal.style.display = 'none';
+            scheduleDateTime.value = '';
+        });
+
+        // Save post function
+        function savePost(status, scheduledTime) {
+            const selectedVar = generatedVariants[selectedVariant];
+
+            // Get full post text with selected hashtags
+            const fullCaption = getFullPostText();
+            const allHashtags = [...selectedHashtags, ...customHashtags];
+
+            const post = {
+                id: Date.now().toString(),
+                caption: fullCaption,  // Include selected hashtags in the caption
+                platform: document.getElementById('platform').value,
+                platforms: [document.getElementById('platform').value],
+                propertyAddress: document.getElementById('address').value,
+                price: document.getElementById('price').value,
+                images: uploadedPhotos.map(p => p.dataUrl),
+                status: status,
+                scheduledTime: scheduledTime ? new Date(scheduledTime).toISOString() : null,
+                createdAt: new Date().toISOString(),
+                createdBy: localStorage.getItem('userName') || 'Agent',
+                hashtags: allHashtags,  // Keep selected hashtags separate for display
+                agentContact: null
+            };
+
+            // Save to localStorage
+            const posts = JSON.parse(localStorage.getItem('socialMediaPosts') || '[]');
+            posts.push(post);
+            localStorage.setItem('socialMediaPosts', JSON.stringify(posts));
+
+            // Hide modal and variants
+            scheduleModal.style.display = 'none';
+            variantsContainer.style.display = 'none';
+
+            // Update success message
+            if (status === 'scheduled') {
+                const schedDate = new Date(scheduledTime);
+                successMessageText.textContent = `Your post has been scheduled for ${schedDate.toLocaleString()}`;
+            } else {
+                successMessageText.textContent = 'Your post has been saved as a draft in your calendar';
+            }
+
+            // Show success message
+            successMessage.classList.add('show');
+            successMessage.scrollIntoView({ behavior: 'smooth' });
+
+            console.log(`✅ Post saved as ${status}:`, post);
+        }
+
+        console.log('✅ Quick Post form loaded');
+    </script>
+</body>
+</html>

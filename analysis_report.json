@@ -1,0 +1,457 @@
+{
+  "generated": "2026-01-15T10:29:04.714483",
+  "codebase": {
+    "total_lines": 20325,
+    "files_analyzed": 26,
+    "files": [
+      {
+        "file": "element_drag.js",
+        "lines": 972,
+        "functions": 36,
+        "exports": [
+          "showToast",
+          "ElementDrag"
+        ],
+        "features": [
+          "drag-drop",
+          "zoom",
+          "layers",
+          "alignment",
+          "undo-redo"
+        ]
+      },
+      {
+        "file": "layer_system.js",
+        "lines": 622,
+        "functions": 16,
+        "exports": [
+          "showToast",
+          "LayerSystem",
+          "renderLayerPanel",
+          "updateLayerSelection"
+        ],
+        "features": [
+          "drag-drop",
+          "layers"
+        ]
+      },
+      {
+        "file": "text_effects.js",
+        "lines": 553,
+        "functions": 21,
+        "exports": [
+          "TextEffects"
+        ],
+        "features": [
+          "shadows",
+          "gradients",
+          "alignment"
+        ]
+      },
+      {
+        "file": "elements_library.js",
+        "lines": 687,
+        "functions": 22,
+        "exports": [
+          "showToast",
+          "ElementsLibrary",
+          "showElementProperties",
+          "hideElementProperties"
+        ],
+        "features": [
+          "drag-drop",
+          "zoom",
+          "copy-paste"
+        ]
+      },
+      {
+        "file": "elements_library_v2.js",
+        "lines": 823,
+        "functions": 8,
+        "exports": [
+          "SHAPES_LIBRARY",
+          "ICONS_LIBRARY",
+          "getShapesByCategory",
+          "getIconsByCategory",
+          "createShapeElement",
+          "createIconElement",
+          "renderElementsPanel",
+          "addElementToCanvas"
+        ],
+        "features": [
+          "drag-drop"
+        ]
+      },
+      {
+        "file": "alignment_system.js",
+        "lines": 566,
+        "functions": 12,
+        "exports": [
+          "showToast",
+          "AlignmentSystem",
+          "showSmartGuides",
+          "hideSmartGuides"
+        ],
+        "features": [
+          "drag-drop",
+          "zoom",
+          "alignment",
+          "undo-redo"
+        ]
+      },
+      {
+        "file": "image_editor.js",
+        "lines": 1553,
+        "functions": 42,
+        "exports": [
+          "initializeImageEditor",
+          "autoAssignPhotosToPages",
+          "selectImage",
+          "deselectImage",
+          "setCornerRadius",
+          "setImageFit",
+          "setImagePosition",
+          "replaceImage",
+          "removeImage",
+          "setImageAdjustment",
+          "resetImageAdjustments",
+          "setImageRotation",
+          "toggleFlip",
+          "applyFilterPreset",
+          "setCropRatio",
+          "toggleCropMode",
+          "applyCrop",
+          "cancelCrop",
+          "resetCrop",
+          "setImageZoom",
+          "resetImageZoom",
+          "removeImageBackground",
+          "restoreOriginalBackground"
+        ],
+        "features": [
+          "drag-drop",
+          "zoom",
+          "alignment",
+          "undo-redo"
+        ]
+      },
+      {
+        "file": "qrcode_generator.js",
+        "lines": 344,
+        "functions": 6,
+        "exports": [
+          "QRCodeGenerator",
+          "generateQRCode"
+        ],
+        "features": [
+          "drag-drop",
+          "shadows",
+          "alignment"
+        ]
+      },
+      {
+        "file": "prebuilt_sections.js",
+        "lines": 446,
+        "functions": 12,
+        "exports": [
+          "PrebuiltSections"
+        ],
+        "features": [
+          "drag-drop",
+          "templates",
+          "layers"
+        ]
+      },
+      {
+        "file": "visual_effects.js",
+        "lines": 647,
+        "functions": 15,
+        "exports": [
+          "VisualEffects"
+        ],
+        "features": [
+          "shadows",
+          "gradients"
+        ]
+      },
+      {
+        "file": "brochure_templates.js",
+        "lines": 1150,
+        "functions": 9,
+        "exports": [
+          "BrochureTemplates",
+          "applyTemplate",
+          "applyTemplateToAll",
+          "getAvailableTemplates",
+          "getTemplateById"
+        ],
+        "features": [
+          "shadows",
+          "gradients",
+          "templates"
+        ]
+      },
+      {
+        "file": "template_picker.js",
+        "lines": 253,
+        "functions": 10,
+        "exports": [
+          "applyTemplate",
+          "applyTemplate",
+          "showToast",
+          "TemplatePicker"
+        ],
+        "features": [
+          "templates"
+        ]
+      },
+      {
+        "file": "context_menu.js",
+        "lines": 340,
+        "functions": 11,
+        "exports": [
+          "showToast",
+          "ContextMenu"
+        ],
+        "features": [
+          "layers",
+          "copy-paste",
+          "context-menu"
+        ]
+      },
+      {
+        "file": "zoom_controls.js",
+        "lines": 289,
+        "functions": 13,
+        "exports": [
+          "ZoomControls"
+        ],
+        "features": [
+          "zoom"
+        ]
+      },
+      {
+        "file": "brochure_editor_v3.js",
+        "lines": 4240,
+        "functions": 82,
+        "exports": [
+          "EditorState",
+          "UnifiedBrochureState"
+        ],
+        "features": [
+          "drag-drop",
+          "zoom",
+          "shadows",
+          "gradients",
+          "templates",
+          "layers",
+          "alignment",
+          "undo-redo",
+          "copy-paste"
+        ]
+      },
+      {
+        "file": "design_elements_extended.js",
+        "lines": 807,
+        "functions": 16,
+        "exports": [
+          "FRAMES_LIBRARY",
+          "GRIDS_LIBRARY",
+          "STOCK_PHOTO_CATEGORIES",
+          "CURATED_PHOTOS",
+          "CHARTS_LIBRARY",
+          "ILLUSTRATIONS_LIBRARY",
+          "renderFramesPanel",
+          "renderGridsPanel",
+          "renderStockPhotosPanel",
+          "renderIllustrationsPanel",
+          "addFrameToCanvas",
+          "addGridToCanvas",
+          "addPhotoToCanvas",
+          "addIllustrationToCanvas"
+        ],
+        "features": [
+          "drag-drop",
+          "shadows",
+          "gradients"
+        ]
+      },
+      {
+        "file": "curved_text.js",
+        "lines": 368,
+        "functions": 8,
+        "exports": [
+          "CurvedText"
+        ],
+        "features": [
+          "drag-drop"
+        ]
+      },
+      {
+        "file": "enhanced_export.js",
+        "lines": 549,
+        "functions": 14,
+        "exports": [
+          "showToast",
+          "EnhancedExport"
+        ],
+        "features": [
+          "alignment"
+        ]
+      },
+      {
+        "file": "brand_kit.js",
+        "lines": 564,
+        "functions": 15,
+        "exports": [
+          "showToast",
+          "BrandKit"
+        ],
+        "features": []
+      },
+      {
+        "file": "sharing.js",
+        "lines": 623,
+        "functions": 24,
+        "exports": [
+          "showToast",
+          "Sharing"
+        ],
+        "features": [
+          "copy-paste"
+        ]
+      },
+      {
+        "file": "template_mega_library.js",
+        "lines": 1254,
+        "functions": 22,
+        "exports": [
+          "showToast",
+          "MegaTemplateLibrary"
+        ],
+        "features": [
+          "templates"
+        ]
+      },
+      {
+        "file": "stock_photos.js",
+        "lines": 354,
+        "functions": 8,
+        "exports": [
+          "showToast",
+          "StockPhotos"
+        ],
+        "features": [
+          "drag-drop",
+          "gradients"
+        ]
+      },
+      {
+        "file": "icons_expanded.js",
+        "lines": 586,
+        "functions": 0,
+        "exports": [
+          "EXTENDED_ICONS"
+        ],
+        "features": [
+          "layers",
+          "copy-paste"
+        ]
+      },
+      {
+        "file": "element_grouping.js",
+        "lines": 513,
+        "functions": 21,
+        "exports": [
+          "showToast",
+          "ElementGrouping"
+        ],
+        "features": [
+          "drag-drop"
+        ]
+      },
+      {
+        "file": "property_charts.js",
+        "lines": 550,
+        "functions": 11,
+        "exports": [
+          "showToast",
+          "PropertyCharts"
+        ],
+        "features": [
+          "drag-drop",
+          "shadows",
+          "gradients",
+          "templates",
+          "alignment"
+        ]
+      },
+      {
+        "file": "text_animations.js",
+        "lines": 672,
+        "functions": 7,
+        "exports": [
+          "showToast",
+          "TextAnimations"
+        ],
+        "features": [
+          "zoom",
+          "shadows",
+          "templates",
+          "alignment"
+        ]
+      }
+    ]
+  },
+  "scores": {
+    "canva_comparison": {
+      "our_score": 418,
+      "canva_score": 450,
+      "percentage": 92.88888888888889
+    },
+    "vidiq_comparison": {
+      "our": 26,
+      "vidiq": 36,
+      "pct": 72.22222222222221
+    }
+  },
+  "category_breakdown": {
+    "design_elements": {
+      "our": 64,
+      "canva": 73,
+      "pct": 87.67123287671232
+    },
+    "editing_tools": {
+      "our": 130,
+      "canva": 130,
+      "pct": 100.0
+    },
+    "text_editing": {
+      "our": 41,
+      "canva": 45,
+      "pct": 91.11111111111111
+    },
+    "visual_effects": {
+      "our": 69,
+      "canva": 70,
+      "pct": 98.57142857142858
+    },
+    "templates": {
+      "our": 40,
+      "canva": 40,
+      "pct": 100.0
+    },
+    "export": {
+      "our": 45,
+      "canva": 53,
+      "pct": 84.90566037735849
+    },
+    "collaboration": {
+      "our": 29,
+      "canva": 39,
+      "pct": 74.35897435897436
+    }
+  },
+  "grade": "A",
+  "assessment": "Excellent - Near Canva-level functionality"
+}

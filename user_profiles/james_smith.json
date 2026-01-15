@@ -1,0 +1,22 @@
+{
+  "user_id": "james_smith",
+  "email": "james.smith@savills.com",
+  "name": "James Smith",
+  "agency_name": "Savills",
+  "agency_phone": "+44 20 7499 8644",
+  "agency_email": "james.smith@savills.com",
+  "agency_website": "www.savills.com",
+  "primary_color": "#CD1F2A",
+  "secondary_color": "#FFD500",
+  "logo_path": null,
+  "logo_base64": null,
+  "agent_photo_path": null,
+  "agent_photo_base64": null,
+  "preferences": {
+    "default_tone": "premium",
+    "default_channel": "brochure",
+    "auto_enrichment": true
+  },
+  "created_at": "2025-10-16T20:12:37.132504",
+  "updated_at": "2025-10-16T20:12:37.132504"
+}

@@ -1,0 +1,446 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Photographer Portal - Doorstep</title>
+    <link rel="stylesheet" href="/static/styles.css">
+    <link rel="stylesheet" href="/static/styles_v2.css">
+    <style>
+        .upload-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            margin-bottom: 2rem;
+        }
+
+        .upload-zone {
+            border: 3px dashed var(--primary-color, #C20430);
+            border-radius: 12px;
+            padding: 3rem;
+            text-align: center;
+            background: rgba(23, 162, 184, 0.05);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .upload-zone:hover {
+            background: rgba(23, 162, 184, 0.1);
+            border-color: var(--primary-dark, #138496);
+        }
+
+        .upload-zone.dragover {
+            background: rgba(23, 162, 184, 0.2);
+            border-color: var(--secondary-color, #9E0328);
+        }
+
+        .photo-preview {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .photo-preview-item {
+            position: relative;
+            aspect-ratio: 1;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+        }
+
+        .photo-preview-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .photo-remove {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: #9E0328;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 28px;
+            height: 28px;
+            cursor: pointer;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .agent-selector {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .agent-card {
+            border: 3px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .agent-card:hover {
+            border-color: var(--primary-color, #C20430);
+            background: rgba(23, 162, 184, 0.05);
+        }
+
+        .agent-card.selected {
+            border-color: var(--primary-color, #C20430);
+            background: rgba(23, 162, 184, 0.1);
+            box-shadow: 0 4px 12px rgba(23, 162, 184, 0.2);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div style="padding: 0.75rem 0; position: relative;">
+                <!-- Logout button -->
+                <div id="photographerLogout" style="position: absolute; top: 1rem; right: 1rem;">
+                    <button onclick="logout()" style="
+                        background: #9E0328;
+                        color: white;
+                        border: none;
+                        padding: 0.75rem 1.5rem;
+                        border-radius: 8px;
+                        font-weight: 600;
+                        cursor: pointer;
+                    ">Logout</button>
+                </div>
+
+                <!-- Logo and Title -->
+                <div style="display: flex; align-items: center; justify-content: center; gap: 2rem;">
+                    <img src="/static/doorstep-logo.png" alt="Doorstep" style="height: 100px; width: auto;">
+                    <div style="text-align: left;">
+                        <h1 style="font-size: 1.75rem; margin: 0; font-weight: 600; color: #2c3e50;">📸 Photographer Portal</h1>
+                        <p style="color: #6c757d; font-size: 1rem; margin: 0.5rem 0 0 0;" id="photographerName">Welcome, Photographer</p>
+                    </div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Upload Form -->
+        <div class="upload-card">
+            <h2 style="margin: 0 0 1.5rem 0; color: var(--primary-color, #C20430);">📤 Upload Property Photos</h2>
+
+            <form id="uploadForm">
+                <!-- Property Name -->
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #333;">
+                        Property Name <span style="color: #9E0328;">*</span>
+                    </label>
+                    <input type="text" id="propertyName" placeholder="e.g., Avenue Road" required style="
+                        width: 100%;
+                        padding: 0.875rem;
+                        border: 2px solid #e0e0e0;
+                        border-radius: 8px;
+                        font-size: 1rem;
+                    ">
+                    <small style="color: #666; font-size: 0.85rem;">This will be the folder name agents see</small>
+                </div>
+
+                <!-- Assign to Agent -->
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; font-weight: 600; margin-bottom: 0.75rem; color: #333;">
+                        Assign to Agent <span style="color: #9E0328;">*</span>
+                    </label>
+                    <div class="agent-selector" id="agentSelector">
+                        <!-- Will be populated by JavaScript -->
+                    </div>
+                    <input type="hidden" id="selectedAgent" required>
+                </div>
+
+                <!-- Photo Upload Zone -->
+                <div style="margin-bottom: 1.5rem;">
+                    <label style="display: block; font-weight: 600; margin-bottom: 0.75rem; color: #333;">
+                        Property Photos <span style="color: #9E0328;">*</span>
+                    </label>
+                    <div class="upload-zone" id="uploadZone">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">📷</div>
+                        <h3 style="margin: 0 0 0.5rem 0; color: #333;">Drag & Drop Photos Here</h3>
+                        <p style="color: #666; margin: 0 0 1rem 0;">or click to browse</p>
+                        <button type="button" onclick="document.getElementById('fileInput').click()" style="
+                            background: var(--primary-color, #C20430);
+                            color: white;
+                            border: none;
+                            padding: 0.75rem 2rem;
+                            border-radius: 8px;
+                            font-weight: 600;
+                            cursor: pointer;
+                        ">Select Files</button>
+                        <input type="file" id="fileInput" multiple accept="image/*" style="display: none;">
+                    </div>
+
+                    <!-- Photo Previews -->
+                    <div class="photo-preview" id="photoPreview"></div>
+                </div>
+
+                <!-- Submit Button -->
+                <button type="submit" id="submitBtn" style="
+                    width: 100%;
+                    background: linear-gradient(135deg, var(--primary-color, #C20430) 0%, var(--secondary-color, #9E0328) 100%);
+                    color: white;
+                    border: none;
+                    padding: 1rem;
+                    border-radius: 8px;
+                    font-weight: 700;
+                    font-size: 1.1rem;
+                    cursor: pointer;
+                    transition: all 0.3s ease;
+                ">
+                    🚀 Send Photos to Agent
+                </button>
+            </form>
+        </div>
+
+        <!-- Upload History -->
+        <div class="upload-card">
+            <h2 style="margin: 0 0 1.5rem 0; color: var(--primary-color, #C20430);">📋 Recent Uploads</h2>
+            <div id="uploadHistory">
+                <p style="text-align: center; color: #999; padding: 2rem;">No uploads yet</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="/static/theme.js"></script>
+    <script>
+        console.log('📸 Photographer portal loaded');
+
+        // Get photographer info from localStorage
+        const photographerName = localStorage.getItem('userName') || 'Photographer';
+        const officeId = localStorage.getItem('officeId');
+        const userEmail = localStorage.getItem('userEmail');
+
+        document.getElementById('photographerName').textContent = `Welcome, ${photographerName}`;
+
+        // Load agents from the same office
+        async function loadAgents() {
+            try {
+                // Get office data from auth system
+                const orgId = localStorage.getItem('orgId');
+
+                // For demo, use hardcoded agents (same as login.html)
+                const OFFICE_AGENTS = {
+                    'savills_london': [
+                        { name: 'James Smith', email: 'james.smith@savills.com', role: 'agent' },
+                        { name: 'Emma Johnson', email: 'emma.johnson@savills.com', role: 'agent' },
+                        { name: 'Oliver Brown', email: 'oliver.brown@savills.com', role: 'agent' },
+                        { name: 'Sophie Williams', email: 'sophie.williams@savills.com', role: 'agent' },
+                        { name: 'Thomas Davies', email: 'thomas.davies@savills.com', role: 'agent' }
+                    ]
+                };
+
+                const agents = OFFICE_AGENTS[officeId] || [];
+                const agentSelector = document.getElementById('agentSelector');
+
+                agents.forEach(agent => {
+                    const card = document.createElement('div');
+                    card.className = 'agent-card';
+                    card.onclick = () => selectAgent(agent.email, agent.name);
+                    card.innerHTML = `
+                        <div style="font-size: 2rem; margin-bottom: 0.5rem;">👤</div>
+                        <div style="font-weight: 600; color: #333;">${agent.name}</div>
+                    `;
+                    card.dataset.agentEmail = agent.email;
+                    agentSelector.appendChild(card);
+                });
+            } catch (error) {
+                console.error('Error loading agents:', error);
+            }
+        }
+
+        function selectAgent(email, name) {
+            document.getElementById('selectedAgent').value = email;
+
+            // Update visual selection
+            document.querySelectorAll('.agent-card').forEach(card => {
+                card.classList.remove('selected');
+            });
+
+            const selectedCard = document.querySelector(`[data-agent-email="${email}"]`);
+            if (selectedCard) {
+                selectedCard.classList.add('selected');
+            }
+
+            console.log('Selected agent:', name, email);
+        }
+
+        // File upload handling
+        const fileInput = document.getElementById('fileInput');
+        const uploadZone = document.getElementById('uploadZone');
+        const photoPreview = document.getElementById('photoPreview');
+        let selectedFiles = [];
+
+        fileInput.addEventListener('change', handleFiles);
+
+        // Drag and drop
+        uploadZone.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadZone.classList.add('dragover');
+        });
+
+        uploadZone.addEventListener('dragleave', () => {
+            uploadZone.classList.remove('dragover');
+        });
+
+        uploadZone.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadZone.classList.remove('dragover');
+            const files = Array.from(e.dataTransfer.files);
+            handleFiles({ target: { files } });
+        });
+
+        uploadZone.addEventListener('click', (e) => {
+            if (e.target === uploadZone || e.target.closest('.upload-zone')) {
+                fileInput.click();
+            }
+        });
+
+        function handleFiles(e) {
+            const files = Array.from(e.target.files);
+
+            files.forEach(file => {
+                if (file.type.startsWith('image/')) {
+                    selectedFiles.push(file);
+                    displayPhotoPreview(file);
+                }
+            });
+        }
+
+        function displayPhotoPreview(file) {
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const div = document.createElement('div');
+                div.className = 'photo-preview-item';
+                div.innerHTML = `
+                    <img src="${e.target.result}" alt="${file.name}">
+                    <button class="photo-remove" onclick="removePhoto('${file.name}')">×</button>
+                `;
+                photoPreview.appendChild(div);
+            };
+            reader.readAsDataURL(file);
+        }
+
+        function removePhoto(fileName) {
+            selectedFiles = selectedFiles.filter(f => f.name !== fileName);
+            // Rebuild preview
+            photoPreview.innerHTML = '';
+            selectedFiles.forEach(file => displayPhotoPreview(file));
+        }
+
+        // Form submission
+        document.getElementById('uploadForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const propertyName = document.getElementById('propertyName').value;
+            const agentEmail = document.getElementById('selectedAgent').value;
+
+            if (!agentEmail) {
+                alert('Please select an agent to send the photos to');
+                return;
+            }
+
+            if (selectedFiles.length === 0) {
+                alert('Please select at least one photo');
+                return;
+            }
+
+            // Prepare upload
+            const formData = new FormData();
+            formData.append('property_name', propertyName);
+            formData.append('agent_email', agentEmail);
+            formData.append('photographer_email', userEmail);
+            formData.append('photographer_name', photographerName);
+            formData.append('office_id', officeId);
+
+            selectedFiles.forEach((file, index) => {
+                formData.append('photos', file);
+            });
+
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = '⏳ Uploading...';
+
+            try {
+                const response = await fetch('/photographer/upload', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    alert(`✅ Success!\n\nUploaded ${selectedFiles.length} photos for "${propertyName}"\nAssigned to: ${agentEmail}\n\nThe agent will see this in their "Photographer Uploads" folder.`);
+
+                    // Reset form
+                    document.getElementById('uploadForm').reset();
+                    selectedFiles = [];
+                    photoPreview.innerHTML = '';
+                    document.querySelectorAll('.agent-card').forEach(card => {
+                        card.classList.remove('selected');
+                    });
+
+                    loadUploadHistory();
+                } else {
+                    alert(`❌ Upload failed: ${result.detail || 'Unknown error'}`);
+                }
+            } catch (error) {
+                console.error('Upload error:', error);
+                alert('❌ Upload failed. Please try again.');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = '🚀 Send Photos to Agent';
+            }
+        });
+
+        async function loadUploadHistory() {
+            try {
+                const response = await fetch(`/photographer/uploads?photographer_email=${encodeURIComponent(userEmail)}`);
+                const data = await response.json();
+
+                const historyDiv = document.getElementById('uploadHistory');
+
+                if (data.uploads && data.uploads.length > 0) {
+                    historyDiv.innerHTML = data.uploads.map(upload => `
+                        <div style="border: 2px solid #e0e0e0; border-radius: 8px; padding: 1rem; margin-bottom: 1rem;">
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <div style="font-weight: 700; color: #333; margin-bottom: 0.25rem;">${upload.property_name}</div>
+                                    <div style="font-size: 0.85rem; color: #666;">Assigned to: ${upload.agent_email}</div>
+                                    <div style="font-size: 0.85rem; color: #999;">${upload.photo_count} photos • ${new Date(upload.uploaded_at).toLocaleDateString()}</div>
+                                </div>
+                                <div style="padding: 0.5rem 1rem; background: #28a745; color: white; border-radius: 6px; font-size: 0.85rem; font-weight: 600;">
+                                    ✓ Sent
+                                </div>
+                            </div>
+                        </div>
+                    `).join('');
+                } else {
+                    historyDiv.innerHTML = '<p style="text-align: center; color: #999; padding: 2rem;">No uploads yet</p>';
+                }
+            } catch (error) {
+                console.error('Error loading upload history:', error);
+            }
+        }
+
+        function logout() {
+            localStorage.clear();
+            window.location.href = '/static/login.html';
+        }
+
+        // Initialize
+        loadAgents();
+        loadUploadHistory();
+    </script>
+</body>
+</html>

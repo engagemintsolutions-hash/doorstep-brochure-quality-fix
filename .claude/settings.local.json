@@ -1,0 +1,34 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git init:*)",
+      "Bash(git remote add:*)",
+      "Bash(git add:*)",
+      "Bash(dir:*)",
+      "Bash(curl:*)",
+      "WebSearch",
+      "WebFetch(domain:www.zoopla.co.uk)",
+      "WebFetch(domain:www.rightmove.co.uk)",
+      "WebFetch(domain:www.ashtons.co.uk)",
+      "Bash(python:*)",
+      "Bash(taskkill:*)",
+      "Bash(tasklist:*)",
+      "Bash(cmd /c \"type .env\")",
+      "Bash(powershell:*)",
+      "Bash(grep:*)",
+      "Bash(find:*)",
+      "Bash(findstr:*)",
+      "Bash(timeout /t 3 /nobreak)",
+      "Bash(start http://127.0.0.1:8000/static/brochure_editor_v3.html)",
+      "Bash(chcp 65001)",
+      "Bash(node -e:*)",
+      "Bash(ls:*)",
+      "Bash(node --check:*)",
+      "Bash(git reset:*)",
+      "Bash(gh:*)",
+      "Bash(git remote:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)"
+    ]
+  }
+}

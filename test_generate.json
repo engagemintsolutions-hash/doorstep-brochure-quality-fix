@@ -1,0 +1,36 @@
+{
+  "property_data": {
+    "property_type": "house",
+    "bedrooms": 3,
+    "bathrooms": 2,
+    "condition": "good",
+    "features": ["garden", "parking"]
+  },
+  "location_data": {
+    "address": "123 Test Street",
+    "setting": "suburban"
+  },
+  "target_audience": {
+    "audience_type": "professionals"
+  },
+  "tone": {
+    "tone": "boutique"
+  },
+  "channel": {
+    "channel": "brochure"
+  },
+  "include_enrichment": false,
+  "include_compliance": true,
+  "brand": "generic",
+  "typography_style": "classic",
+  "orientation": "landscape",
+  "photo_assignments": {
+    "cover": [],
+    "exterior": [],
+    "interior": [],
+    "kitchen": [],
+    "bedrooms": [],
+    "bathrooms": [],
+    "garden": []
+  }
+}

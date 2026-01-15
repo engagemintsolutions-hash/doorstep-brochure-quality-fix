@@ -1,0 +1,3873 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Marketing Command Center - Doorstep</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #009BA0 0%, #FF8A80 100%);
+            min-height: 100vh;
+            padding: 2rem;
+        }
+
+        .calendar-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        /* Header */
+        .calendar-header {
+            background: linear-gradient(135deg, #009BA0 0%, #007c80 100%);
+            color: white;
+            padding: 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .calendar-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        /* Export Dropdown */
+        .export-dropdown {
+            position: relative;
+        }
+
+        .export-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 0.5rem;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            min-width: 200px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.2s ease;
+            z-index: 1000;
+            overflow: hidden;
+        }
+
+        .export-menu.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .export-menu button {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            text-align: left;
+            background: white;
+            border: none;
+            color: #2c3e50;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .export-menu button:hover {
+            background: #f8f9fa;
+            color: #009BA0;
+        }
+
+        .export-menu button:not(:last-child) {
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-primary {
+            background: #FF8A80;
+            color: white;
+            font-weight: 700;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 138, 128, 0.4);
+            background: #ff7066;
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid white;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        /* View Tabs */
+        .view-tabs {
+            display: flex;
+            background: #f8f9fa;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .view-tab {
+            flex: 1;
+            padding: 1.25rem;
+            background: none;
+            border: none;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            border-bottom: 3px solid transparent;
+        }
+
+        .view-tab.active {
+            color: #009BA0;
+            border-bottom-color: #009BA0;
+            background: white;
+        }
+
+        .view-tab:hover {
+            color: #009BA0;
+            background: #f1f5f9;
+        }
+
+        /* Filters Bar */
+        .filters-bar {
+            padding: 1.5rem 2rem;
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .filter-group label {
+            font-weight: 600;
+            color: #475569;
+            font-size: 0.9rem;
+        }
+
+        .filter-select {
+            padding: 0.5rem 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .filter-select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .search-box {
+            flex: 1;
+            max-width: 300px;
+            padding: 0.5rem 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.9rem;
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        /* Content Area */
+        .content-area {
+            padding: 2rem;
+            min-height: 600px;
+        }
+
+        .view-panel {
+            display: none;
+        }
+
+        .view-panel.active {
+            display: block;
+        }
+
+        /* Calendar View */
+        .calendar-view {
+            background: white;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+            background: #e2e8f0;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .calendar-day-header {
+            background: #f8f9fa;
+            padding: 1rem;
+            text-align: center;
+            font-weight: 700;
+            color: #475569;
+            font-size: 0.9rem;
+        }
+
+        .calendar-day {
+            background: white;
+            min-height: 120px;
+            padding: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .calendar-day:hover {
+            background: #f8f9fa;
+        }
+
+        .calendar-day.other-month {
+            opacity: 0.4;
+        }
+
+        .calendar-day.today {
+            background: #f0f4ff;
+            border: 2px solid #667eea;
+        }
+
+        .day-number {
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 0.5rem;
+        }
+
+        .day-posts {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        .day-post-badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .day-post-badge.scheduled {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .day-post-badge.draft {
+            background: #f1f5f9;
+            color: #64748b;
+        }
+
+        /* List View */
+        .posts-list {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        .post-card {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.2s ease;
+        }
+
+        .post-card:hover {
+            border-color: #667eea;
+            box-shadow: 0 8px 20px rgba(102, 126, 234, 0.1);
+        }
+
+        .post-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+        .post-status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .post-status-badge.scheduled {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .post-status-badge.draft {
+            background: #f1f5f9;
+            color: #64748b;
+        }
+
+        .post-datetime {
+            text-align: right;
+        }
+
+        .post-date {
+            font-weight: 700;
+            color: #1e293b;
+            font-size: 1.1rem;
+        }
+
+        .post-time {
+            color: #64748b;
+            font-size: 0.9rem;
+        }
+
+        .post-platforms {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .platform-badge {
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .platform-badge.facebook {
+            background: #1877f2;
+            color: white;
+        }
+
+        .platform-badge.instagram {
+            background: linear-gradient(45deg, #f09433 0%,#e6683c 25%,#dc2743 50%,#cc2366 75%,#bc1888 100%);
+            color: white;
+        }
+
+        .post-images {
+            display: flex;
+            gap: 0.75rem;
+            margin: 1rem 0;
+            overflow-x: auto;
+        }
+
+        .post-image {
+            width: 200px;
+            height: 150px;
+            object-fit: cover;
+            border-radius: 8px;
+            flex-shrink: 0;
+        }
+
+        .post-content {
+            margin-bottom: 1rem;
+        }
+
+        .post-caption {
+            color: #475569;
+            line-height: 1.6;
+            margin-bottom: 0.75rem;
+        }
+
+        .post-hashtags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+        }
+
+        .hashtag {
+            color: #667eea;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .post-actions {
+            display: flex;
+            gap: 0.75rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .post-action-btn {
+            padding: 0.5rem 1rem;
+            border: 2px solid #e2e8f0;
+            background: white;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .post-action-btn:hover {
+            border-color: #667eea;
+            color: #667eea;
+        }
+
+        .post-action-btn.delete:hover {
+            border-color: #ef4444;
+            color: #ef4444;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 6rem 2rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 400px;
+        }
+
+        .empty-state-icon {
+            font-size: 5rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #009BA0, #FF8A80);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        .empty-state h3 {
+            font-size: 1.75rem;
+            color: #1e293b;
+            margin-bottom: 0.75rem;
+            font-weight: 600;
+        }
+
+        .empty-state p {
+            color: #64748b;
+            margin-bottom: 2rem;
+            font-size: 1.05rem;
+            max-width: 400px;
+            line-height: 1.6;
+        }
+
+        .empty-state .btn {
+            background: linear-gradient(135deg, #009BA0, #007f84);
+            color: white;
+            border: none;
+            padding: 0.875rem 2rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 1rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 155, 160, 0.2);
+        }
+
+        .empty-state .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 155, 160, 0.3);
+            background: linear-gradient(135deg, #007f84, #006669);
+        }
+
+        /* Loading Spinner */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10001;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .loading-overlay.show {
+            opacity: 1;
+        }
+
+        .spinner-container {
+            background: white;
+            padding: 2rem;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            min-width: 200px;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            margin: 0 auto 1rem;
+            border: 4px solid #e5e7eb;
+            border-top-color: #009BA0;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        .spinner-text {
+            color: #64748b;
+            font-size: 0.95rem;
+            margin-top: 0.5rem;
+        }
+
+        /* Button Loading State */
+        .btn-loading {
+            position: relative;
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .btn-loading::after {
+            content: '';
+            position: absolute;
+            width: 16px;
+            height: 16px;
+            top: 50%;
+            left: 50%;
+            margin-left: -8px;
+            margin-top: -8px;
+            border: 2px solid transparent;
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 0.6s linear infinite;
+        }
+
+        /* Instagram Grid View */
+        .instagram-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 4px;
+            padding: 1rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        @media (max-width: 768px) {
+            .instagram-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .instagram-post {
+            position: relative;
+            cursor: pointer;
+            background: white;
+            border-radius: 4px;
+            overflow: hidden;
+            transition: transform 0.2s ease, opacity 0.3s ease;
+            animation: fadeInUp 0.4s ease-out backwards;
+        }
+
+        .instagram-post:hover {
+            transform: scale(1.02);
+        }
+
+        .instagram-post.selected {
+            outline: 3px solid #009BA0;
+            transform: scale(0.98);
+        }
+
+        .post-select-checkbox {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            z-index: 10;
+            background: white;
+            border-radius: 4px;
+            padding: 4px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+        }
+
+        .post-select-checkbox input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: #009BA0;
+        }
+
+        .post-time-badge {
+            position: absolute;
+            bottom: 8px;
+            right: 8px;
+            background: rgba(0, 0, 0, 0.75);
+            color: white;
+            padding: 0.35rem 0.6rem;
+            border-radius: 6px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            z-index: 3;
+            backdrop-filter: blur(8px);
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .bulk-actions-toolbar {
+            position: fixed;
+            bottom: 2rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: white;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            display: none;
+            align-items: center;
+            gap: 1rem;
+            z-index: 1000;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateX(-50%) translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(-50%) translateY(0);
+            }
+        }
+
+        .bulk-actions-toolbar .selection-counter {
+            font-weight: 600;
+            color: #009BA0;
+            font-size: 1rem;
+            padding-right: 1rem;
+            border-right: 2px solid #e0e0e0;
+        }
+
+        .bulk-actions-toolbar button {
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 6px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.9rem;
+        }
+
+        .bulk-actions-toolbar .btn-select-all {
+            background: #009BA0;
+            color: white;
+        }
+
+        .bulk-actions-toolbar .btn-select-all:hover {
+            background: #007f84;
+        }
+
+        .bulk-actions-toolbar .btn-deselect {
+            background: #6c757d;
+            color: white;
+        }
+
+        .bulk-actions-toolbar .btn-deselect:hover {
+            background: #5a6268;
+        }
+
+        .bulk-actions-toolbar .btn-delete {
+            background: #dc3545;
+            color: white;
+        }
+
+        .bulk-actions-toolbar .btn-delete:hover {
+            background: #c82333;
+        }
+
+        .bulk-actions-toolbar .btn-reschedule {
+            background: #ffc107;
+            color: #212529;
+        }
+
+        .bulk-actions-toolbar .btn-reschedule:hover {
+            background: #e0a800;
+        }
+
+        .bulk-actions-toolbar .btn-status {
+            background: #17a2b8;
+            color: white;
+        }
+
+        .bulk-actions-toolbar .btn-status:hover {
+            background: #138496;
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Stagger animation for grid items */
+        .instagram-post:nth-child(1) { animation-delay: 0.05s; }
+        .instagram-post:nth-child(2) { animation-delay: 0.1s; }
+        .instagram-post:nth-child(3) { animation-delay: 0.15s; }
+        .instagram-post:nth-child(4) { animation-delay: 0.2s; }
+        .instagram-post:nth-child(5) { animation-delay: 0.25s; }
+        .instagram-post:nth-child(6) { animation-delay: 0.3s; }
+        .instagram-post:nth-child(7) { animation-delay: 0.35s; }
+        .instagram-post:nth-child(8) { animation-delay: 0.4s; }
+        .instagram-post:nth-child(9) { animation-delay: 0.45s; }
+        .instagram-post:nth-child(n+10) { animation-delay: 0.5s; }
+
+        /* Status-based styling removed for clean minimal design */
+
+        .post-published-badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: #10b981;
+            color: white;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            z-index: 2;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        .instagram-stats-preview {
+            color: white;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .status-icon {
+            margin-right: 0.25rem;
+        }
+
+        .instagram-image-wrapper {
+            position: relative;
+            width: 100%;
+            padding-bottom: 100%;
+            overflow: hidden;
+            background: #f1f5f9;
+        }
+
+        .instagram-image {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .instagram-placeholder {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: #94a3b8;
+            font-size: 0.9rem;
+        }
+
+        .instagram-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .instagram-post:hover .instagram-overlay {
+            opacity: 1;
+        }
+
+        .instagram-overlay-content {
+            color: white;
+            text-align: center;
+        }
+
+        .instagram-stats {
+            display: flex;
+            gap: 1.5rem;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .instagram-post-info {
+            padding: 0.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: white;
+        }
+
+        .instagram-post-date {
+            font-size: 0.75rem;
+            color: #64748b;
+            font-weight: 600;
+        }
+
+        .instagram-post-status {
+            font-size: 0.7rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            text-transform: uppercase;
+            font-weight: 700;
+        }
+
+        /* Instagram Modal */
+        .post-detail-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+        }
+
+        .post-detail-modal.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .modal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+        }
+
+        .modal-content {
+            position: relative;
+            background: white;
+            max-width: 1200px;
+            max-height: 90vh;
+            width: 90%;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 10;
+            transition: background 0.2s ease;
+        }
+
+        .modal-close:hover {
+            background: white;
+        }
+
+        .instagram-modal-layout {
+            display: grid;
+            grid-template-columns: 1fr 500px;
+            height: 80vh;
+        }
+
+        @media (max-width: 968px) {
+            .instagram-modal-layout {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+        }
+
+        .instagram-modal-image {
+            background: #000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .instagram-modal-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        }
+
+        .no-image-placeholder {
+            color: #94a3b8;
+            font-size: 1.2rem;
+        }
+
+        .instagram-modal-sidebar {
+            display: flex;
+            flex-direction: column;
+            background: white;
+            overflow-y: auto;
+        }
+
+        .instagram-modal-header {
+            padding: 1rem;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        .instagram-profile {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .instagram-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.2rem;
+        }
+
+        .instagram-username {
+            font-weight: 700;
+            color: #1e293b;
+        }
+
+        .instagram-modal-caption {
+            flex: 1;
+            padding: 1rem;
+            overflow-y: auto;
+        }
+
+        .instagram-caption-user {
+            margin-bottom: 0.5rem;
+        }
+
+        .instagram-caption-text {
+            color: #475569;
+            line-height: 1.6;
+            margin-bottom: 1rem;
+            white-space: pre-wrap;
+        }
+
+        .instagram-hashtags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 1rem;
+        }
+
+        .instagram-modal-footer {
+            padding: 1rem;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .instagram-actions {
+            display: flex;
+            gap: 1rem;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .instagram-actions span {
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .instagram-actions span:hover {
+            transform: scale(1.2);
+        }
+
+        .instagram-post-meta {
+            font-size: 0.85rem;
+            color: #64748b;
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .modal-action-buttons {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .modal-action-btn {
+            flex: 1;
+            padding: 0.75rem 1.5rem;
+            border: 2px solid #e2e8f0;
+            background: white;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .modal-action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-action-btn.edit-btn {
+            border-color: #667eea;
+            color: #667eea;
+        }
+
+        .modal-action-btn.edit-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+
+        .modal-action-btn.delete-btn {
+            border-color: #ef4444;
+            color: #ef4444;
+        }
+
+        .modal-action-btn.delete-btn:hover {
+            background: #ef4444;
+            color: white;
+        }
+
+        .modal-action-btn.cancel-btn {
+            border-color: #94a3b8;
+            color: #64748b;
+        }
+
+        .modal-action-btn.cancel-btn:hover {
+            background: #f1f5f9;
+        }
+
+        .modal-action-btn.save-btn {
+            border-color: #10b981;
+            color: #10b981;
+        }
+
+        .modal-action-btn.save-btn:hover {
+            background: #10b981;
+            color: white;
+        }
+
+        .modal-action-btn.copy-btn {
+            border-color: #009BA0;
+            color: #009BA0;
+        }
+
+        .modal-action-btn.copy-btn:hover {
+            background: #009BA0;
+            color: white;
+        }
+
+        .modal-action-btn.copy-btn.copied {
+            background: #10b981;
+            color: white;
+            border-color: #10b981;
+        }
+
+        /* Edit Modal Styles */
+        .edit-modal-content {
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        .edit-modal-header {
+            padding: 1.5rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .edit-modal-header h2 {
+            margin: 0;
+            font-size: 1.5rem;
+            color: #1e293b;
+        }
+
+        .edit-modal-body {
+            padding: 1.5rem;
+        }
+
+        .edit-form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .edit-form-group label {
+            display: block;
+            font-weight: 600;
+            color: #475569;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .edit-form-group input,
+        .edit-form-group textarea,
+        .edit-form-group select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-family: inherit;
+            transition: border-color 0.2s ease;
+        }
+
+        .edit-form-group input:focus,
+        .edit-form-group textarea:focus,
+        .edit-form-group select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .edit-form-group textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        /* Character Counter */
+        .character-counter {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: #64748b;
+        }
+
+        .character-counter #charCount {
+            font-weight: 600;
+            color: #009BA0;
+        }
+
+        .character-counter #charCount.warning {
+            color: #f59e0b;
+        }
+
+        .character-counter #charCount.error {
+            color: #dc3545;
+        }
+
+        .char-warning {
+            font-size: 0.8rem;
+            font-style: italic;
+            color: #f59e0b;
+        }
+
+        .edit-form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .platform-checkboxes {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .platform-checkboxes label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 500;
+            color: #64748b;
+            cursor: pointer;
+        }
+
+        .platform-checkboxes input[type="checkbox"] {
+            width: auto;
+            cursor: pointer;
+        }
+
+        .edit-modal-footer {
+            padding: 1.5rem;
+            border-top: 2px solid #e2e8f0;
+            display: flex;
+            gap: 1rem;
+        }
+
+        /* Toast Notification */
+        .toast {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            background: #1e293b;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 10px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            transform: translateY(20px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Confirmation Dialog */
+        .confirm-dialog-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .confirm-dialog-overlay.show {
+            opacity: 1;
+        }
+
+        .confirm-dialog {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            max-width: 450px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            transform: scale(0.9);
+            transition: transform 0.3s ease;
+        }
+
+        .confirm-dialog-overlay.show .confirm-dialog {
+            transform: scale(1);
+        }
+
+        .confirm-dialog-icon {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            margin: 0 auto 1.5rem;
+        }
+
+        .confirm-dialog-icon.danger {
+            background: linear-gradient(135deg, #fee, #fcc);
+            color: #dc3545;
+        }
+
+        .confirm-dialog h3 {
+            color: #1e293b;
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .confirm-dialog p {
+            color: #64748b;
+            text-align: center;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .confirm-dialog-actions {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .confirm-dialog-actions button {
+            flex: 1;
+            padding: 0.875rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-cancel {
+            background: #f1f5f9;
+            color: #64748b;
+        }
+
+        .btn-cancel:hover {
+            background: #e2e8f0;
+            color: #475569;
+        }
+
+        .btn-confirm {
+            background: linear-gradient(135deg, #dc3545, #c82333);
+            color: white;
+        }
+
+        .btn-confirm:hover {
+            background: linear-gradient(135deg, #c82333, #bd2130);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+        }
+
+        /* Image Thumbnails */
+        .post-image-thumbnail {
+            width: 80px;
+            height: 80px;
+            border-radius: 8px;
+            object-fit: cover;
+            margin-right: 1rem;
+            border: 2px solid #e2e8f0;
+            flex-shrink: 0;
+        }
+
+        .calendar-post-image {
+            width: 100%;
+            height: 60px;
+            border-radius: 6px;
+            object-fit: cover;
+            margin-bottom: 0.5rem;
+            border: 1px solid #e2e8f0;
+        }
+
+        .post-card-content {
+            display: flex;
+            align-items: start;
+            gap: 1rem;
+        }
+
+        .post-card-text {
+            flex: 1;
+            min-width: 0;
+        }
+
+        /* Analytics Dashboard Styles */
+        .analytics-dashboard {
+            padding: 2rem;
+        }
+
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .kpi-card {
+            background: white;
+            border-radius: 8px;
+            padding: 1.75rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e5e7eb;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .kpi-card:nth-child(1)::before { background: #009BA0; }
+        .kpi-card:nth-child(2)::before { background: #10b981; }
+        .kpi-card:nth-child(3)::before { background: #f59e0b; }
+        .kpi-card:nth-child(4)::before { background: #6366f1; }
+
+        .kpi-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+            border-color: #d1d5db;
+        }
+
+        .kpi-label {
+            font-size: 0.8rem;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .kpi-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: #111827;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .kpi-change {
+            font-size: 0.8rem;
+            margin-top: 0.75rem;
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .kpi-change.positive {
+            color: #10b981;
+        }
+
+        .kpi-change.negative {
+            color: #ef4444;
+        }
+
+        /* Engagement Section Styling */
+        .engagement-section {
+            margin: 3rem 0;
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 1.5rem;
+            padding-left: 0.5rem;
+            border-left: 4px solid #009BA0;
+        }
+
+        .kpi-card.engagement::before {
+            background: linear-gradient(90deg, #009BA0 0%, #00c9d0 100%) !important;
+        }
+
+        .kpi-card.engagement.highlight {
+            background: linear-gradient(135deg, #009BA0 0%, #00c9d0 100%);
+            color: white;
+            border: none;
+        }
+
+        .kpi-card.engagement.highlight .kpi-label,
+        .kpi-card.engagement.highlight .kpi-value,
+        .kpi-card.engagement.highlight .kpi-change {
+            color: white !important;
+        }
+
+        .kpi-card.engagement.highlight::before {
+            display: none;
+        }
+
+        .chart-section {
+            background: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+            border: 1px solid #e5e7eb;
+            margin-bottom: 2rem;
+        }
+
+        .chart-header {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        /* Top Posts Grid */
+        .top-posts-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .top-post-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 1.25rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .top-post-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            border-color: #009BA0;
+        }
+
+        .top-post-rank {
+            position: absolute;
+            top: 0.75rem;
+            right: 0.75rem;
+            background: linear-gradient(135deg, #009BA0, #00c9d0);
+            color: white;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.9rem;
+            box-shadow: 0 2px 8px rgba(0, 155, 160, 0.3);
+        }
+
+        .top-post-caption {
+            font-size: 0.9rem;
+            color: #111827;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-height: 4.5em;
+        }
+
+        .top-post-metrics {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .metric-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .metric-label {
+            font-size: 0.7rem;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.25rem;
+        }
+
+        .metric-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .top-post-metric {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .top-post-metric-label {
+            font-size: 0.7rem;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.25rem;
+        }
+
+        .top-post-metric-value {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        .top-post-engagement-rate {
+            background: linear-gradient(135deg, #009BA0, #00c9d0);
+            color: white;
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            text-align: center;
+            margin-top: 0.75rem;
+        }
+
+        .top-posts-empty {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: #6b7280;
+        }
+
+        .top-posts-empty-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.5;
+        }
+
+        .top-posts-empty-text {
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .top-posts-empty-subtext {
+            font-size: 0.85rem;
+            color: #9ca3af;
+        }
+
+        .insight-card {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .insight-card:hover {
+            border-color: #009BA0;
+            box-shadow: 0 4px 12px rgba(0, 155, 160, 0.1);
+        }
+
+        .insight-label {
+            font-size: 0.75rem;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .insight-title {
+            font-weight: 600;
+            color: #111827;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .insight-description {
+            font-size: 0.875rem;
+            color: #6b7280;
+            line-height: 1.5;
+        }
+
+        .placeholder-chart {
+            width: 100%;
+            height: 300px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            opacity: 0.3;
+        }
+
+        /* Simple Bar Chart Styles */
+        .simple-chart {
+            width: 100%;
+            height: 300px;
+            display: flex;
+            align-items: flex-end;
+            justify-content: space-around;
+            padding: 2rem 1rem 1rem 1rem;
+            gap: 1rem;
+        }
+
+        .chart-bar {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end;
+            gap: 0.5rem;
+        }
+
+        .bar-column {
+            width: 100%;
+            background: linear-gradient(180deg, #009BA0 0%, #00b4a1 100%);
+            border-radius: 8px 8px 0 0;
+            transition: all 0.3s ease;
+            position: relative;
+            min-height: 20px;
+        }
+
+        .bar-column:hover {
+            background: linear-gradient(180deg, #007f84 0%, #009BA0 100%);
+            transform: translateY(-4px);
+        }
+
+        .bar-value {
+            position: absolute;
+            top: -25px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-weight: 600;
+            color: #2c3e50;
+            font-size: 0.9rem;
+        }
+
+        .bar-label {
+            font-size: 0.85rem;
+            color: #6c757d;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .platform-breakdown {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 1rem;
+        }
+
+        .platform-stat {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            padding: 1.25rem;
+            border-radius: 8px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .platform-stat:hover {
+            border-color: #009BA0;
+            box-shadow: 0 2px 8px rgba(0, 155, 160, 0.1);
+        }
+
+        .platform-stat .platform-name {
+            font-size: 0.75rem;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .platform-stat .platform-count {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #111827;
+        }
+
+        /* Platform Connections */
+        .platform-connections-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .platform-connection-card {
+            background: white;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .platform-connection-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+        }
+
+        .platform-connection-card.connected {
+            border-color: #10b981;
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.05), rgba(16, 185, 129, 0.02));
+        }
+
+        .platform-icon-wrapper {
+            width: 64px;
+            height: 64px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .platform-connection-info {
+            flex: 1;
+        }
+
+        .platform-connection-name {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: #111827;
+            margin-bottom: 0.25rem;
+        }
+
+        .platform-connection-status {
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .platform-connection-status.connected {
+            color: #10b981;
+        }
+
+        .platform-connection-status.disconnected {
+            color: #6b7280;
+        }
+
+        .platform-connect-btn {
+            background: linear-gradient(135deg, #009BA0, #00c9d0);
+            color: white;
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.95rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+        }
+
+        .platform-connect-btn:hover {
+            background: linear-gradient(135deg, #007f84, #009BA0);
+            transform: scale(1.05);
+        }
+
+        .platform-connect-btn.connected {
+            background: #10b981;
+        }
+
+        .platform-connect-btn.connected:hover {
+            background: #059669;
+        }
+
+        .platform-connections-help {
+            background: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 1rem 1.5rem;
+            text-align: center;
+        }
+
+        .platform-connections-help p {
+            margin: 0;
+            color: #6b7280;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="calendar-container">
+        <!-- Header -->
+        <div class="calendar-header">
+            <h1>Marketing Command Center</h1>
+            <div class="header-actions">
+                <span id="postCount" style="opacity: 0.9;">0 posts</span>
+                <div class="export-dropdown">
+                    <button class="btn btn-secondary" id="exportBtn">Export Calendar ▾</button>
+                    <div class="export-menu" id="exportMenu">
+                        <button onclick="exportAsPDF()">PDF Document</button>
+                        <button onclick="exportAsWord()">Word Document</button>
+                        <button onclick="exportAsCSV()">Excel Spreadsheet</button>
+                        <button onclick="copyToClipboard()">Copy to Clipboard</button>
+                    </div>
+                </div>
+                <button class="btn btn-secondary" onclick="window.location.href='social_media_editor_v2.html'">Back to Editor</button>
+            </div>
+        </div>
+
+        <!-- View Tabs -->
+        <div class="view-tabs">
+            <button class="view-tab active" onclick="switchView('calendar')">📅 Feed</button>
+            <button class="view-tab" onclick="switchView('list')">📋 Posts</button>
+            <button class="view-tab" onclick="switchView('analytics')">📊 Analytics</button>
+        </div>
+
+        <!-- Filters -->
+        <div class="filters-bar">
+            <div class="filter-group">
+                <label>Status:</label>
+                <select class="filter-select" id="statusFilter" onchange="applyFilters()">
+                    <option value="all">All Posts</option>
+                    <option value="scheduled">Scheduled</option>
+                    <option value="draft">Drafts</option>
+                    <option value="published">Published</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Platform:</label>
+                <select class="filter-select" id="platformFilter" onchange="applyFilters()">
+                    <option value="all">All Platforms</option>
+                    <option value="facebook">Facebook</option>
+                    <option value="instagram">Instagram</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <label>Date Range:</label>
+                <select class="filter-select" id="dateRangeFilter" onchange="applyFilters()">
+                    <option value="all">All Time</option>
+                    <option value="today">Today</option>
+                    <option value="week">This Week</option>
+                    <option value="month">This Month</option>
+                    <option value="past">Past Posts</option>
+                    <option value="future">Future Posts</option>
+                </select>
+            </div>
+            <div class="filter-group" style="flex: 1;">
+                <input type="text" class="search-box" id="searchBox" placeholder="Search captions, hashtags..." oninput="applyFilters()">
+                <span id="searchResultsCount" style="margin-left: 0.5rem; color: #6c757d; font-size: 0.9rem;"></span>
+            </div>
+            <button class="btn btn-secondary" onclick="clearFilters()" style="padding: 0.5rem 1rem;">Clear Filters</button>
+        </div>
+
+        <!-- Content Area -->
+        <div class="content-area">
+            <!-- Calendar View -->
+            <div class="view-panel active" id="calendarView">
+                <div id="calendarContent"></div>
+            </div>
+
+            <!-- List View -->
+            <div class="view-panel" id="listView">
+                <div id="listContent"></div>
+            </div>
+
+            <!-- Analytics View -->
+            <div class="view-panel" id="analyticsView">
+                <div id="analyticsContent" class="analytics-dashboard">
+                    <!-- KPI Cards -->
+                    <div class="kpi-grid">
+                        <div class="kpi-card">
+                            <div class="kpi-label">Total Posts</div>
+                            <div class="kpi-value" id="kpiTotalPosts">0</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-label">Published</div>
+                            <div class="kpi-value" id="kpiPublished">0</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-label">Scheduled</div>
+                            <div class="kpi-value" id="kpiScheduled">0</div>
+                            <div class="kpi-change">Next post in 2 hours</div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-label">Drafts</div>
+                            <div class="kpi-value" id="kpiDrafts">0</div>
+                            <div class="kpi-change">Ready to schedule</div>
+                        </div>
+                    </div>
+
+                    <!-- Engagement Metrics KPIs -->
+                    <div class="engagement-section">
+                        <h3 class="section-title">Engagement Metrics</h3>
+                        <div class="kpi-grid">
+                            <div class="kpi-card engagement">
+                                <div class="kpi-label">Total Reach</div>
+                                <div class="kpi-value" id="kpiTotalReach">0</div>
+                                <div class="kpi-change" id="kpiReachChange"></div>
+                            </div>
+                            <div class="kpi-card engagement">
+                                <div class="kpi-label">Total Impressions</div>
+                                <div class="kpi-value" id="kpiTotalImpressions">0</div>
+                                <div class="kpi-change" id="kpiImpressionsChange"></div>
+                            </div>
+                            <div class="kpi-card engagement">
+                                <div class="kpi-label">Total Engagement</div>
+                                <div class="kpi-value" id="kpiTotalEngagement">0</div>
+                                <div class="kpi-change" id="kpiEngagementChange">Likes + Comments + Shares</div>
+                            </div>
+                            <div class="kpi-card engagement highlight">
+                                <div class="kpi-label">Avg. Engagement Rate</div>
+                                <div class="kpi-value" id="kpiAvgEngagementRate">0%</div>
+                                <div class="kpi-change" id="kpiEngagementRateChange"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Platform Connections Section -->
+                    <div class="engagement-section">
+                        <h3 class="section-title">Connected Platforms</h3>
+                        <div class="platform-connections-grid">
+                            <div class="platform-connection-card" data-platform="instagram">
+                                <div class="platform-icon-wrapper" style="background: linear-gradient(135deg, #E1306C, #F77737, #FCAF45);">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="white">
+                                        <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/>
+                                    </svg>
+                                </div>
+                                <div class="platform-connection-info">
+                                    <div class="platform-connection-name">Instagram Business</div>
+                                    <div class="platform-connection-status disconnected">Not Connected</div>
+                                </div>
+                                <button class="platform-connect-btn" onclick="connectPlatform('instagram')">Connect</button>
+                            </div>
+
+                            <div class="platform-connection-card" data-platform="facebook">
+                                <div class="platform-icon-wrapper" style="background: #1877F2;">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="white">
+                                        <path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/>
+                                    </svg>
+                                </div>
+                                <div class="platform-connection-info">
+                                    <div class="platform-connection-name">Facebook Page</div>
+                                    <div class="platform-connection-status disconnected">Not Connected</div>
+                                </div>
+                                <button class="platform-connect-btn" onclick="connectPlatform('facebook')">Connect</button>
+                            </div>
+
+                        </div>
+                        <div class="platform-connections-help">
+                            <p>Connect your social media accounts to automatically sync engagement data and enable automated posting.</p>
+                        </div>
+                    </div>
+
+                    <!-- Chart Section -->
+                    <div class="chart-section">
+                        <div class="chart-header">Posts by Status</div>
+                        <div class="simple-chart" id="statusChart"></div>
+                    </div>
+
+                    <!-- Platform Breakdown -->
+                    <div class="chart-section">
+                        <div class="chart-header">Platform Distribution</div>
+                        <div class="platform-breakdown" id="platformBreakdown"></div>
+                    </div>
+
+                    <!-- Top Performing Posts -->
+                    <div class="chart-section">
+                        <div class="chart-header">Top Performing Posts</div>
+                        <div id="topPerformingPosts" class="top-posts-grid"></div>
+                    </div>
+
+                    <!-- Insights -->
+                    <div class="chart-section">
+                        <div class="chart-header">Content Insights</div>
+                        <div class="insights-grid">
+                            <div class="insight-card">
+                                <div class="insight-label">Optimal Timing</div>
+                                <div class="insight-title">Best Time to Post</div>
+                                <div class="insight-description">Historical data shows highest engagement on weekdays between 10 AM and 2 PM</div>
+                            </div>
+                            <div class="insight-card">
+                                <div class="insight-label">Performance</div>
+                                <div class="insight-title">Visual Content Impact</div>
+                                <div class="insight-description">Posts with high-quality property images generate significantly higher engagement rates</div>
+                            </div>
+                            <div class="insight-card">
+                                <div class="insight-label">Frequency</div>
+                                <div class="insight-title">Posting Cadence</div>
+                                <div class="insight-description">Maintain consistent posting frequency of 3-4 times per week for optimal audience reach</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bulk Actions Toolbar -->
+    <div class="bulk-actions-toolbar" id="bulkActionsToolbar">
+        <span class="selection-counter" id="selectionCounter">0 selected</span>
+        <button class="btn-select-all" onclick="selectAllPosts()">Select All</button>
+        <button class="btn-deselect" onclick="deselectAllPosts()">Deselect All</button>
+        <button class="btn-delete" onclick="bulkDeletePosts()">Delete</button>
+        <button class="btn-reschedule" onclick="showBulkRescheduleModal()">Reschedule</button>
+        <button class="btn-status" onclick="showBulkStatusModal()">Change Status</button>
+    </div>
+
+    <!-- Toast Notification -->
+    <div class="toast" id="toast"></div>
+
+    <script>
+        let allPosts = [];
+        let filteredPosts = [];
+        let selectedPosts = [];
+        let currentView = 'calendar';
+
+        // Load posts on page load
+        window.addEventListener('DOMContentLoaded', () => {
+            loadPosts();
+            renderCalendar();
+            renderList();
+        });
+
+        function getDemoPosts() {
+            return [
+                {
+                    id: 'demo_post_1',
+                    caption: '🏰 MAGNIFICENT COUNTRY ESTATE - Gotherington Manor\n\nSet in 12 acres of pristine parkland, this stunning Grade II listed manor house combines period elegance with modern luxury.\n\n✨ Key Features:\n• 6 spacious bedrooms, 4 with en-suite\n• Grand reception hall with sweeping staircase\n• Drawing room, library, and formal dining room\n• Detached coach house with 2-bed annexe\n• Stables, tennis court & heated swimming pool\n\nGuide Price: £2,750,000\n\nAn exceptional opportunity for those seeking the ultimate country lifestyle.',
+                    hashtags: ['#CountryEstate', '#LuxuryProperty', '#GradeIIListed', '#ManorHouse', '#DreamHome', '#Gotherington'],
+                    images: ['demo_properties/Gotherington-1-1024x682.jpg'],
+                    agentContact: { name: 'Victoria Pemberton', phone: '01242 555 7890', email: 'victoria@savills.com' },
+                    platforms: ['facebook', 'instagram'],
+                    propertyId: 'PROP001',
+                    scheduledTime: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
+                    status: 'published',
+                    createdAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000).toISOString(),
+                    publishedAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
+                    engagement: {
+                        likes: 567,
+                        comments: 43,
+                        shares: 29,
+                        saves: 156,
+                        reach: 8934,
+                        impressions: 15672,
+                        engagementRate: 9.42,
+                        lastUpdated: new Date(Date.now() - 13 * 24 * 60 * 60 * 1000).toISOString()
+                    }
+                },
+                {
+                    id: 'demo_post_2',
+                    caption: '🏡 CHARMING FAMILY HOME - Perfect for Growing Families!\n\nThis delightful 4-bedroom home blends traditional charm with modern comfort. South-facing garden backing onto woodland makes this a nature lover\'s paradise.\n\n🌟 Highlights:\n• 4 double bedrooms\n• Spacious kitchen/dining area with French doors\n• Cosy living room with feature fireplace\n• Master bedroom with en-suite\n• Double garage & ample parking\n• Beautiful established gardens\n\n£625,000\n\nViewings available this weekend!',
+                    hashtags: ['#FamilyHome', '#GardenProperty', '#FourBedroom', '#PropertyForSale', '#HomeInspo', '#DreamGarden'],
+                    images: ['demo_properties/house-red-features-home-insurance.jpg'],
+                    agentContact: { name: 'James Mitchell', phone: '0161 234 5678', email: 'james@savills.com' },
+                    platforms: ['facebook', 'instagram'],
+                    propertyId: 'PROP002',
+                    scheduledTime: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+                    status: 'published',
+                    createdAt: new Date(Date.now() - 11 * 24 * 60 * 60 * 1000).toISOString(),
+                    publishedAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000).toISOString(),
+                    engagement: {
+                        likes: 423,
+                        comments: 36,
+                        shares: 19,
+                        saves: 98,
+                        reach: 6234,
+                        impressions: 11456,
+                        engagementRate: 7.68,
+                        lastUpdated: new Date(Date.now() - 9 * 24 * 60 * 60 * 1000).toISOString()
+                    }
+                },
+                {
+                    id: 'demo_post_3',
+                    caption: '✨ CONTEMPORARY LIVING AT ITS FINEST\n\nStrike the perfect balance between style and comfort in this stunning 3-bedroom modern home. Built just 2 years ago, this property showcases cutting-edge design and energy efficiency.\n\n💎 Features:\n• Open-plan living/kitchen/dining (35ft)\n• Bi-fold doors to landscaped garden\n• 3 bedrooms (master with walk-in wardrobe)\n• Luxury bathroom & en-suite\n• EPC Rating: A\n• Smart home technology throughout\n\n£475,000\n\nDon\'t miss this opportunity for modern perfection!',
+                    hashtags: ['#ModernHome', '#NewBuild', '#ContemporaryLiving', '#SmartHome', '#EnergyEfficient', '#LuxuryInteriors'],
+                    images: ['demo_properties/istockphoto-1493217573-612x612.jpg'],
+                    agentContact: null,
+                    platforms: ['instagram'],
+                    propertyId: 'PROP003',
+                    scheduledTime: new Date(Date.now() + 5 * 24 * 60 * 60 * 1000).toISOString(),
+                    status: 'scheduled',
+                    createdAt: new Date().toISOString(),
+                    publishedAt: null
+                },
+                {
+                    id: 'demo_post_4',
+                    caption: '🌅 ARCHITECTURAL MASTERPIECE with Panoramic Views\n\nExperience modern luxury in this breathtaking contemporary residence. Floor-to-ceiling windows frame spectacular countryside views, while clean lines and premium finishes define every space.\n\n🏆 Exceptional Features:\n• 4 bedrooms with sweeping valley views\n• State-of-the-art kitchen with island\n• Triple-height entrance hall\n• Cinema room & home office\n• Landscaped terraces on multiple levels\n• Triple garage\n\nOffers over £1,250,000\n\nPrivate viewings by appointment.',
+                    hashtags: ['#ArchitecturalHome', '#LuxuryDesign', '#ModernArchitecture', '#DreamProperty', '#ContemporaryStyle', '#LuxuryRealEstate'],
+                    images: ['demo_properties/kirsten-drew-v-wkJZ4Dbac-unsplash-scaled.jpg'],
+                    agentContact: { name: 'Alexandra Bennett', phone: '0161 789 0123', email: 'alex@savills.com' },
+                    platforms: ['instagram'],
+                    propertyId: 'PROP004',
+                    scheduledTime: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+                    status: 'published',
+                    createdAt: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000).toISOString(),
+                    publishedAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+                    engagement: {
+                        likes: 789,
+                        comments: 64,
+                        shares: 42,
+                        saves: 234,
+                        reach: 12456,
+                        impressions: 21890,
+                        engagementRate: 10.23,
+                        lastUpdated: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString()
+                    }
+                },
+                {
+                    id: 'demo_post_5',
+                    caption: '🏛️ HISTORIC SOMERSET MANOR - A Piece of Living History\n\nStep back in time with this magnificent Georgian manor house, meticulously restored to preserve its original grandeur while offering 21st-century comfort.\n\n👑 Period Features:\n• 8 bedrooms across 3 floors\n• Original oak panelling & cornicing\n• 4 reception rooms with period fireplaces\n• Wine cellar & butler\'s pantry\n• 5 acres of formal gardens\n• Separate 3-bedroom guest cottage\n\nGuide Price: £3,500,000\n\nA rare opportunity to own a piece of Somerset heritage.',
+                    hashtags: ['#PeriodProperty', '#GeorgianHouse', '#HistoricHome', '#SomersetProperty', '#LuxuryEstate', '#ManorHouse'],
+                    images: ['demo_properties/Somerset-Manor-Front-Small.jpg'],
+                    agentContact: { name: 'Edward Worthington', phone: '01823 444 5555', email: 'edward@savills.com' },
+                    platforms: ['facebook', 'instagram'],
+                    propertyId: 'PROP005',
+                    scheduledTime: null,
+                    status: 'draft',
+                    createdAt: new Date().toISOString(),
+                    publishedAt: null
+                },
+                {
+                    id: 'demo_post_6',
+                    caption: '🏰 GRAND COUNTRY RESIDENCE - Tatham House\n\nMajestic and timeless, this impressive country house offers over 8,000 sq ft of elegant living space in one of the region\'s most sought-after locations.\n\n🌟 Spectacular Features:\n• 7 bedrooms, 5 bathrooms\n• Grand entrance hall with galleried landing\n• Drawing room, study, orangery\n• Indoor swimming pool complex\n• 15 acres with woodland & paddocks\n• 4-bedroom staff cottage\n\n£4,250,000\n\nTruly one of our finest properties. Contact us for your private tour.',
+                    hashtags: ['#CountryHouse', '#LuxuryEstate', '#GrandDesign', '#PrestigeProperty', '#CountryLiving', '#DreamEstate'],
+                    images: ['demo_properties/Tatham-7-search-our-big-houses-min.jpg'],
+                    agentContact: { name: 'Charlotte Harrington', phone: '0161 555 9876', email: 'charlotte@savills.com' },
+                    platforms: ['facebook', 'instagram'],
+                    propertyId: 'PROP006',
+                    scheduledTime: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+                    status: 'published',
+                    createdAt: new Date(Date.now() - 6 * 24 * 60 * 60 * 1000).toISOString(),
+                    publishedAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+                    engagement: {
+                        likes: 612,
+                        comments: 51,
+                        shares: 34,
+                        saves: 189,
+                        reach: 9876,
+                        impressions: 17234,
+                        engagementRate: 9.17,
+                        lastUpdated: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString()
+                    }
+                },
+                {
+                    id: 'demo_post_7',
+                    caption: '📊 PROPERTY MARKET UPDATE - September 2023\n\nInterested in the current state of the UK property market? Our latest analysis shows continued resilience despite economic headwinds.\n\n📈 Key Insights:\n• Average house prices holding steady\n• Strong demand in prime locations\n• Best time to buy before spring market\n• Fixed-rate mortgages becoming more competitive\n\n💡 Thinking of buying or selling? Now is the time to make your move.\n\nDM us for a free market valuation of your property!',
+                    hashtags: ['#PropertyMarket', '#UKHousing', '#RealEstateNews', '#PropertyInvestment', '#HousingMarket', '#MarketUpdate'],
+                    images: ['demo_properties/s960_UK_HPI_SEPT23.png'],
+                    agentContact: { name: 'Marcus Webb', phone: '0161 333 4444', email: 'marcus@savills.com' },
+                    platforms: ['facebook', 'instagram'],
+                    propertyId: 'PROP007',
+                    scheduledTime: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+                    status: 'published',
+                    createdAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString(),
+                    publishedAt: new Date(Date.now() - 3 * 24 * 60 * 60 * 1000).toISOString(),
+                    engagement: {
+                        likes: 342,
+                        comments: 28,
+                        shares: 15,
+                        saves: 67,
+                        reach: 4523,
+                        impressions: 8912,
+                        engagementRate: 8.51,
+                        lastUpdated: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString()
+                    }
+                },
+                {
+                    id: 'demo_post_8',
+                    caption: '💼 FIRST-TIME BUYER SPECIAL - Your Journey Starts Here!\n\nPerfectly positioned for commuters, this immaculate 2-bedroom home is ideal for first-time buyers or investors seeking strong rental yields.\n\n🔑 What You Get:\n• 2 double bedrooms\n• Modern kitchen with appliances\n• Stylish bathroom suite\n• Private rear garden\n• Allocated parking space\n• Close to excellent schools & transport\n\n£215,000\n\nHelp to Buy available! Book your viewing today and take the first step onto the property ladder.',
+                    hashtags: ['#FirstTimeBuyer', '#StarterHome', '#AffordableHomes', '#HelpToBuy', '#PropertyLadder', '#NewHomeowners'],
+                    images: ['demo_properties/HouseGarden.jpg'],
+                    agentContact: null,
+                    platforms: ['facebook'],
+                    propertyId: 'PROP008',
+                    scheduledTime: null,
+                    status: 'draft',
+                    createdAt: new Date().toISOString(),
+                    publishedAt: null
+                },
+                {
+                    id: 'demo_post_9',
+                    caption: '🎯 PRICE REDUCTION - Act Fast!\n\nMotivated seller! This beautiful 4-bedroom detached home has just been reduced by £50,000! Originally £675,000, now available for just £625,000.\n\n⚡ Why Buy Now:\n• Immaculate condition throughout\n• Large driveway & double garage\n• Stunning landscaped garden\n• Close to top-rated schools\n• Ready to move in - no chain!\n\n🏃 Don\'t miss this incredible opportunity!\n\nCall now to arrange your viewing: 0161 222 3333',
+                    hashtags: ['#PriceReduction', '#PropertyDeal', '#MotivatedSeller', '#FourBedroom', '#NoChain', '#MustSell'],
+                    images: ['demo_properties/The-Modern-House-UK-0.jpg'],
+                    agentContact: { name: 'Sophie Anderson', phone: '0161 222 3333', email: 'sophie@savills.com' },
+                    platforms: ['facebook', 'instagram'],
+                    propertyId: 'PROP009',
+                    scheduledTime: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString(),
+                    status: 'published',
+                    createdAt: new Date(Date.now() - 13 * 24 * 60 * 60 * 1000).toISOString(),
+                    publishedAt: new Date(Date.now() - 12 * 24 * 60 * 60 * 1000).toISOString(),
+                    engagement: {
+                        likes: 891,
+                        comments: 72,
+                        shares: 48,
+                        saves: 267,
+                        reach: 14234,
+                        impressions: 24567,
+                        engagementRate: 11.34,
+                        lastUpdated: new Date(Date.now() - 11 * 24 * 60 * 60 * 1000).toISOString()
+                    }
+                }
+            ];
+        }
+
+        function loadPosts() {
+            const postsJson = localStorage.getItem('socialMediaPosts');
+
+            // If no posts in localStorage, load demo posts
+            if (!postsJson) {
+                allPosts = getDemoPosts();
+                localStorage.setItem('socialMediaPosts', JSON.stringify(allPosts));
+            } else {
+                allPosts = JSON.parse(postsJson);
+            }
+
+            filteredPosts = [...allPosts];
+
+            // Update post count
+            document.getElementById('postCount').textContent = `${allPosts.length} post${allPosts.length !== 1 ? 's' : ''}`;
+        }
+
+        // === ANALYTICS RENDERING ===
+
+        function renderAnalytics() {
+            console.log('📊 Rendering analytics...');
+
+            // Calculate metrics from allPosts array
+            const totalPosts = allPosts.length;
+            const published = allPosts.filter(p => p.status === 'published').length;
+            const scheduled = allPosts.filter(p => p.status === 'scheduled').length;
+            const drafts = allPosts.filter(p => p.status === 'draft').length;
+
+            // Update KPI values
+            document.getElementById('kpiTotalPosts').textContent = totalPosts;
+            document.getElementById('kpiPublished').textContent = published;
+            document.getElementById('kpiScheduled').textContent = scheduled;
+            document.getElementById('kpiDrafts').textContent = drafts;
+
+            // Calculate engagement metrics
+            const postsWithEngagement = allPosts.filter(p => p.engagement);
+            let totalReach = 0;
+            let totalImpressions = 0;
+            let totalLikes = 0;
+            let totalComments = 0;
+            let totalShares = 0;
+            let engagementRateSum = 0;
+
+            postsWithEngagement.forEach(post => {
+                const e = post.engagement;
+                totalReach += e.reach || 0;
+                totalImpressions += e.impressions || 0;
+                totalLikes += e.likes || 0;
+                totalComments += e.comments || 0;
+                totalShares += e.shares || 0;
+                engagementRateSum += e.engagementRate || 0;
+            });
+
+            const totalEngagement = totalLikes + totalComments + totalShares;
+            const avgEngagementRate = postsWithEngagement.length > 0
+                ? (engagementRateSum / postsWithEngagement.length).toFixed(2)
+                : 0;
+
+            // Update engagement KPIs
+            document.getElementById('kpiTotalReach').textContent = totalReach.toLocaleString();
+            document.getElementById('kpiTotalImpressions').textContent = totalImpressions.toLocaleString();
+            document.getElementById('kpiTotalEngagement').textContent = totalEngagement.toLocaleString();
+            document.getElementById('kpiAvgEngagementRate').textContent = avgEngagementRate + '%';
+
+            // Update change indicators
+            if (postsWithEngagement.length > 0) {
+                document.getElementById('kpiReachChange').textContent = `From ${postsWithEngagement.length} published post${postsWithEngagement.length !== 1 ? 's' : ''}`;
+                document.getElementById('kpiImpressionsChange').textContent = `Avg. ${Math.round(totalImpressions / postsWithEngagement.length).toLocaleString()} per post`;
+                document.getElementById('kpiEngagementRateChange').textContent = avgEngagementRate >= 5 ? 'Strong performance' : 'Room for improvement';
+            } else {
+                document.getElementById('kpiReachChange').textContent = 'No data yet';
+                document.getElementById('kpiImpressionsChange').textContent = 'Publish posts to see metrics';
+                document.getElementById('kpiEngagementRateChange').textContent = 'Connect platforms to track';
+            }
+
+            // Render top performing posts
+            renderTopPerformingPosts(postsWithEngagement);
+
+            // Update next scheduled post info
+            const scheduledPosts = allPosts
+                .filter(p => p.status === 'scheduled' && p.scheduledDate)
+                .sort((a, b) => new Date(a.scheduledDate) - new Date(b.scheduledDate));
+
+            const kpiScheduledChange = document.querySelector('#kpiScheduled').parentElement.querySelector('.kpi-change');
+            if (scheduledPosts.length > 0) {
+                const nextPost = scheduledPosts[0];
+                const nextDate = new Date(nextPost.scheduledDate);
+                const now = new Date();
+                const hoursUntil = Math.round((nextDate - now) / (1000 * 60 * 60));
+
+                if (hoursUntil > 0) {
+                    kpiScheduledChange.textContent = `Next post in ${hoursUntil} hour${hoursUntil !== 1 ? 's' : ''}`;
+                } else if (hoursUntil === 0) {
+                    kpiScheduledChange.textContent = 'Next post: Less than 1 hour';
+                } else {
+                    kpiScheduledChange.textContent = 'Next post: Overdue';
+                    kpiScheduledChange.classList.add('negative');
+                }
+            } else {
+                kpiScheduledChange.textContent = 'No scheduled posts';
+            }
+
+            // Render status chart
+            renderStatusChart(published, scheduled, drafts);
+
+            // Render platform breakdown
+            renderPlatformBreakdown();
+
+            console.log('✅ Analytics rendered:', { totalPosts, published, scheduled, drafts });
+        }
+
+        function renderStatusChart(published, scheduled, drafts) {
+            const maxValue = Math.max(published, scheduled, drafts, 1);
+            const chartContainer = document.getElementById('statusChart');
+
+            const statuses = [
+                { label: 'Published', value: published, color: '#10b981' },
+                { label: 'Scheduled', value: scheduled, color: '#009BA0' },
+                { label: 'Drafts', value: drafts, color: '#6c757d' }
+            ];
+
+            chartContainer.innerHTML = statuses.map(status => {
+                const heightPercent = (status.value / maxValue) * 100;
+                return `
+                    <div class="chart-bar">
+                        <div class="bar-column" style="height: ${heightPercent}%; background: linear-gradient(180deg, ${status.color} 0%, ${status.color}dd 100%);">
+                            <div class="bar-value">${status.value}</div>
+                        </div>
+                        <div class="bar-label">${status.label}</div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function renderPlatformBreakdown() {
+            const platformCounts = {};
+
+            // Count posts per platform
+            allPosts.forEach(post => {
+                if (post.platforms && Array.isArray(post.platforms)) {
+                    post.platforms.forEach(platform => {
+                        platformCounts[platform] = (platformCounts[platform] || 0) + 1;
+                    });
+                }
+            });
+
+            const breakdownContainer = document.getElementById('platformBreakdown');
+
+            if (Object.keys(platformCounts).length === 0) {
+                breakdownContainer.innerHTML = '<div style="text-align: center; color: #6b7280; padding: 2rem; font-size: 0.9rem;">No platform data available</div>';
+                return;
+            }
+
+            breakdownContainer.innerHTML = Object.entries(platformCounts)
+                .sort((a, b) => b[1] - a[1])
+                .map(([platform, count]) => `
+                    <div class="platform-stat">
+                        <div class="platform-name">${platform}</div>
+                        <div class="platform-count">${count}</div>
+                    </div>
+                `).join('');
+        }
+
+        function renderTopPerformingPosts(postsWithEngagement) {
+            const container = document.getElementById('topPerformingPosts');
+
+            if (postsWithEngagement.length === 0) {
+                container.innerHTML = `
+                    <div class="top-posts-empty">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">📊</div>
+                        <div style="font-size: 1.1rem; font-weight: 600; color: #374151; margin-bottom: 0.5rem;">
+                            No Engagement Data Yet
+                        </div>
+                        <div style="font-size: 0.95rem; color: #6b7280;">
+                            Publish posts and connect your platforms to see top performers
+                        </div>
+                    </div>
+                `;
+                return;
+            }
+
+            // Sort by engagement rate and take top 5
+            const topPosts = [...postsWithEngagement]
+                .sort((a, b) => (b.engagement.engagementRate || 0) - (a.engagement.engagementRate || 0))
+                .slice(0, 5);
+
+            container.innerHTML = topPosts.map((post, index) => {
+                const e = post.engagement;
+                const caption = post.caption.split('\n')[0].substring(0, 100) + (post.caption.length > 100 ? '...' : '');
+
+                return `
+                    <div class="top-post-card">
+                        <div class="top-post-rank">${index + 1}</div>
+                        <div class="top-post-caption">${caption}</div>
+                        <div class="top-post-metrics">
+                            <div class="metric-item">
+                                <div class="metric-label">Likes</div>
+                                <div class="metric-value">${e.likes?.toLocaleString() || 0}</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-label">Comments</div>
+                                <div class="metric-value">${e.comments?.toLocaleString() || 0}</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-label">Shares</div>
+                                <div class="metric-value">${e.shares?.toLocaleString() || 0}</div>
+                            </div>
+                            <div class="metric-item">
+                                <div class="metric-label">Reach</div>
+                                <div class="metric-value">${e.reach?.toLocaleString() || 0}</div>
+                            </div>
+                        </div>
+                        <div class="top-post-engagement-rate">
+                            ${(e.engagementRate || 0).toFixed(2)}% Engagement Rate
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function switchView(view) {
+            currentView = view;
+
+            // Update tabs
+            document.querySelectorAll('.view-tab').forEach(tab => tab.classList.remove('active'));
+            event.target.classList.add('active');
+
+            // Update panels
+            document.querySelectorAll('.view-panel').forEach(panel => panel.classList.remove('active'));
+            document.getElementById(view + 'View').classList.add('active');
+
+            if (view === 'calendar') {
+                renderCalendar();
+            } else if (view === 'list') {
+                renderList();
+            } else if (view === 'analytics') {
+                renderAnalytics();
+            }
+        }
+
+        function applyFilters() {
+            const statusFilter = document.getElementById('statusFilter').value;
+            const platformFilter = document.getElementById('platformFilter').value;
+            const dateRangeFilter = document.getElementById('dateRangeFilter').value;
+            const searchQuery = document.getElementById('searchBox').value.toLowerCase();
+
+            const now = new Date();
+            const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+            const weekStart = new Date(today);
+            weekStart.setDate(today.getDate() - today.getDay()); // Start of week (Sunday)
+            const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+
+            filteredPosts = allPosts.filter(post => {
+                // Status filter
+                if (statusFilter !== 'all' && post.status !== statusFilter) return false;
+
+                // Platform filter
+                if (platformFilter !== 'all' && !post.platforms.includes(platformFilter)) return false;
+
+                // Date range filter
+                if (dateRangeFilter !== 'all' && post.scheduledTime) {
+                    const postDate = new Date(post.scheduledTime);
+
+                    switch(dateRangeFilter) {
+                        case 'today':
+                            if (postDate < today || postDate >= new Date(today.getTime() + 86400000)) return false;
+                            break;
+                        case 'week':
+                            if (postDate < weekStart) return false;
+                            break;
+                        case 'month':
+                            if (postDate < monthStart) return false;
+                            break;
+                        case 'past':
+                            if (postDate >= now) return false;
+                            break;
+                        case 'future':
+                            if (postDate < now) return false;
+                            break;
+                    }
+                }
+
+                // Search filter (caption + hashtags)
+                if (searchQuery) {
+                    const captionMatch = post.caption.toLowerCase().includes(searchQuery);
+                    const hashtagMatch = post.hashtags && post.hashtags.some(tag =>
+                        tag.toLowerCase().includes(searchQuery)
+                    );
+                    if (!captionMatch && !hashtagMatch) return false;
+                }
+
+                return true;
+            });
+
+            // Update results count
+            const resultsCount = document.getElementById('searchResultsCount');
+            if (searchQuery || statusFilter !== 'all' || platformFilter !== 'all' || dateRangeFilter !== 'all') {
+                resultsCount.textContent = `(${filteredPosts.length} ${filteredPosts.length === 1 ? 'result' : 'results'})`;
+            } else {
+                resultsCount.textContent = '';
+            }
+
+            // Re-render current view
+            if (currentView === 'calendar') {
+                renderCalendar();
+            } else {
+                renderList();
+            }
+        }
+
+        function clearFilters() {
+            // Reset all filters
+            document.getElementById('statusFilter').value = 'all';
+            document.getElementById('platformFilter').value = 'all';
+            document.getElementById('dateRangeFilter').value = 'all';
+            document.getElementById('searchBox').value = '';
+
+            // Clear results count
+            document.getElementById('searchResultsCount').textContent = '';
+
+            // Re-apply filters (which will show all posts)
+            applyFilters();
+        }
+
+        // === BULK SELECTION FUNCTIONS ===
+
+        function togglePostSelection(postId) {
+            const index = selectedPosts.indexOf(postId);
+            if (index > -1) {
+                selectedPosts.splice(index, 1);
+            } else {
+                selectedPosts.push(postId);
+            }
+
+            // Update visual state without full re-render
+            const postElement = document.querySelector(`[data-post-id="${postId}"]`);
+            if (postElement) {
+                const checkbox = postElement.querySelector('input[type="checkbox"]');
+                if (selectedPosts.includes(postId)) {
+                    postElement.classList.add('selected');
+                    if (checkbox) checkbox.checked = true;
+                } else {
+                    postElement.classList.remove('selected');
+                    if (checkbox) checkbox.checked = false;
+                }
+            }
+
+            updateBulkActionsToolbar();
+        }
+
+        function selectAllPosts() {
+            selectedPosts = filteredPosts.map(p => p.id);
+            updateBulkActionsToolbar();
+
+            if (currentView === 'calendar') {
+                renderCalendar();
+            } else {
+                renderList();
+            }
+        }
+
+        function deselectAllPosts() {
+            selectedPosts = [];
+            updateBulkActionsToolbar();
+
+            if (currentView === 'calendar') {
+                renderCalendar();
+            } else {
+                renderList();
+            }
+        }
+
+        function updateBulkActionsToolbar() {
+            const toolbar = document.getElementById('bulkActionsToolbar');
+            const counter = document.getElementById('selectionCounter');
+
+            if (selectedPosts.length > 0) {
+                toolbar.style.display = 'flex';
+                counter.textContent = `${selectedPosts.length} selected`;
+            } else {
+                toolbar.style.display = 'none';
+            }
+        }
+
+        // === BULK ACTION FUNCTIONS ===
+
+        function bulkDeletePosts() {
+            if (selectedPosts.length === 0) return;
+
+            const count = selectedPosts.length;
+            const confirmed = confirm(`Are you sure you want to delete ${count} post(s)? This cannot be undone.`);
+            if (!confirmed) return;
+
+            // Remove selected posts from storage
+            allPosts = allPosts.filter(p => !selectedPosts.includes(p.id));
+            localStorage.setItem('socialMediaPosts', JSON.stringify(allPosts));
+
+            // Clear selection
+            selectedPosts = [];
+            updateBulkActionsToolbar();
+
+            // Re-filter and render
+            applyFilters();
+
+            showToast(`Deleted ${count} post(s)`, 'success');
+        }
+
+        function showBulkRescheduleModal() {
+            if (selectedPosts.length === 0) return;
+
+            const newDate = prompt(`Reschedule ${selectedPosts.length} post(s) to (YYYY-MM-DD HH:MM):`);
+            if (!newDate) return;
+
+            try {
+                const dateObj = new Date(newDate);
+                if (isNaN(dateObj.getTime())) {
+                    alert('Invalid date format. Please use YYYY-MM-DD HH:MM');
+                    return;
+                }
+
+                // Update selected posts
+                allPosts.forEach(post => {
+                    if (selectedPosts.includes(post.id)) {
+                        post.scheduledTime = dateObj.toISOString();
+                        post.status = 'scheduled';
+                    }
+                });
+
+                localStorage.setItem('socialMediaPosts', JSON.stringify(allPosts));
+
+                // Clear selection
+                const count = selectedPosts.length;
+                selectedPosts = [];
+                updateBulkActionsToolbar();
+
+                // Re-filter and render
+                applyFilters();
+
+                showToast(`Rescheduled ${count} post(s)`, 'success');
+            } catch (error) {
+                alert('Error rescheduling posts. Please try again.');
+            }
+        }
+
+        function showBulkStatusModal() {
+            if (selectedPosts.length === 0) return;
+
+            const newStatus = prompt(`Change status of ${selectedPosts.length} post(s) to:\n1. draft\n2. scheduled\n3. published\n\nEnter 1, 2, or 3:`);
+
+            let status;
+            if (newStatus === '1') status = 'draft';
+            else if (newStatus === '2') status = 'scheduled';
+            else if (newStatus === '3') status = 'published';
+            else {
+                alert('Invalid choice. Please enter 1, 2, or 3.');
+                return;
+            }
+
+            // Update selected posts
+            allPosts.forEach(post => {
+                if (selectedPosts.includes(post.id)) {
+                    post.status = status;
+                    if (status === 'published' && !post.publishedAt) {
+                        post.publishedAt = new Date().toISOString();
+                    }
+                }
+            });
+
+            localStorage.setItem('socialMediaPosts', JSON.stringify(allPosts));
+
+            // Clear selection
+            const count = selectedPosts.length;
+            selectedPosts = [];
+            updateBulkActionsToolbar();
+
+            // Re-filter and render
+            applyFilters();
+
+            showToast(`Changed status of ${count} post(s) to ${status}`, 'success');
+        }
+
+        function renderCalendar() {
+            const container = document.getElementById('calendarContent');
+
+            if (filteredPosts.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon"></div>
+                        <h3>No Scheduled Posts</h3>
+                        <p>Start by creating a post in the Social Media Editor</p>
+                        <a href="social_media_editor_v2.html" class="btn btn-primary">Create Post</a>
+                    </div>
+                `;
+                return;
+            }
+
+            // Sort posts: scheduled first (by date), then published (by publish date), then drafts
+            const sortedPosts = [...filteredPosts].sort((a, b) => {
+                // Scheduled posts come first
+                if (a.status === 'scheduled' && b.status !== 'scheduled') return -1;
+                if (a.status !== 'scheduled' && b.status === 'scheduled') return 1;
+
+                // Then published posts
+                if (a.status === 'published' && b.status === 'draft') return -1;
+                if (a.status === 'draft' && b.status === 'published') return 1;
+
+                // Within same status, sort by date
+                if (a.status === 'scheduled' && b.status === 'scheduled') {
+                    return new Date(a.scheduledTime) - new Date(b.scheduledTime);
+                }
+                if (a.status === 'published' && b.status === 'published') {
+                    return new Date(b.publishedAt) - new Date(a.publishedAt);
+                }
+                return 0;
+            });
+
+            // Create Instagram-style grid
+            const gridHTML = sortedPosts.map(post => createInstagramGridItem(post)).join('');
+            container.innerHTML = `<div class="instagram-grid">${gridHTML}</div>`;
+        }
+
+        function createInstagramGridItem(post) {
+            const imageUrl = (post.images && post.images.length > 0) ? post.images[0] : '';
+            const scheduledDate = post.scheduledTime ? new Date(post.scheduledTime) : null;
+            const isPublished = post.status === 'published';
+            const isScheduled = post.status === 'scheduled';
+            const isDraft = post.status === 'draft';
+
+            let dateStr = 'Draft';
+            let statusIcon = '📝';
+            let timeStr = '';
+
+            if (isPublished && post.publishedAt) {
+                const publishedDate = new Date(post.publishedAt);
+                dateStr = publishedDate.toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric'
+                });
+                statusIcon = '✓';
+                timeStr = publishedDate.toLocaleTimeString('en-US', {
+                    hour: 'numeric',
+                    minute: '2-digit',
+                    hour12: true
+                });
+            } else if (isScheduled && scheduledDate) {
+                dateStr = scheduledDate.toLocaleDateString('en-US', {
+                    month: 'short',
+                    day: 'numeric'
+                });
+                statusIcon = '🕒';
+                timeStr = scheduledDate.toLocaleTimeString('en-US', {
+                    hour: 'numeric',
+                    minute: '2-digit',
+                    hour12: true
+                });
+            }
+
+            const isSelected = selectedPosts.includes(post.id);
+
+            return `
+                <div class="instagram-post ${post.status} ${isSelected ? 'selected' : ''}" data-post-id="${post.id}">
+                    <div class="post-select-checkbox" onclick="event.stopPropagation(); togglePostSelection('${post.id}')">
+                        <input type="checkbox" ${isSelected ? 'checked' : ''} onclick="event.stopPropagation();">
+                    </div>
+                    <div class="instagram-image-wrapper" onclick="viewPostDetail('${post.id}')">
+                        ${imageUrl ? `<img src="${imageUrl}" alt="Post preview" class="instagram-image">` : '<div class="instagram-placeholder">No Image</div>'}
+                        ${isPublished ? `
+                            <div class="post-published-badge">LIVE</div>
+                        ` : ''}
+                        ${timeStr ? `<div class="post-time-badge">🕐 ${timeStr}</div>` : ''}
+                        <div class="instagram-overlay">
+                            <div class="instagram-overlay-content">
+                                ${isPublished ? `
+                                    <div class="instagram-stats">
+                                        ${post.engagement ? `
+                                            <span>❤ ${post.engagement.likes || 0}</span>
+                                            <span>💬 ${post.engagement.comments || 0}</span>
+                                            <span>🔄 ${post.engagement.shares || 0}</span>
+                                        ` : `
+                                            <span style="font-size: 0.85rem; opacity: 0.9;">📊 No metrics yet</span>
+                                        `}
+                                    </div>
+                                ` : `
+                                    <div class="instagram-stats-preview">
+                                        <span>${isScheduled ? '⏰ Scheduled' : '📝 Draft'}</span>
+                                    </div>
+                                `}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="instagram-post-info">
+                        <div class="instagram-post-date">
+                            <span class="status-icon">${statusIcon}</span>
+                            ${dateStr}
+                        </div>
+                        <div class="instagram-post-status status-${post.status}">${post.status}</div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function viewPostDetail(postId) {
+            const post = allPosts.find(p => p.id === postId);
+            if (!post) return;
+
+            // Create modal to show full post details
+            const modal = document.createElement('div');
+            modal.className = 'post-detail-modal';
+            modal.innerHTML = `
+                <div class="modal-overlay" onclick="closePostDetail()"></div>
+                <div class="modal-content instagram-modal">
+                    <button class="modal-close" onclick="closePostDetail()">×</button>
+                    <div class="instagram-modal-layout">
+                        <div class="instagram-modal-image">
+                            ${post.images && post.images.length > 0
+                                ? `<img src="${post.images[0]}" alt="Post image">`
+                                : '<div class="no-image-placeholder">No Image</div>'}
+                        </div>
+                        <div class="instagram-modal-sidebar">
+                            <div class="instagram-modal-header">
+                                <div class="instagram-profile">
+                                    <div class="instagram-avatar">S</div>
+                                    <div class="instagram-username">savills_properties</div>
+                                </div>
+                            </div>
+                            <div class="instagram-modal-caption">
+                                <div class="instagram-caption-user">
+                                    <strong>savills_properties</strong>
+                                </div>
+                                <div class="instagram-caption-text">${post.caption}</div>
+                                ${post.hashtags && post.hashtags.length > 0
+                                    ? `<div class="instagram-hashtags">${post.hashtags.map(tag => `<span class="hashtag">${tag}</span>`).join(' ')}</div>`
+                                    : ''}
+                            </div>
+                            <div class="instagram-modal-footer">
+                                <div class="instagram-actions">
+                                    <span>❤</span>
+                                    <span>💬</span>
+                                    <span>📤</span>
+                                </div>
+                                <div class="instagram-post-meta">
+                                    <div><strong>Status:</strong> <span class="status-badge status-${post.status}">${post.status}</span></div>
+                                    ${post.scheduledTime
+                                        ? `<div><strong>Scheduled:</strong> ${new Date(post.scheduledTime).toLocaleString()}</div>`
+                                        : '<div><strong>Status:</strong> Not scheduled</div>'}
+                                    <div><strong>Platforms:</strong> ${post.platforms.join(', ')}</div>
+                                    ${post.agentContact
+                                        ? `<div><strong>Agent:</strong> ${post.agentContact.name}</div>`
+                                        : ''}
+                                </div>
+                                <div class="modal-action-buttons">
+                                    <button class="modal-action-btn copy-btn" onclick="event.stopPropagation(); copyPostCaption('${post.id}')">
+                                        📋 Copy Caption
+                                    </button>
+                                    <button class="modal-action-btn edit-btn" onclick="event.stopPropagation(); editPost('${post.id}')">
+                                        ✏️ Edit Post
+                                    </button>
+                                    ${post.status !== 'published' ? `
+                                        <button class="modal-action-btn delete-btn" onclick="event.stopPropagation(); deletePost('${post.id}')">
+                                            🗑️ Delete
+                                        </button>
+                                    ` : ''}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(modal);
+            setTimeout(() => modal.classList.add('active'), 10);
+        }
+
+        function closePostDetail() {
+            const modal = document.querySelector('.post-detail-modal');
+            if (modal) {
+                modal.classList.remove('active');
+                setTimeout(() => modal.remove(), 300);
+            }
+        }
+
+        async function copyPostCaption(postId) {
+            const post = allPosts.find(p => p.id === postId);
+            if (!post) return;
+
+            // Build full text with caption + hashtags
+            let textToCopy = post.caption;
+            if (post.hashtags && post.hashtags.length > 0) {
+                textToCopy += '\n\n' + post.hashtags.join(' ');
+            }
+
+            try {
+                await navigator.clipboard.writeText(textToCopy);
+
+                // Find the button and show success state
+                const buttons = document.querySelectorAll('.copy-btn');
+                buttons.forEach(btn => {
+                    if (btn.onclick.toString().includes(postId)) {
+                        const originalText = btn.innerHTML;
+                        btn.classList.add('copied');
+                        btn.innerHTML = '✓ Copied!';
+
+                        setTimeout(() => {
+                            btn.classList.remove('copied');
+                            btn.innerHTML = originalText;
+                        }, 2000);
+                    }
+                });
+
+                showToast('Caption copied to clipboard!');
+            } catch (error) {
+                console.error('Failed to copy:', error);
+                showToast('Failed to copy to clipboard');
+            }
+        }
+
+
+        function editPost(postId) {
+            const post = allPosts.find(p => p.id === postId);
+            if (!post) return;
+
+            // Close the detail modal first
+            closePostDetail();
+
+            // Create inline edit modal
+            const editModal = document.createElement('div');
+            editModal.className = 'post-detail-modal';
+            editModal.innerHTML = `
+                <div class="modal-overlay" onclick="closeEditModal()"></div>
+                <div class="modal-content edit-modal-content">
+                    <button class="modal-close" onclick="closeEditModal()">×</button>
+                    <div class="edit-modal-header">
+                        <h2>✏️ Edit Post</h2>
+                    </div>
+                    <div class="edit-modal-body">
+                        <div class="edit-form-group">
+                            <label>Caption</label>
+                            <textarea id="editCaption" rows="8" oninput="updateCharacterCount()">${post.caption}</textarea>
+                            <div class="character-counter">
+                                <span id="charCount">0</span> / 2200 characters
+                                <span id="charWarning" class="char-warning"></span>
+                            </div>
+                        </div>
+                        <div class="edit-form-group">
+                            <label>Hashtags (comma-separated)</label>
+                            <input type="text" id="editHashtags" value="${post.hashtags.join(', ')}" />
+                        </div>
+                        <div class="edit-form-row">
+                            <div class="edit-form-group">
+                                <label>Status</label>
+                                <select id="editStatus">
+                                    <option value="draft" ${post.status === 'draft' ? 'selected' : ''}>Draft</option>
+                                    <option value="scheduled" ${post.status === 'scheduled' ? 'selected' : ''}>Scheduled</option>
+                                    <option value="published" ${post.status === 'published' ? 'selected' : ''}>Published</option>
+                                </select>
+                            </div>
+                            <div class="edit-form-group">
+                                <label>Scheduled Date/Time</label>
+                                <input type="datetime-local" id="editScheduledTime"
+                                    value="${post.scheduledTime ? new Date(post.scheduledTime).toISOString().slice(0, 16) : ''}" />
+                            </div>
+                        </div>
+                        <div class="edit-form-group">
+                            <label>Platforms</label>
+                            <div class="platform-checkboxes">
+                                <label><input type="checkbox" value="facebook" ${post.platforms.includes('facebook') ? 'checked' : ''}> Facebook</label>
+                                <label><input type="checkbox" value="instagram" ${post.platforms.includes('instagram') ? 'checked' : ''}> Instagram</label>
+                                <label><input type="checkbox" value="twitter" ${post.platforms.includes('twitter') ? 'checked' : ''}> Twitter</label>
+                                <label><input type="checkbox" value="linkedin" ${post.platforms.includes('linkedin') ? 'checked' : ''}> LinkedIn</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="edit-modal-footer">
+                        <button class="modal-action-btn cancel-btn" onclick="closeEditModal()">Cancel</button>
+                        <button class="modal-action-btn save-btn" onclick="savePostEdit('${postId}')">💾 Save Changes</button>
+                    </div>
+                </div>
+            `;
+            document.body.appendChild(editModal);
+            setTimeout(() => {
+                editModal.classList.add('active');
+                // Initialize character counter
+                updateCharacterCount();
+            }, 10);
+        }
+
+        function closeEditModal() {
+            const modal = document.querySelector('.post-detail-modal');
+            if (modal) {
+                modal.classList.remove('active');
+                setTimeout(() => modal.remove(), 300);
+            }
+        }
+
+        function savePostEdit(postId) {
+            const post = allPosts.find(p => p.id === postId);
+            if (!post) return;
+
+            // Get form values
+            const caption = document.getElementById('editCaption').value;
+            const hashtags = document.getElementById('editHashtags').value
+                .split(',')
+                .map(tag => tag.trim())
+                .filter(tag => tag.length > 0)
+                .map(tag => tag.startsWith('#') ? tag : '#' + tag);
+            const status = document.getElementById('editStatus').value;
+            const scheduledTime = document.getElementById('editScheduledTime').value;
+            const platformCheckboxes = document.querySelectorAll('.platform-checkboxes input[type="checkbox"]:checked');
+            const platforms = Array.from(platformCheckboxes).map(cb => cb.value);
+
+            // Update post
+            post.caption = caption;
+            post.hashtags = hashtags;
+            post.status = status;
+            post.scheduledTime = scheduledTime ? new Date(scheduledTime).toISOString() : null;
+            post.platforms = platforms;
+
+            // If status changed to published, set publishedAt
+            if (status === 'published' && !post.publishedAt) {
+                post.publishedAt = new Date().toISOString();
+            }
+
+            // Update localStorage
+            localStorage.setItem('socialMediaPosts', JSON.stringify(allPosts));
+
+            // Close modal
+            closeEditModal();
+
+            // Refresh view
+            loadPosts();
+
+            // Show success message
+            showToast('Post updated successfully');
+        }
+
+        async function deletePost(postId) {
+            // Show custom confirmation dialog
+            const confirmed = await showConfirmDialog({
+                icon: '🗑️',
+                title: 'Delete Post?',
+                message: 'Are you sure you want to delete this post? This action cannot be undone.',
+                confirmText: 'Delete',
+                cancelText: 'Cancel'
+            });
+
+            if (!confirmed) {
+                return;
+            }
+
+            // Remove from allPosts array
+            const index = allPosts.findIndex(p => p.id === postId);
+            if (index > -1) {
+                allPosts.splice(index, 1);
+            }
+
+            // Update localStorage
+            localStorage.setItem('socialMediaPosts', JSON.stringify(allPosts));
+
+            // Close modal
+            closePostDetail();
+
+            // Refresh view
+            loadPosts();
+
+            // Show success message
+            showToast('Post deleted successfully');
+        }
+
+        function showToast(message) {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+
+            setTimeout(() => toast.classList.add('show'), 100);
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
+
+        // ============================================
+        // CONFIRMATION DIALOG SYSTEM
+        // ============================================
+        let confirmDialogResolve = null;
+
+        function showConfirmDialog(options) {
+            return new Promise((resolve) => {
+                confirmDialogResolve = resolve;
+
+                // Create dialog HTML
+                const dialogHTML = `
+                    <div class="confirm-dialog-overlay" id="confirmDialog">
+                        <div class="confirm-dialog">
+                            <div class="confirm-dialog-icon danger">
+                                ${options.icon || '\u26A0\uFE0F'}
+                            </div>
+                            <h3>${options.title || 'Confirm Action'}</h3>
+                            <p>${options.message || 'Are you sure you want to proceed?'}</p>
+                            <div class="confirm-dialog-actions">
+                                <button class="btn-cancel" onclick="closeConfirmDialog(false)">${options.cancelText || 'Cancel'}</button>
+                                <button class="btn-confirm" onclick="closeConfirmDialog(true)">${options.confirmText || 'Confirm'}</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+                // Remove existing dialog if any
+                const existing = document.getElementById('confirmDialog');
+                if (existing) {
+                    existing.remove();
+                }
+
+                // Add to body
+                document.body.insertAdjacentHTML('beforeend', dialogHTML);
+
+                // Show with animation
+                setTimeout(() => {
+                    document.getElementById('confirmDialog').classList.add('show');
+                }, 10);
+            });
+        }
+
+        function closeConfirmDialog(result) {
+            const dialog = document.getElementById('confirmDialog');
+            if (dialog) {
+                dialog.classList.remove('show');
+                setTimeout(() => {
+                    dialog.remove();
+                    if (confirmDialogResolve) {
+                        confirmDialogResolve(result);
+                        confirmDialogResolve = null;
+                    }
+                }, 300);
+            }
+        }
+
+        // ============================================
+        // KEYBOARD SHORTCUTS
+        // ============================================
+        document.addEventListener('keydown', (e) => {
+            // ESC key closes modals and dialogs
+            if (e.key === 'Escape') {
+                // Close confirmation dialog
+                const confirmDialog = document.getElementById('confirmDialog');
+                if (confirmDialog) {
+                    closeConfirmDialog(false);
+                    return;
+                }
+
+                // Close post detail modal
+                const postDetailModal = document.getElementById('postDetailModal');
+                if (postDetailModal && postDetailModal.style.display === 'flex') {
+                    closePostDetail();
+                    return;
+                }
+
+                // Close export menu
+                const exportMenu = document.querySelector('.export-menu.show');
+                if (exportMenu) {
+                    exportMenu.classList.remove('show');
+                    return;
+                }
+            }
+        });
+
+        // ============================================
+        // CHARACTER COUNTER
+        // ============================================
+        function updateCharacterCount() {
+            const textarea = document.getElementById('editCaption');
+            const charCount = document.getElementById('charCount');
+            const charWarning = document.getElementById('charWarning');
+
+            if (!textarea || !charCount) return;
+
+            const length = textarea.value.length;
+            const limit = 2200; // Instagram character limit
+
+            charCount.textContent = length;
+
+            // Remove all classes first
+            charCount.classList.remove('warning', 'error');
+
+            // Add appropriate class and warning based on length
+            if (length > limit) {
+                charCount.classList.add('error');
+                charWarning.textContent = `${length - limit} characters over limit`;
+            } else if (length > limit * 0.9) { // 90% threshold (1980 chars)
+                charCount.classList.add('warning');
+                charWarning.textContent = 'Approaching character limit';
+            } else {
+                charWarning.textContent = '';
+            }
+        }
+
+        // ============================================
+        // LOADING STATES
+        // ============================================
+        function showLoading(message = 'Loading...') {
+            // Remove existing loader if any
+            hideLoading();
+
+            // Create loading overlay
+            const loadingHTML = `
+                <div class="loading-overlay" id="loadingOverlay">
+                    <div class="spinner-container">
+                        <div class="spinner"></div>
+                        <div class="spinner-text">${message}</div>
+                    </div>
+                </div>
+            `;
+
+            document.body.insertAdjacentHTML('beforeend', loadingHTML);
+
+            // Show with animation
+            setTimeout(() => {
+                document.getElementById('loadingOverlay').classList.add('show');
+            }, 10);
+        }
+
+        function hideLoading() {
+            const overlay = document.getElementById('loadingOverlay');
+            if (overlay) {
+                overlay.classList.remove('show');
+                setTimeout(() => overlay.remove(), 300);
+            }
+        }
+
+        function setButtonLoading(button, isLoading) {
+            if (isLoading) {
+                button.classList.add('btn-loading');
+                button.disabled = true;
+                button.dataset.originalText = button.innerHTML;
+                // Keep the text visible but add loading state
+            } else {
+                button.classList.remove('btn-loading');
+                button.disabled = false;
+                if (button.dataset.originalText) {
+                    button.innerHTML = button.dataset.originalText;
+                }
+            }
+        }
+
+        function renderList() {
+            const container = document.getElementById('listContent');
+
+            if (filteredPosts.length === 0) {
+                container.innerHTML = `
+                    <div class="empty-state">
+                        <div class="empty-state-icon">📭</div>
+                        <h3>No Posts Found</h3>
+                        <p>Looks like you haven't created any posts yet, or your filters don't match any posts. Start creating amazing content now!</p>
+                        <a href="social_media_editor_v2.html" class="btn">
+                            ✨ Create Your First Post
+                        </a>
+                    </div>
+                `;
+                return;
+            }
+
+            // Sort posts by scheduled time
+            const sortedPosts = [...filteredPosts].sort((a, b) => {
+                if (!a.scheduledTime) return 1;
+                if (!b.scheduledTime) return -1;
+                return new Date(a.scheduledTime) - new Date(b.scheduledTime);
+            });
+
+            const postsHTML = sortedPosts.map(post => createPostCard(post)).join('');
+            container.innerHTML = `<div class="posts-list">${postsHTML}</div>`;
+        }
+
+        function createPostCard(post) {
+            const scheduledDate = post.scheduledTime ? new Date(post.scheduledTime) : null;
+            const dateStr = scheduledDate ? scheduledDate.toLocaleDateString('en-US', {
+                weekday: 'short',
+                month: 'short',
+                day: 'numeric',
+                year: 'numeric'
+            }) : 'Draft';
+            const timeStr = scheduledDate ? scheduledDate.toLocaleTimeString('en-US', {
+                hour: '2-digit',
+                minute: '2-digit'
+            }) : '';
+
+            const platformBadges = (post.platforms || [post.platform]).map(p =>
+                `<span class="platform-badge ${p}">${p.charAt(0).toUpperCase() + p.slice(1)}</span>`
+            ).join('');
+
+            const hashtags = (post.hashtags || []).slice(0, 5).map(tag =>
+                `<span class="hashtag">${tag}</span>`
+            ).join('');
+
+            const caption = post.caption.length > 200 ? post.caption.substring(0, 200) + '...' : post.caption;
+
+            // Create images HTML if images exist
+            const imagesHTML = (post.images && post.images.length > 0) ?
+                `<div class="post-images">
+                    ${post.images.map(img => `<img src="${img}" alt="Property image" class="post-image">`).join('')}
+                </div>` : '';
+
+            return `
+                <div class="post-card">
+                    <div class="post-card-header">
+                        <span class="post-status-badge ${post.status}">${post.status}</span>
+                        <div class="post-datetime">
+                            <div class="post-date">${dateStr}</div>
+                            ${timeStr ? `<div class="post-time">${timeStr}</div>` : ''}
+                        </div>
+                    </div>
+
+                    <div class="post-platforms">${platformBadges}</div>
+
+                    ${imagesHTML}
+
+                    <div class="post-content">
+                        <p class="post-caption">${caption}</p>
+                        ${hashtags ? `<div class="post-hashtags">${hashtags}</div>` : ''}
+                    </div>
+
+                    <div class="post-actions">
+                        <button class="post-action-btn" onclick="editPost('${post.id}')">Edit</button>
+                        <button class="post-action-btn" onclick="duplicatePost('${post.id}')">Duplicate</button>
+                        <button class="post-action-btn delete" onclick="deletePost('${post.id}')">Delete</button>
+                    </div>
+                </div>
+            `;
+        }
+
+
+        function duplicatePost(postId) {
+            const post = allPosts.find(p => p.id === postId);
+            if (!post) return;
+
+            const newPost = {
+                ...post,
+                id: 'post_' + Date.now(),
+                status: 'draft',
+                scheduledTime: null,
+                createdAt: new Date().toISOString()
+            };
+
+            allPosts.push(newPost);
+            localStorage.setItem('scheduledPosts', JSON.stringify(allPosts));
+
+            loadPosts();
+            applyFilters();
+            showToast('Post duplicated as draft');
+        }
+
+        function deletePost(postId) {
+            if (!confirm('Are you sure you want to delete this post?')) return;
+
+            allPosts = allPosts.filter(p => p.id !== postId);
+            localStorage.setItem('scheduledPosts', JSON.stringify(allPosts));
+
+            loadPosts();
+            applyFilters();
+            showToast('Post deleted successfully');
+        }
+
+        function showToast(message, duration = 2000) {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.classList.add('show');
+
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, duration);
+        }
+
+        // Export dropdown toggle
+        document.addEventListener('DOMContentLoaded', () => {
+            const exportBtn = document.getElementById('exportBtn');
+            const exportMenu = document.getElementById('exportMenu');
+
+            if (exportBtn && exportMenu) {
+                exportBtn.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                    exportMenu.classList.toggle('show');
+                });
+
+                // Close dropdown when clicking outside
+                document.addEventListener('click', () => {
+                    exportMenu.classList.remove('show');
+                });
+
+                exportMenu.addEventListener('click', (e) => {
+                    e.stopPropagation();
+                });
+            }
+        });
+
+        // Helper function to get sorted posts for export
+        function getSortedPostsForExport() {
+            if (filteredPosts.length === 0) {
+                showToast('No posts to export');
+                return null;
+            }
+
+            // Sort by scheduled time
+            return [...filteredPosts].sort((a, b) => {
+                if (!a.scheduledTime) return 1;
+                if (!b.scheduledTime) return -1;
+                return new Date(a.scheduledTime) - new Date(b.scheduledTime);
+            });
+        }
+
+        // Helper function to trigger file download
+        function downloadFile(content, filename, mimeType) {
+            const blob = new Blob([content], { type: mimeType });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+
+        // Export as PDF (using jsPDF library via CDN)
+        async function exportAsPDF() {
+            const sorted = getSortedPostsForExport();
+            if (!sorted) return;
+
+            showToast('Generating PDF...');
+
+            // Load jsPDF if not already loaded
+            if (typeof window.jspdf === 'undefined') {
+                const script = document.createElement('script');
+                script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js';
+                script.onload = () => generatePDFContent(sorted);
+                document.head.appendChild(script);
+            } else {
+                generatePDFContent(sorted);
+            }
+        }
+
+        function generatePDFContent(sorted) {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+
+            let yPos = 20;
+            const pageHeight = doc.internal.pageSize.height;
+
+            // Title
+            doc.setFontSize(20);
+            doc.text('Social Media Calendar', 20, yPos);
+            yPos += 10;
+
+            doc.setFontSize(10);
+            doc.text(`Generated: ${new Date().toLocaleString()}`, 20, yPos);
+            yPos += 5;
+            doc.text(`Total Posts: ${sorted.length}`, 20, yPos);
+            yPos += 15;
+
+            // Posts
+            doc.setFontSize(12);
+            sorted.forEach((post, index) => {
+                if (yPos > pageHeight - 40) {
+                    doc.addPage();
+                    yPos = 20;
+                }
+
+                doc.setFont(undefined, 'bold');
+                doc.text(`POST ${index + 1}`, 20, yPos);
+                yPos += 7;
+
+                doc.setFont(undefined, 'normal');
+                doc.setFontSize(10);
+                doc.text(`Status: ${post.status.toUpperCase()}`, 20, yPos);
+                yPos += 5;
+
+                if (post.scheduledTime) {
+                    doc.text(`Scheduled: ${new Date(post.scheduledTime).toLocaleString()}`, 20, yPos);
+                    yPos += 5;
+                }
+
+                doc.text(`Platforms: ${post.platforms.join(', ')}`, 20, yPos);
+                yPos += 7;
+
+                doc.text('Caption:', 20, yPos);
+                yPos += 5;
+                const cleanCaption = cleanTextForExport(post.caption);
+                const captionLines = doc.splitTextToSize(cleanCaption, 170);
+                doc.text(captionLines, 20, yPos);
+                yPos += (captionLines.length * 5) + 5;
+
+                if (post.hashtags && post.hashtags.length > 0) {
+                    const cleanHashtags = post.hashtags.map(h => cleanTextForExport(h)).filter(h => h).join(' ');
+                    if (cleanHashtags) {
+                        doc.text(`Hashtags: ${cleanHashtags}`, 20, yPos);
+                        yPos += 7;
+                    }
+                }
+
+                yPos += 10;
+            });
+
+            const filename = `social-media-calendar-${new Date().toISOString().split('T')[0]}.pdf`;
+            doc.save(filename);
+
+            showToast(`Exported ${sorted.length} posts to PDF`);
+            document.getElementById('exportMenu').classList.remove('show');
+        }
+
+        // Export as CSV
+        function exportAsCSV() {
+            const sorted = getSortedPostsForExport();
+            if (!sorted) return;
+
+            // CSV headers
+            let csvContent = 'Status,Scheduled Date,Scheduled Time,Platforms,Caption,Hashtags\n';
+
+            sorted.forEach(post => {
+                const scheduledDate = post.scheduledTime ? new Date(post.scheduledTime).toLocaleDateString() : '';
+                const scheduledTime = post.scheduledTime ? new Date(post.scheduledTime).toLocaleTimeString() : '';
+                const platforms = post.platforms.join(' + ');
+                const cleanCaption = cleanTextForExport(post.caption);
+                const caption = '"' + cleanCaption.replace(/"/g, '""') + '"'; // Escape quotes
+                const cleanHashtags = post.hashtags && post.hashtags.length > 0
+                    ? post.hashtags.map(h => cleanTextForExport(h)).filter(h => h).join(' ')
+                    : '';
+                const hashtags = cleanHashtags ? '"' + cleanHashtags.replace(/"/g, '""') + '"' : '';
+
+                csvContent += `${post.status},${scheduledDate},${scheduledTime},${platforms},${caption},${hashtags}\n`;
+            });
+
+            const filename = `social-media-calendar-${new Date().toISOString().split('T')[0]}.csv`;
+            downloadFile(csvContent, filename, 'text/csv');
+
+            showToast(`Exported ${sorted.length} posts to Excel`);
+            document.getElementById('exportMenu').classList.remove('show');
+        }
+
+        // Helper function to clean text (remove emojis, fix encoding)
+        function cleanTextForExport(text) {
+            if (!text) return '';
+            // Remove emojis and other special unicode characters
+            return text
+                .replace(/[\u{1F300}-\u{1F9FF}]/gu, '') // Emojis
+                .replace(/[\u{2600}-\u{26FF}]/gu, '')   // Misc symbols
+                .replace(/[\u{2700}-\u{27BF}]/gu, '')   // Dingbats
+                .replace(/[\u{FE00}-\u{FE0F}]/gu, '')   // Variation selectors
+                .replace(/[\u{1F900}-\u{1F9FF}]/gu, '') // Supplemental symbols
+                .replace(/[\u{1F600}-\u{1F64F}]/gu, '') // Emoticons
+                .replace(/[\u{1F680}-\u{1F6FF}]/gu, '') // Transport symbols
+                .trim();
+        }
+
+        // Export as Word Document (HTML format that opens in Word)
+        function exportAsWord() {
+            const sorted = getSortedPostsForExport();
+            if (!sorted) return;
+
+            let htmlContent = `
+                <html xmlns:o='urn:schemas-microsoft-com:office:office' xmlns:w='urn:schemas-microsoft-com:office:word' xmlns='http://www.w3.org/TR/REC-html40'>
+                <head><meta charset='utf-8'><title>Social Media Calendar</title></head>
+                <body>
+                    <h1>Social Media Calendar</h1>
+                    <p><strong>Generated:</strong> ${new Date().toLocaleString()}</p>
+                    <p><strong>Total Posts:</strong> ${sorted.length}</p>
+                    <hr>
+            `;
+
+            sorted.forEach((post, index) => {
+                const cleanCaption = cleanTextForExport(post.caption);
+                const cleanHashtags = post.hashtags ? post.hashtags.map(h => cleanTextForExport(h)).filter(h => h).join(' ') : '';
+
+                htmlContent += `
+                    <div style="margin-bottom: 30px; page-break-inside: avoid;">
+                        <h2>POST ${index + 1}</h2>
+                        <p><strong>Status:</strong> ${post.status.toUpperCase()}</p>
+                        ${post.scheduledTime ? `<p><strong>Scheduled:</strong> ${new Date(post.scheduledTime).toLocaleString()}</p>` : ''}
+                        <p><strong>Platforms:</strong> ${post.platforms.join(', ')}</p>
+                        <p><strong>Caption:</strong></p>
+                        <p style="white-space: pre-wrap;">${cleanCaption}</p>
+                        ${cleanHashtags ? `<p><strong>Hashtags:</strong> ${cleanHashtags}</p>` : ''}
+                        <hr>
+                    </div>
+                `;
+            });
+
+            htmlContent += '</body></html>';
+
+            const blob = new Blob(['\ufeff', htmlContent], {
+                type: 'application/msword'
+            });
+
+            const filename = `social-media-calendar-${new Date().toISOString().split('T')[0]}.doc`;
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+
+            showToast(`Exported ${sorted.length} posts to Word`);
+            document.getElementById('exportMenu').classList.remove('show');
+        }
+
+        // Copy to Clipboard (keep emojis for clipboard - they paste fine)
+        async function copyToClipboard() {
+            const sorted = getSortedPostsForExport();
+            if (!sorted) return;
+
+            let exportText = `Social Media Calendar Export\n`;
+            exportText += `Generated: ${new Date().toLocaleString()}\n`;
+            exportText += `Total Posts: ${sorted.length}\n`;
+            exportText += `\n${'='.repeat(80)}\n\n`;
+
+            sorted.forEach((post, index) => {
+                exportText += `POST ${index + 1}\n`;
+                exportText += `Status: ${post.status.toUpperCase()}\n`;
+                if (post.scheduledTime) {
+                    exportText += `Scheduled: ${new Date(post.scheduledTime).toLocaleString()}\n`;
+                }
+                exportText += `Platforms: ${post.platforms.join(', ')}\n`;
+                exportText += `\nCaption:\n${post.caption}\n`;
+                if (post.hashtags && post.hashtags.length > 0) {
+                    exportText += `\nHashtags: ${post.hashtags.join(' ')}\n`;
+                }
+                exportText += `\n${'-'.repeat(80)}\n\n`;
+            });
+
+            try {
+                await navigator.clipboard.writeText(exportText);
+                showToast(`Copied ${sorted.length} posts to clipboard!`);
+            } catch (error) {
+                console.error('Failed to copy:', error);
+                showToast('Failed to copy to clipboard');
+            }
+
+            document.getElementById('exportMenu').classList.remove('show');
+        }
+
+        // === PLATFORM CONNECTION ===
+
+        function connectPlatform(platform) {
+            console.log(`Connecting to ${platform}...`);
+
+            // Show placeholder message (in production, this would initiate OAuth flow)
+            alert(`Platform Connection\n\nIn production, this would open an OAuth flow to connect your ${platform.charAt(0).toUpperCase() + platform.slice(1)} account.\n\nFor demo purposes, the platform will be marked as "connected" locally.`);
+
+            // Find the card and update UI
+            const card = document.querySelector(`.platform-connection-card[data-platform="${platform}"]`);
+            if (!card) return;
+
+            const statusEl = card.querySelector('.platform-connection-status');
+            const buttonEl = card.querySelector('.platform-connect-btn');
+
+            // Toggle connected state
+            const isConnected = card.classList.contains('connected');
+
+            if (isConnected) {
+                // Disconnect
+                card.classList.remove('connected');
+                statusEl.classList.remove('connected');
+                statusEl.classList.add('disconnected');
+                statusEl.textContent = 'Not Connected';
+                buttonEl.classList.remove('connected');
+                buttonEl.textContent = 'Connect';
+
+                // Remove from localStorage
+                const connections = JSON.parse(localStorage.getItem('platformConnections') || '{}');
+                delete connections[platform];
+                localStorage.setItem('platformConnections', JSON.stringify(connections));
+
+                console.log(`✅ Disconnected from ${platform}`);
+            } else {
+                // Connect
+                card.classList.add('connected');
+                statusEl.classList.remove('disconnected');
+                statusEl.classList.add('connected');
+                statusEl.textContent = 'Connected';
+                buttonEl.classList.add('connected');
+                buttonEl.textContent = 'Disconnect';
+
+                // Save to localStorage
+                const connections = JSON.parse(localStorage.getItem('platformConnections') || '{}');
+                connections[platform] = {
+                    connectedAt: new Date().toISOString(),
+                    accountName: `Demo ${platform.charAt(0).toUpperCase() + platform.slice(1)} Account`
+                };
+                localStorage.setItem('platformConnections', JSON.stringify(connections));
+
+                console.log(`✅ Connected to ${platform}`);
+            }
+        }
+
+        // Load platform connection states on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            const connections = JSON.parse(localStorage.getItem('platformConnections') || '{}');
+
+            Object.keys(connections).forEach(platform => {
+                const card = document.querySelector(`.platform-connection-card[data-platform="${platform}"]`);
+                if (!card) return;
+
+                const statusEl = card.querySelector('.platform-connection-status');
+                const buttonEl = card.querySelector('.platform-connect-btn');
+
+                card.classList.add('connected');
+                statusEl.classList.remove('disconnected');
+                statusEl.classList.add('connected');
+                statusEl.textContent = 'Connected';
+                buttonEl.classList.add('connected');
+                buttonEl.textContent = 'Disconnect';
+            });
+        });
+    </script>
+</body>
+</html>

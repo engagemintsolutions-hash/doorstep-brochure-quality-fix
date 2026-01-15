@@ -1,0 +1,159 @@
+{
+  "agency_id": "savills",
+  "agency_name": "Savills",
+  "logo": {
+    "logo_path": "logos/savills_logo.png",
+    "logo_position": "top-right",
+    "logo_width": 120,
+    "logo_height": 50,
+    "background_color": null,
+    "text_color": null,
+    "show_on_every_page": true
+  },
+  "colors": {
+    "primary": "#002855",
+    "secondary": "#C5A572",
+    "background": "#FFFFFF",
+    "text_primary": "#1a1a1a",
+    "text_heading": "#002855",
+    "floor_plan_reception": "#F8D7DA",
+    "floor_plan_bedroom": "#D8BFD8",
+    "floor_plan_bathroom": "#B0D4E3",
+    "floor_plan_walls": "#000000"
+  },
+  "typography": {
+    "headline_font": "ITC Fenice",
+    "body_font": "Helvetica Neue",
+    "headline_weight": "300",
+    "body_weight": "400"
+  },
+  "templates": {
+    "standard": {
+      "template_type": "standard",
+      "page_count": 6,
+      "photo_count_min": 7,
+      "photo_count_max": 10,
+      "show_icons_header": true,
+      "contact_page_position": "last",
+      "text_overlay_cover": false,
+      "writing_style": {
+        "template_type": "standard",
+        "word_count_min": 300,
+        "word_count_max": 500,
+        "tone": "descriptive, detailed, informative",
+        "example_phrases": [
+          "Immaculate [property type] with [key feature]",
+          "beautifully finished",
+          "elegantly designed",
+          "features sleek [material] and abundant natural light",
+          "Floor-to-ceiling glass doors open onto",
+          "Located within the vibrant [area] development",
+          "ideal for professionals, first-time buyers, or investors alike"
+        ],
+        "avoid_phrases": [],
+        "structure_notes": "1. Opening: Property type + key feature + location\n2. Reception/living: Layout, flooring, lighting, flow\n3. Kitchen: Finishes, appliances, space, features\n4. Bedrooms: Size, storage, views\n5. Bathrooms: Fixtures, finishes\n6. Outdoor space: Balcony, garden, terrace\n7. Location benefits: Transport, amenities, lifestyle"
+      }
+    },
+    "premium": {
+      "template_type": "premium",
+      "page_count": 10,
+      "photo_count_min": 10,
+      "photo_count_max": 15,
+      "show_icons_header": false,
+      "contact_page_position": "second",
+      "text_overlay_cover": true,
+      "writing_style": {
+        "template_type": "premium",
+        "word_count_min": 150,
+        "word_count_max": 200,
+        "tone": "aspirational, minimal, lifestyle-focused",
+        "example_phrases": [
+          "A truly unique [style] [property type]",
+          "artfully designed and thoughtfully presented",
+          "The views are stunning",
+          "bespoke luxury [feature]",
+          "artist commissioned d\u00e9cor",
+          "exceptional high standard"
+        ],
+        "avoid_phrases": [],
+        "structure_notes": "1. Opening: Unique selling proposition\n2. Overall impression: High-level features\n3. Standout features: What makes it special\n4. Lifestyle benefits: Views, ambiance, experience\n5. Location context: Neighborhood character"
+      }
+    }
+  },
+  "template_selection_rules": [
+    {
+      "property_character": "unique",
+      "price_min": 1000000,
+      "price_max": null,
+      "bedrooms_min": null,
+      "bedrooms_max": null,
+      "property_types": [
+        "flat",
+        "apartment",
+        "penthouse",
+        "loft"
+      ],
+      "template_type": "premium"
+    },
+    {
+      "property_character": "luxury",
+      "price_min": 2000000,
+      "price_max": null,
+      "bedrooms_min": null,
+      "bedrooms_max": null,
+      "property_types": [],
+      "template_type": "premium"
+    },
+    {
+      "property_character": "traditional",
+      "price_min": null,
+      "price_max": null,
+      "bedrooms_min": null,
+      "bedrooms_max": null,
+      "property_types": [],
+      "template_type": "standard"
+    },
+    {
+      "property_character": "traditional",
+      "price_min": null,
+      "price_max": null,
+      "bedrooms_min": 2,
+      "bedrooms_max": null,
+      "property_types": [
+        "house",
+        "bungalow",
+        "villa"
+      ],
+      "template_type": "standard"
+    },
+    {
+      "property_character": "traditional",
+      "price_min": null,
+      "price_max": 1000000,
+      "bedrooms_min": null,
+      "bedrooms_max": null,
+      "property_types": [
+        "flat",
+        "apartment"
+      ],
+      "template_type": "standard"
+    }
+  ],
+  "legal_disclaimer": "Important Notice: Savills, its clients and any joint agents give notice that 1: They are not authorised to make or give any representations or warranties in relation to the property either here or elsewhere, either on their own behalf or on behalf of their client or otherwise. They assume no responsibility for any statement that may be made in these particulars. These particulars do not form part of any offer or contract and must not be relied upon as statements or representations of fact. 2: Any areas, measurements or distances are approximate. The text, photographs and plans are for guidance only and are not necessarily comprehensive. It should not be assumed that the property has all necessary planning, building regulation or other consents and Savills have not tested any services, equipment or facilities. Purchasers must satisfy themselves by inspection or otherwise.",
+  "footer_branding": "powered by FluxPro",
+  "mandatory_elements": [
+    "logo",
+    "address",
+    "price",
+    "floor_plan",
+    "epc",
+    "key_information",
+    "contact",
+    "viewing_notice",
+    "references",
+    "legal_disclaimer"
+  ],
+  "created_at": null,
+  "updated_at": null,
+  "sample_brochures": []
+}

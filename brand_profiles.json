@@ -1,0 +1,111 @@
+{
+  "savills": {
+    "profile_id": "savills",
+    "name": "Savills",
+    "description": "Premium estate agent with 100+ UK offices",
+    "colors": {
+      "primary": "#002855",
+      "secondary": "#C5A572",
+      "accent": "#8B7355",
+      "text_primary": "#1a1a1a",
+      "text_secondary": "#666666",
+      "background": "#ffffff"
+    },
+    "fonts": {
+      "heading": "Minion Pro, Georgia, serif",
+      "body": "Helvetica Neue, Arial, sans-serif",
+      "accent": "Futura, Avenir, sans-serif"
+    },
+    "layout": {
+      "page_orientation": "portrait",
+      "margin_top": "2cm",
+      "margin_bottom": "2cm",
+      "margin_left": "2cm",
+      "margin_right": "2cm",
+      "column_count": 1,
+      "image_style": "full_bleed",
+      "logo_position": "top_right",
+      "footer_style": "minimal"
+    },
+    "tone": {
+      "style": "premium",
+      "formality": "formal_professional",
+      "descriptive_level": "detailed",
+      "emotional_appeal": "subtle",
+      "unique_phrases": [
+        "enviable position",
+        "beautifully presented",
+        "elegantly proportioned",
+        "thoughtfully designed",
+        "exceptional standard",
+        "sought-after location"
+      ]
+    },
+    "content_structure": {
+      "headline_style": "address_focused",
+      "opening_sentence": "property_overview",
+      "paragraph_count": 4,
+      "bullet_points": true,
+      "room_descriptions": "detailed",
+      "include_measurements": true,
+      "include_local_amenities": true
+    },
+    "prompt_enhancements": "\nIMPORTANT BRAND GUIDELINES FOR SAVILLS:\n\nWriting Style:\n- Use sophisticated, premium language without being pretentious\n- Focus on quality, heritage, and prestige\n- Emphasize location desirability and exclusivity\n- Use understated elegance (not flashy or hyperbolic)\n- Favor British English spellings and terminology\n\nPreferred Phrases:\n- \"enviable position\" (not \"great location\")\n- \"beautifully presented\" (not \"nice\")\n- \"elegantly proportioned\" (not \"spacious\")\n- \"thoughtfully designed\" (not \"well-planned\")\n- \"exceptional standard\" (not \"high quality\")\n\nStructure:\n1. Opening: Property type and location positioning\n2. Overview: General character and appeal\n3. Interior: Room-by-room highlights with measurements\n4. Exterior: Gardens, parking, outdoor spaces\n5. Location: Local amenities, transport, schools\n\nAvoid:\n- Exclamation marks (use period for emphasis)\n- Casual language (\"amazing\", \"awesome\", \"wow\")\n- Over-selling or pushy sales language\n- Abbreviations (spell out \"square feet\", not \"sq ft\")\n\nMeasurements:\n- Always include room dimensions where available\n- Use square feet or square meters consistently\n- Reference plot size for houses with gardens\n            ",
+    "logo_url": "/static/brands/savills_logo.png",
+    "watermark": "SAVILLS",
+    "contact_template": {
+      "phone": "+44 (0)20 7409 8756",
+      "email": "residential@savills.com",
+      "website": "savills.co.uk"
+    }
+  },
+  "generic": {
+    "profile_id": "generic",
+    "name": "Generic Estate Agent",
+    "description": "Standard professional brochure template",
+    "colors": {
+      "primary": "#17A2B8",
+      "secondary": "#FF6B6B",
+      "accent": "#28a745",
+      "text_primary": "#2a2a2a",
+      "text_secondary": "#6c757d",
+      "background": "#ffffff"
+    },
+    "fonts": {
+      "heading": "Georgia, serif",
+      "body": "Arial, sans-serif",
+      "accent": "Helvetica, sans-serif"
+    },
+    "layout": {
+      "page_orientation": "portrait",
+      "margin_top": "1.5cm",
+      "margin_bottom": "1.5cm",
+      "margin_left": "1.5cm",
+      "margin_right": "1.5cm",
+      "column_count": 1,
+      "image_style": "contained",
+      "logo_position": "top_center",
+      "footer_style": "full"
+    },
+    "tone": {
+      "style": "professional",
+      "formality": "balanced",
+      "descriptive_level": "moderate",
+      "emotional_appeal": "moderate",
+      "unique_phrases": []
+    },
+    "content_structure": {
+      "headline_style": "feature_focused",
+      "opening_sentence": "hook",
+      "paragraph_count": 3,
+      "bullet_points": true,
+      "room_descriptions": "moderate",
+      "include_measurements": false,
+      "include_local_amenities": true
+    },
+    "prompt_enhancements": "\nUse professional, engaging language.\nFocus on property features and benefits.\nBalance information with emotional appeal.\n            ",
+    "logo_url": null,
+    "watermark": null,
+    "contact_template": {}
+  }
+}

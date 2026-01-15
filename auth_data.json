@@ -1,0 +1,286 @@
+{
+  "organizations": {
+    "savills": {
+      "org_id": "savills",
+      "name": "Savills",
+      "brand_profile_id": "savills",
+      "offices": [
+        {
+          "office_id": "savills_london",
+          "name": "London",
+          "pin": "2025",
+          "location": {
+            "city": "London",
+            "postcode": "SW1A 1AA",
+            "address": "33 Margaret Street, London"
+          }
+        },
+        {
+          "office_id": "savills_manchester",
+          "name": "Manchester",
+          "pin": "2025",
+          "location": {
+            "city": "Manchester",
+            "postcode": "M1 4BT",
+            "address": "Peter House, Oxford Street, Manchester"
+          }
+        }
+      ]
+    },
+    "generic": {
+      "org_id": "generic",
+      "name": "Independent Agency",
+      "brand_profile_id": "generic",
+      "offices": [
+        {
+          "office_id": "generic_main",
+          "name": "Main Office",
+          "pin": "1234",
+          "location": {
+            "city": "London",
+            "postcode": "N/A",
+            "address": "Main Office"
+          }
+        }
+      ]
+    }
+  },
+  "users": {
+    "james.smith@savills.com": {
+      "user_id": "usr_001",
+      "email": "james.smith@savills.com",
+      "name": "James Smith",
+      "role": "agent",
+      "office_id": "savills_london",
+      "created_at": "2025-10-01T10:00:00Z"
+    },
+    "emma.johnson@savills.com": {
+      "user_id": "usr_002",
+      "email": "emma.johnson@savills.com",
+      "name": "Emma Johnson",
+      "role": "agent",
+      "office_id": "savills_london",
+      "created_at": "2025-10-01T10:00:00Z"
+    },
+    "oliver.brown@savills.com": {
+      "user_id": "usr_003",
+      "email": "oliver.brown@savills.com",
+      "name": "Oliver Brown",
+      "role": "agent",
+      "office_id": "savills_london",
+      "created_at": "2025-10-01T10:00:00Z"
+    },
+    "photographer@savills.com": {
+      "user_id": "usr_photo_001",
+      "email": "photographer@savills.com",
+      "name": "Savills Photographer",
+      "role": "photographer",
+      "office_id": "savills_london",
+      "created_at": "2025-10-01T10:00:00Z"
+    }
+  },
+  "office_brochures": {
+    "savills_london": [
+      {
+        "brochure_id": "br_001",
+        "property_address": "15 Kensington Palace Gardens, London W8",
+        "asking_price": "\u00a312,950,000",
+        "bedrooms": 6,
+        "created_by": "james.smith@savills.com",
+        "created_at": "2025-10-10T14:30:00Z",
+        "status": "published",
+        "pdf_url": "/exports/savills_london_br_001.pdf"
+      },
+      {
+        "brochure_id": "br_002",
+        "property_address": "The Penthouse, One Hyde Park, SW1",
+        "asking_price": "\u00a375,000,000",
+        "bedrooms": 5,
+        "created_by": "emma.johnson@savills.com",
+        "created_at": "2025-10-11T09:15:00Z",
+        "status": "published",
+        "pdf_url": "/exports/savills_london_br_002.pdf"
+      },
+      {
+        "brochure_id": "br_003",
+        "property_address": "22 Chester Square, Belgravia, SW1",
+        "asking_price": "\u00a318,500,000",
+        "bedrooms": 7,
+        "created_by": "oliver.brown@savills.com",
+        "created_at": "2025-10-12T11:45:00Z",
+        "status": "published",
+        "pdf_url": "/exports/savills_london_br_003.pdf"
+      },
+      {
+        "brochure_id": "br_004",
+        "property_address": "45 Grosvenor Square, Mayfair, W1",
+        "asking_price": "\u00a322,000,000",
+        "bedrooms": 8,
+        "created_by": "james.smith@savills.com",
+        "created_at": "2025-10-13T16:20:00Z",
+        "status": "draft",
+        "pdf_url": "/exports/savills_london_br_004.pdf"
+      },
+      {
+        "brochure_id": "br_005",
+        "property_address": "The Garden House, Regent's Park, NW1",
+        "asking_price": "\u00a314,750,000",
+        "bedrooms": 5,
+        "created_by": "emma.johnson@savills.com",
+        "created_at": "2025-10-14T10:00:00Z",
+        "status": "published",
+        "pdf_url": "/exports/savills_london_br_005.pdf"
+      },
+      {
+        "brochure_id": "br_006",
+        "property_address": "8 Eaton Square, Belgravia, SW1",
+        "asking_price": "\u00a319,950,000",
+        "bedrooms": 6,
+        "created_by": "photographer@savills.com",
+        "created_at": "2025-10-14T12:30:00Z",
+        "status": "awaiting_photos",
+        "pdf_url": null,
+        "note": "Photos uploaded by photographer, pending agent review"
+      }
+    ]
+  },
+  "photographer_uploads": {
+    "savills_london": [
+      {
+        "property_name": "Avenue Road, Cranleigh",
+        "agent_email": "james.smith@savills.com",
+        "uploaded_by": "photographer@savills.com",
+        "photo_count": 7,
+        "photos": [
+          "/uploads/savills_london/Avenue Road, Cranleigh/20251014_162139_cover.jpeg",
+          "/uploads/savills_london/Avenue Road, Cranleigh/20251014_162139_exterior.jpeg",
+          "/uploads/savills_london/Avenue Road, Cranleigh/20251014_162139_garden1.jpeg",
+          "/uploads/savills_london/Avenue Road, Cranleigh/20251014_162139_kitchen.jpeg",
+          "/uploads/savills_london/Avenue Road, Cranleigh/20251014_162139_living area.jpeg",
+          "/uploads/savills_london/Avenue Road, Cranleigh/20251014_162139_living room 2.jpeg",
+          "/uploads/savills_london/Avenue Road, Cranleigh/20251014_162139_living room.jpeg"
+        ],
+        "upload_id": "upl_005",
+        "uploaded_at": "2025-10-14T15:21:39.424160Z",
+        "status": "pending_agent_assignment",
+        "photographer_name": "Anya Rowlings"
+      },
+      {
+        "property_name": "avenue road 1",
+        "agent_email": "james.smith@savills.com",
+        "uploaded_by": "photographer@savills.com",
+        "photo_count": 22,
+        "photos": [
+          "/uploads/savills_london/avenue road 1/20251014_172328_bathroom 1.jpeg",
+          "/uploads/savills_london/avenue road 1/20251014_172328_bathroom 2.jpeg",
+          "/uploads/savills_london/avenue road 1/20251014_172328_bathroom 3.jpeg",
+          "/uploads/savills_london/avenue road 1/20251014_172328_bathroom 4.jpeg",
+          "/uploads/savills_london/avenue road 1/20251014_172328_bedroom 3.jpeg",
+          "/uploads/savills_london/avenue road 1/20251014_172328_bedroom1.jpeg",
+          "/uploads/savills_london/avenue road 1/20251014_172328_bedroom2.jpeg",
+          "/uploads/savills_london/avenue road 1/20251014_172328_bedroom4.jpeg",
+          "/uploads/savills_london/avenue road 1/20251014_172328_cover.jpeg",
+          "/uploads/savills_london/avenue road 1/20251014_172328_dining room.jpeg",
+          "/uploads/savills_london/avenue road 1/20251014_172328_exterior.jpeg",
+          "/uploads/savills_london/avenue road 1/20251014_172328_exterior1.jpeg",
+          "/uploads/savills_london/avenue road 1/20251014_172328_exterior2.jpeg",
+          "/uploads/savills_london/avenue road 1/20251014_172328_exterior3.jpeg",
+          "/uploads/savills_london/avenue road 1/20251014_172328_floor 2.jpeg",
+          "/uploads/savills_london/avenue road 1/20251014_172328_garden1.jpeg",
+          "/uploads/savills_london/avenue road 1/20251014_172328_hallway.jpeg",
+          "/uploads/savills_london/avenue road 1/20251014_172328_kitchen.jpeg",
+          "/uploads/savills_london/avenue road 1/20251014_172328_living area.jpeg",
+          "/uploads/savills_london/avenue road 1/20251014_172328_living room 2.jpeg",
+          "/uploads/savills_london/avenue road 1/20251014_172328_living room.jpeg",
+          "/uploads/savills_london/avenue road 1/20251014_172328_office.jpeg"
+        ],
+        "upload_id": "upl_002",
+        "uploaded_at": "2025-10-14T16:23:28.766276Z",
+        "status": "pending_agent_assignment"
+      },
+      {
+        "property_name": "Avenue Road",
+        "agent_email": "james.smith@savills.com",
+        "uploaded_by": "photographer@savills.com",
+        "photographer_name": "Savills Photographer",
+        "photo_count": 23,
+        "photos": [
+          "/uploads/savills_london/Avenue Road/20251015_195555_bathroom 1.jpeg",
+          "/uploads/savills_london/Avenue Road/20251015_195555_bathroom 2.jpeg",
+          "/uploads/savills_london/Avenue Road/20251015_195555_bathroom 3.jpeg",
+          "/uploads/savills_london/Avenue Road/20251015_195555_bathroom 4.jpeg",
+          "/uploads/savills_london/Avenue Road/20251015_195555_bedroom 3.jpeg",
+          "/uploads/savills_london/Avenue Road/20251015_195555_bedroom1.jpeg",
+          "/uploads/savills_london/Avenue Road/20251015_195555_bedroom2.jpeg",
+          "/uploads/savills_london/Avenue Road/20251015_195555_bedroom4.jpeg",
+          "/uploads/savills_london/Avenue Road/20251015_195555_cover.jpeg",
+          "/uploads/savills_london/Avenue Road/20251015_195555_dining room.jpeg",
+          "/uploads/savills_london/Avenue Road/20251015_195555_exterior.jpeg",
+          "/uploads/savills_london/Avenue Road/20251015_195555_exterior1.jpeg",
+          "/uploads/savills_london/Avenue Road/20251015_195555_exterior2.jpeg",
+          "/uploads/savills_london/Avenue Road/20251015_195555_exterior3.jpeg",
+          "/uploads/savills_london/Avenue Road/20251015_195555_floor 2.jpeg",
+          "/uploads/savills_london/Avenue Road/20251015_195555_floor plan.png",
+          "/uploads/savills_london/Avenue Road/20251015_195555_garden1.jpeg",
+          "/uploads/savills_london/Avenue Road/20251015_195555_hallway.jpeg",
+          "/uploads/savills_london/Avenue Road/20251015_195555_kitchen.jpeg",
+          "/uploads/savills_london/Avenue Road/20251015_195555_living area.jpeg",
+          "/uploads/savills_london/Avenue Road/20251015_195555_living room 2.jpeg",
+          "/uploads/savills_london/Avenue Road/20251015_195555_living room.jpeg",
+          "/uploads/savills_london/Avenue Road/20251015_195555_office.jpeg"
+        ],
+        "upload_id": "upl_003",
+        "uploaded_at": "2025-10-15T18:55:55.363150Z",
+        "status": "pending_agent_assignment"
+      },
+      {
+        "property_name": "Avenue Road Production Ready",
+        "agent_email": "james.smith@savills.com",
+        "uploaded_by": "photographer@savills.com",
+        "photographer_name": "Savills Photographer",
+        "photo_count": 13,
+        "photos": [
+          "/uploads/savills_london/Avenue Road Production Ready/20251016_144605_bathroom 1.jpeg",
+          "/uploads/savills_london/Avenue Road Production Ready/20251016_144605_bathroom 4.jpeg",
+          "/uploads/savills_london/Avenue Road Production Ready/20251016_144605_bedroom 3.jpeg",
+          "/uploads/savills_london/Avenue Road Production Ready/20251016_144605_bedroom4.jpeg",
+          "/uploads/savills_london/Avenue Road Production Ready/20251016_144605_cover.jpeg",
+          "/uploads/savills_london/Avenue Road Production Ready/20251016_144605_dining room.jpeg",
+          "/uploads/savills_london/Avenue Road Production Ready/20251016_144605_exterior3.jpeg",
+          "/uploads/savills_london/Avenue Road Production Ready/20251016_144605_floor 2.jpeg",
+          "/uploads/savills_london/Avenue Road Production Ready/20251016_144605_garden1.jpeg",
+          "/uploads/savills_london/Avenue Road Production Ready/20251016_144605_kitchen.jpeg",
+          "/uploads/savills_london/Avenue Road Production Ready/20251016_144605_living area.jpeg",
+          "/uploads/savills_london/Avenue Road Production Ready/20251016_144605_living room 2.jpeg",
+          "/uploads/savills_london/Avenue Road Production Ready/20251016_144605_living room.jpeg"
+        ],
+        "upload_id": "upl_004",
+        "uploaded_at": "2025-10-16T13:46:05.913627Z",
+        "status": "pending_agent_assignment"
+      },
+      {
+        "property_name": "Avenue Road Dad",
+        "agent_email": "james.smith@savills.com",
+        "uploaded_by": "photographer@savills.com",
+        "photographer_name": "Savills Photographer",
+        "photo_count": 11,
+        "photos": [
+          "/uploads/savills_london/Avenue Road Dad/20251017_000856_bathroom 1.jpeg",
+          "/uploads/savills_london/Avenue Road Dad/20251017_000856_bedroom 3.jpeg",
+          "/uploads/savills_london/Avenue Road Dad/20251017_000856_bedroom1.jpeg",
+          "/uploads/savills_london/Avenue Road Dad/20251017_000856_bedroom2.jpeg",
+          "/uploads/savills_london/Avenue Road Dad/20251017_000856_bedroom4.jpeg",
+          "/uploads/savills_london/Avenue Road Dad/20251017_000856_cover.jpeg",
+          "/uploads/savills_london/Avenue Road Dad/20251017_000856_dining room.jpeg",
+          "/uploads/savills_london/Avenue Road Dad/20251017_000856_exterior.jpeg",
+          "/uploads/savills_london/Avenue Road Dad/20251017_000856_floor 2.jpeg",
+          "/uploads/savills_london/Avenue Road Dad/20251017_000856_garden1.jpeg",
+          "/uploads/savills_london/Avenue Road Dad/20251017_000856_kitchen.jpeg"
+        ],
+        "upload_id": "upl_005",
+        "uploaded_at": "2025-10-16T23:08:56.431343Z",
+        "status": "pending_agent_assignment"
+      }
+    ]
+  }
+}

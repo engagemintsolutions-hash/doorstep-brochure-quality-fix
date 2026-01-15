@@ -1,0 +1,1108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Social Media Content Studio</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f7fa;
+            min-height: 100vh;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 1.5rem 2rem;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .header h1 {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .header p {
+            opacity: 0.9;
+            font-size: 0.9rem;
+            margin-top: 0.25rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        .editor-layout {
+            display: grid;
+            grid-template-columns: 350px 1fr 350px;
+            gap: 2rem;
+            align-items: start;
+        }
+
+        @media (max-width: 1200px) {
+            .editor-layout {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .panel-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 1rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 2px solid #f0f0f0;
+        }
+
+        /* Photo Carousel */
+        .photo-carousel {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .photo-main {
+            width: 100%;
+            height: 300px;
+            background: #f0f0f0;
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 1rem;
+        }
+
+        .photo-main img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .photo-main .no-photo {
+            color: #999;
+            text-align: center;
+        }
+
+        .photo-thumbnails {
+            display: flex;
+            gap: 0.5rem;
+            overflow-x: auto;
+            padding-bottom: 0.5rem;
+        }
+
+        .photo-thumb {
+            width: 60px;
+            height: 60px;
+            border-radius: 6px;
+            overflow: hidden;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .photo-thumb:hover {
+            border-color: #667eea;
+        }
+
+        .photo-thumb.active {
+            border-color: #667eea;
+            box-shadow: 0 0 0 2px rgba(102,126,234,0.2);
+        }
+
+        .photo-thumb img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Variant Selector */
+        .variant-selector {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .variant-btn {
+            flex: 1;
+            padding: 0.75rem;
+            border: 2px solid #e0e0e0;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .variant-btn:hover {
+            border-color: #667eea;
+        }
+
+        .variant-btn.active {
+            border-color: #667eea;
+            background: #f0f4ff;
+            color: #667eea;
+        }
+
+        /* Post Editor */
+        .post-editor {
+            min-height: 500px;
+        }
+
+        .post-text {
+            width: 100%;
+            min-height: 250px;
+            padding: 1.25rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            line-height: 1.6;
+            font-family: inherit;
+            resize: vertical;
+            transition: border-color 0.2s;
+        }
+
+        .post-text:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .post-text[contenteditable="true"] {
+            cursor: text;
+        }
+
+        .char-counter {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: #666;
+        }
+
+        .char-count {
+            font-weight: 600;
+        }
+
+        .char-count.warning {
+            color: #f59e0b;
+        }
+
+        .char-count.error {
+            color: #ef4444;
+        }
+
+        /* Hashtags */
+        .hashtags-container {
+            margin-top: 1.5rem;
+        }
+
+        .hashtags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+        }
+
+        .hashtag {
+            background: #e7f3ff;
+            color: #0066cc;
+            padding: 0.4rem 0.8rem;
+            border-radius: 16px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .hashtag:hover {
+            background: #0066cc;
+            color: white;
+        }
+
+        .hashtag-score {
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 0.15rem 0.4rem;
+            border-radius: 10px;
+            background: white;
+        }
+
+        .hashtag-score.high {
+            color: #10b981;
+        }
+
+        .hashtag-score.medium {
+            color: #f59e0b;
+        }
+
+        .hashtag-score.low {
+            color: #ef4444;
+        }
+
+        /* Platform Selector */
+        .platform-selector {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .platform-btn {
+            padding: 0.75rem;
+            border: 2px solid #e0e0e0;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-align: center;
+        }
+
+        .platform-btn:hover {
+            border-color: #667eea;
+        }
+
+        .platform-btn.active {
+            border-color: #667eea;
+            background: #f0f4ff;
+            color: #667eea;
+        }
+
+        .platform-btn.active[data-platform="facebook"] {
+            border-color: #1877f2;
+            background: #e7f3ff;
+            color: #1877f2;
+        }
+
+        .platform-btn.active[data-platform="instagram"] {
+            border: 2px solid transparent;
+            background: linear-gradient(45deg, #f09433 0%, #e6683c 25%, #dc2743 50%, #cc2366 75%, #bc1888 100%);
+            color: white;
+        }
+
+        .platform-btn.active[data-platform="linkedin"] {
+            border-color: #0077b5;
+            background: #e7f6ff;
+            color: #0077b5;
+        }
+
+        /* Stats */
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .stat-box {
+            background: #f8f9fa;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: #667eea;
+        }
+
+        .stat-label {
+            font-size: 0.85rem;
+            color: #666;
+            margin-top: 0.25rem;
+        }
+
+        /* Actions */
+        .actions {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+        }
+
+        .btn {
+            padding: 0.875rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(102,126,234,0.4);
+        }
+
+        .btn-secondary {
+            background: white;
+            color: #333;
+            border: 2px solid #e0e0e0;
+        }
+
+        .btn-secondary:hover {
+            border-color: #667eea;
+            color: #667eea;
+        }
+
+        /* Preview Panel */
+        .preview-panel {
+            position: sticky;
+            top: 2rem;
+        }
+
+        .platform-mockup {
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+
+        .mockup-header {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid #e0e0e0;
+        }
+
+        .mockup-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+        }
+
+        .mockup-info {
+            flex: 1;
+        }
+
+        .mockup-name {
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .mockup-time {
+            font-size: 0.75rem;
+            color: #999;
+        }
+
+        .mockup-image {
+            width: 100%;
+            height: 200px;
+            background: #f0f0f0;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+
+        .mockup-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .mockup-text {
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-bottom: 1rem;
+            white-space: pre-wrap;
+        }
+
+        .mockup-hashtags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .toast {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #28a745;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            display: none;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+
+        .toast.show {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(400px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Social Media Content Studio</h1>
+        <p>Create, edit, and optimize your property social media posts</p>
+    </div>
+
+    <div class="container">
+        <div class="editor-layout">
+            <!-- Left Panel: Photos -->
+            <div class="panel">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                    <div class="panel-title" style="margin: 0;">Property Photos</div>
+                    <button onclick="addPhotoFromFile()" style="padding: 0.5rem 0.75rem; background: #667eea; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 0.85rem; font-weight: 500;">+ Add Photo</button>
+                </div>
+                <div class="photo-carousel">
+                    <div class="photo-main" id="photoMain">
+                        <div class="no-photo">No photos available</div>
+                    </div>
+                    <div class="photo-thumbnails" id="photoThumbnails">
+                        <!-- Thumbnails will be inserted here -->
+                    </div>
+                </div>
+
+                <div class="panel-title" style="margin-top: 2rem;">Platform</div>
+                <div class="platform-selector">
+                    <button class="platform-btn active" data-platform="facebook">Facebook</button>
+                    <button class="platform-btn" data-platform="instagram">Instagram</button>
+                    <button class="platform-btn" data-platform="linkedin">LinkedIn</button>
+                </div>
+
+                <div class="panel-title" style="margin-top: 2rem;">Platform Info</div>
+                <div class="stat-box" style="text-align: left; padding: 1rem; margin-bottom: 1rem;">
+                    <div style="font-size: 0.85rem; color: #666; margin-bottom: 0.5rem;">Recommended Dimensions</div>
+                    <div style="font-weight: 600; color: #333;" id="platformDimensions">1200 x 630</div>
+                </div>
+                <div class="stat-box" style="text-align: left; padding: 1rem;">
+                    <div style="font-size: 0.85rem; color: #666; margin-bottom: 0.5rem;">Aspect Ratio</div>
+                    <div style="font-weight: 600; color: #333;" id="platformAspect">1.91:1</div>
+                </div>
+
+                <div class="panel-title" style="margin-top: 2rem;">Stats</div>
+                <div class="stats">
+                    <div class="stat-box">
+                        <div class="stat-value" id="charCount">0</div>
+                        <div class="stat-label">Characters</div>
+                    </div>
+                    <div class="stat-box">
+                        <div class="stat-value" id="wordCount">0</div>
+                        <div class="stat-label">Words</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Center Panel: Editor -->
+            <div class="panel post-editor">
+                <div class="panel-title">Post Content</div>
+
+                <div class="variant-selector">
+                    <button class="variant-btn active" data-variant="0">Short</button>
+                    <button class="variant-btn" data-variant="1">Medium</button>
+                    <button class="variant-btn" data-variant="2">Long</button>
+                </div>
+
+                <div style="position: relative;">
+                    <div contenteditable="true" class="post-text" id="postText" placeholder="Start typing your social media post...">
+Loading your generated post...
+                    </div>
+                    <button id="emojiPickerBtn" style="position: absolute; top: 10px; right: 10px; padding: 0.5rem 0.75rem; background: white; border: 2px solid #e0e0e0; border-radius: 8px; cursor: pointer; font-size: 1.25rem; transition: all 0.2s;">😊</button>
+                </div>
+
+                <div class="char-counter">
+                    <span>Character limit: <span class="char-count" id="charLimit">0/300</span></span>
+                    <span id="platformLimit">Facebook: 300 recommended</span>
+                </div>
+
+                <!-- Emoji Picker Popup -->
+                <div id="emojiPicker" style="display: none; position: absolute; background: white; border: 2px solid #e0e0e0; border-radius: 12px; padding: 1rem; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 1000; max-width: 320px;">
+                    <div style="font-size: 0.9rem; font-weight: 600; margin-bottom: 0.75rem; color: #333;">Insert Emoji</div>
+                    <div id="emojiGrid" style="display: grid; grid-template-columns: repeat(8, 1fr); gap: 0.5rem; max-height: 200px; overflow-y: auto;">
+                        <!-- Emojis will be inserted here -->
+                    </div>
+                </div>
+
+                <div class="hashtags-container">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem;">
+                        <div class="panel-title" style="margin: 0;">Hashtags</div>
+                        <div style="font-size: 0.85rem; font-weight: 600; color: #667eea;" id="hashtagScore">Score: 0/100</div>
+                    </div>
+                    <div style="height: 8px; background: #f0f0f0; border-radius: 4px; margin-bottom: 1rem; overflow: hidden;">
+                        <div id="hashtagScoreBar" style="height: 100%; width: 0%; background: linear-gradient(90deg, #ef4444, #f59e0b, #10b981); transition: width 0.3s;"></div>
+                    </div>
+                    <div class="hashtags" id="hashtagsList">
+                        <!-- Hashtags will be inserted here -->
+                    </div>
+                    <button onclick="optimizeHashtags()" style="margin-top: 1rem; width: 100%; padding: 0.75rem; background: white; border: 2px solid #667eea; color: #667eea; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.2s;">Optimize Hashtags</button>
+                </div>
+
+                <div class="actions">
+                    <button class="btn btn-primary" onclick="copyAllContent()">
+                        Copy Post + Hashtags
+                    </button>
+                    <button class="btn btn-secondary" onclick="downloadAsImage()">
+                        Download as Image
+                    </button>
+                    <button class="btn btn-secondary" onclick="saveTemplate()">
+                        Save as Template
+                    </button>
+                </div>
+            </div>
+
+            <!-- Right Panel: Preview -->
+            <div class="panel preview-panel">
+                <div class="panel-title">Live Preview</div>
+                <div class="platform-mockup">
+                    <div class="mockup-header">
+                        <div class="mockup-avatar"></div>
+                        <div class="mockup-info">
+                            <div class="mockup-name" id="mockupAgencyName">Your Estate Agency</div>
+                            <div class="mockup-time">Just now</div>
+                        </div>
+                    </div>
+                    <div class="mockup-image" id="mockupImage">
+                        <!-- Photo preview -->
+                    </div>
+                    <div class="mockup-text" id="mockupText">
+Your post content will appear here...
+                    </div>
+                    <div class="mockup-hashtags" id="mockupHashtags">
+                        <!-- Hashtags preview -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">Action completed!</div>
+
+    <script>
+        // Global state
+        let currentData = null;
+        let currentVariant = 0;
+        let currentPlatform = 'facebook';
+        let currentPhotoIndex = 0;
+
+        // Initialize on load
+        window.addEventListener('DOMContentLoaded', () => {
+            // Get data from opener window
+            currentData = window.opener?.socialMediaData;
+
+            if (!currentData) {
+                document.getElementById('postText').textContent = 'Error: No data received. Please close this window and try again.';
+                return;
+            }
+
+            console.log('Loaded social media data:', currentData);
+
+            // Load photos
+            loadPhotos();
+
+            // Load initial post
+            loadVariant(0);
+
+            // Set up event listeners
+            setupEventListeners();
+
+            // Update preview
+            updatePreview();
+        });
+
+        function loadPhotos() {
+            const photos = currentData.photos || [];
+            const photoMain = document.getElementById('photoMain');
+            const photoThumbnails = document.getElementById('photoThumbnails');
+
+            if (photos.length === 0) {
+                return;
+            }
+
+            // Show first photo
+            photoMain.innerHTML = `<img src="${photos[0].dataUrl}" alt="Property photo">`;
+
+            // Generate thumbnails with remove buttons
+            photoThumbnails.innerHTML = photos.map((photo, index) => `
+                <div class="photo-thumb ${index === 0 ? 'active' : ''}" onclick="selectPhoto(${index})" style="position: relative;">
+                    <img src="${photo.dataUrl}" alt="${photo.name}">
+                    ${photos.length > 1 ? `<button onclick="event.stopPropagation(); removePhoto(${index})" style="position: absolute; top: -6px; right: -6px; width: 20px; height: 20px; border-radius: 50%; background: #ef4444; color: white; border: 2px solid white; cursor: pointer; font-size: 0.7rem; display: flex; align-items: center; justify-content: center; font-weight: bold;">×</button>` : ''}
+                </div>
+            `).join('');
+        }
+
+        function selectPhoto(index) {
+            const photos = currentData.photos || [];
+            if (index >= photos.length) return;
+
+            currentPhotoIndex = index;
+
+            // Update main photo
+            document.getElementById('photoMain').innerHTML = `<img src="${photos[index].dataUrl}" alt="Property photo">`;
+
+            // Update active thumbnail
+            document.querySelectorAll('.photo-thumb').forEach((thumb, i) => {
+                thumb.classList.toggle('active', i === index);
+            });
+
+            // Update mockup preview
+            updatePreview();
+        }
+
+        function loadVariant(index) {
+            currentVariant = index;
+
+            // Debug: Log the entire data structure
+            console.log('Loading variant:', index);
+            console.log('Current data keys:', Object.keys(currentData));
+            console.log('Post text field:', currentData.post_text);
+            console.log('Text field:', currentData.text);
+
+            // Try multiple possible field names from API response
+            const postText = currentData.post_text || currentData.text || currentData.content || 'No content generated. Please check console for debug info.';
+
+            const postTextElement = document.getElementById('postText');
+            postTextElement.textContent = postText;
+
+            console.log('Loaded text:', postText);
+
+            updateCharCount();
+            updatePreview();
+        }
+
+        function setupEventListeners() {
+            // Variant selector
+            document.querySelectorAll('.variant-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    document.querySelectorAll('.variant-btn').forEach(b => b.classList.remove('active'));
+                    e.target.classList.add('active');
+                    loadVariant(parseInt(e.target.dataset.variant));
+                });
+            });
+
+            // Platform selector
+            document.querySelectorAll('.platform-btn').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    document.querySelectorAll('.platform-btn').forEach(b => b.classList.remove('active'));
+                    e.target.classList.add('active');
+                    currentPlatform = e.target.dataset.platform;
+                    updatePlatformLimit();
+                    updatePreview();
+                });
+            });
+
+            // Post text editing
+            document.getElementById('postText').addEventListener('input', () => {
+                updateCharCount();
+                updatePreview();
+            });
+
+            // Load hashtags
+            loadHashtags();
+
+            // Set up emoji picker
+            setupEmojiPicker();
+
+            // Initialize platform limit display
+            updatePlatformLimit();
+        }
+
+        function loadHashtags() {
+            const hashtags = currentData.hashtags || [];
+            const hashtagsList = document.getElementById('hashtagsList');
+
+            if (hashtags.length === 0) {
+                hashtagsList.innerHTML = '<div class="hashtag">#PropertyListing</div>';
+                calculateHashtagScore();
+                return;
+            }
+
+            hashtagsList.innerHTML = hashtags.map(tag => {
+                const cleanTag = tag.startsWith('#') ? tag : '#' + tag;
+                const score = calculateSingleHashtagScore(cleanTag);
+                const scoreClass = score >= 70 ? 'high' : score >= 40 ? 'medium' : 'low';
+                return `<div class="hashtag" onclick="toggleHashtag(this)">
+                    ${cleanTag}
+                    <span class="hashtag-score ${scoreClass}">${score}</span>
+                </div>`;
+            }).join('');
+
+            calculateHashtagScore();
+        }
+
+        function toggleHashtag(element) {
+            element.classList.toggle('active');
+            updatePreview();
+        }
+
+        function updateCharCount() {
+            const text = document.getElementById('postText').textContent;
+            const charCount = text.length;
+            const wordCount = text.split(/\s+/).filter(w => w.length > 0).length;
+
+            document.getElementById('charCount').textContent = charCount;
+            document.getElementById('wordCount').textContent = wordCount;
+
+            const charLimitEl = document.getElementById('charLimit');
+            const limit = getPlatformLimit();
+            charLimitEl.textContent = `${charCount}/${limit}`;
+
+            charLimitEl.classList.remove('warning', 'error');
+            if (charCount > limit) {
+                charLimitEl.classList.add('error');
+            } else if (charCount > limit * 0.9) {
+                charLimitEl.classList.add('warning');
+            }
+        }
+
+        function getPlatformLimit() {
+            const limits = {
+                facebook: 300,
+                instagram: 2200,
+                linkedin: 3000
+            };
+            return limits[currentPlatform] || 300;
+        }
+
+        function updatePlatformLimit() {
+            const limit = getPlatformLimit();
+            const platformNames = {
+                facebook: 'Facebook',
+                instagram: 'Instagram',
+                linkedin: 'LinkedIn'
+            };
+
+            // Update character limit text
+            document.getElementById('platformLimit').textContent = `${platformNames[currentPlatform]}: ${limit} recommended`;
+
+            // Update platform-specific dimensions
+            const platformSpecs = {
+                facebook: {
+                    dimensions: '1200 x 630',
+                    aspect: '1.91:1 (Landscape)',
+                    color: '#1877f2'
+                },
+                instagram: {
+                    dimensions: '1080 x 1080',
+                    aspect: '1:1 (Square)',
+                    color: '#E4405F'
+                },
+                linkedin: {
+                    dimensions: '1200 x 627',
+                    aspect: '1.91:1 (Landscape)',
+                    color: '#0077b5'
+                }
+            };
+
+            const specs = platformSpecs[currentPlatform];
+            document.getElementById('platformDimensions').textContent = specs.dimensions;
+            document.getElementById('platformAspect').textContent = specs.aspect;
+
+            // Update mockup header color based on platform
+            const mockupHeader = document.querySelector('.platform-mockup');
+            if (mockupHeader) {
+                mockupHeader.style.borderLeft = `4px solid ${specs.color}`;
+            }
+
+            updateCharCount();
+        }
+
+        function updatePreview() {
+            const text = document.getElementById('postText').textContent;
+            document.getElementById('mockupText').textContent = text;
+
+            // Update photo in mockup
+            const photos = currentData.photos || [];
+            if (photos.length > 0 && photos[currentPhotoIndex]) {
+                document.getElementById('mockupImage').innerHTML = `<img src="${photos[currentPhotoIndex].dataUrl}" alt="Property">`;
+            }
+
+            // Update hashtags in mockup
+            const activeHashtags = Array.from(document.querySelectorAll('.hashtag'))
+                .filter(el => !el.classList.contains('active'))
+                .map(el => el.textContent);
+
+            document.getElementById('mockupHashtags').innerHTML = activeHashtags.map(tag =>
+                `<div class="hashtag">${tag}</div>`
+            ).join('');
+        }
+
+        function copyAllContent() {
+            const text = document.getElementById('postText').textContent;
+            const hashtags = Array.from(document.querySelectorAll('.hashtag:not(.active)'))
+                .map(el => el.textContent)
+                .join(' ');
+
+            const fullContent = `${text}\n\n${hashtags}`;
+
+            navigator.clipboard.writeText(fullContent).then(() => {
+                showToast('Copied to clipboard!');
+            }).catch(err => {
+                console.error('Failed to copy:', err);
+                showToast('Failed to copy', 'error');
+            });
+        }
+
+        function downloadAsImage() {
+            showToast('Download feature coming soon!');
+        }
+
+        function saveTemplate() {
+            showToast('Template saved!');
+        }
+
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.style.background = type === 'error' ? '#ef4444' : '#28a745';
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2000);
+        }
+
+        // Emoji Picker Functions
+        function setupEmojiPicker() {
+            const emojis = [
+                '😊', '🏡', '🏠', '🏘️', '🏢', '🏙️', '✨', '⭐', '💎', '🔑',
+                '🚪', '🪟', '🛏️', '🛋️', '🍽️', '🛁', '🚿', '🌳', '🌸', '🌺',
+                '☀️', '🌤️', '🏖️', '🏊', '🎨', '📸', '❤️', '💯', '👍', '🙌',
+                '🎉', '🎊', '💫', '✅', '📍', '🗺️', '🚗', '🚇', '🚌', '🏃',
+                '👨‍👩‍👧‍👦', '👶', '🧸', '📚', '🎓', '💼', '🔒', '🌟', '🏆', '💰'
+            ];
+
+            const emojiGrid = document.getElementById('emojiGrid');
+            emojiGrid.innerHTML = emojis.map(emoji =>
+                `<button onclick="insertEmoji('${emoji}')" style="padding: 0.5rem; border: none; background: none; cursor: pointer; font-size: 1.5rem; border-radius: 6px; transition: all 0.2s;" onmouseover="this.style.background='#f0f0f0'" onmouseout="this.style.background='none'">${emoji}</button>`
+            ).join('');
+
+            // Toggle emoji picker
+            document.getElementById('emojiPickerBtn').addEventListener('click', (e) => {
+                e.stopPropagation();
+                const picker = document.getElementById('emojiPicker');
+                const isVisible = picker.style.display === 'block';
+                picker.style.display = isVisible ? 'none' : 'block';
+
+                if (!isVisible) {
+                    // Position picker relative to button
+                    const btn = e.target.getBoundingClientRect();
+                    picker.style.position = 'fixed';
+                    picker.style.top = btn.bottom + 10 + 'px';
+                    picker.style.right = window.innerWidth - btn.right + 'px';
+                }
+            });
+
+            // Close picker when clicking outside
+            document.addEventListener('click', (e) => {
+                const picker = document.getElementById('emojiPicker');
+                const btn = document.getElementById('emojiPickerBtn');
+                if (!picker.contains(e.target) && e.target !== btn) {
+                    picker.style.display = 'none';
+                }
+            });
+        }
+
+        function insertEmoji(emoji) {
+            const postText = document.getElementById('postText');
+
+            // Insert emoji at cursor position
+            const selection = window.getSelection();
+            if (selection.rangeCount > 0) {
+                const range = selection.getRangeAt(0);
+                range.deleteContents();
+                range.insertNode(document.createTextNode(emoji));
+                range.collapse(false);
+            } else {
+                // If no selection, append to end
+                postText.textContent += emoji;
+            }
+
+            // Update counts and preview
+            updateCharCount();
+            updatePreview();
+
+            // Close emoji picker
+            document.getElementById('emojiPicker').style.display = 'none';
+        }
+
+        // Multi-photo management functions (for future carousel expansion)
+        function removePhoto(index) {
+            if (!currentData.photos || currentData.photos.length <= 1) {
+                showToast('Cannot remove the last photo', 'error');
+                return;
+            }
+
+            currentData.photos.splice(index, 1);
+
+            if (currentPhotoIndex >= currentData.photos.length) {
+                currentPhotoIndex = currentData.photos.length - 1;
+            }
+
+            loadPhotos();
+            updatePreview();
+            showToast('Photo removed');
+        }
+
+        function addPhotoFromFile() {
+            // Create file input
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+
+            input.onchange = (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    // Add new photo to array
+                    currentData.photos = currentData.photos || [];
+                    currentData.photos.push({
+                        id: 'photo_' + Date.now(),
+                        dataUrl: event.target.result,
+                        name: file.name,
+                        category: 'additional'
+                    });
+
+                    loadPhotos();
+                    selectPhoto(currentData.photos.length - 1);
+                    showToast('Photo added');
+                };
+                reader.readAsDataURL(file);
+            };
+
+            input.click();
+        }
+
+        // Hashtag Optimization System (VidIQ-style)
+        function calculateSingleHashtagScore(tag) {
+            const cleanTag = tag.replace('#', '').toLowerCase();
+            let score = 50; // Base score
+
+            // Length scoring (optimal 10-20 chars)
+            const length = cleanTag.length;
+            if (length >= 10 && length <= 20) {
+                score += 20;
+            } else if (length >= 5 && length < 30) {
+                score += 10;
+            } else {
+                score -= 10;
+            }
+
+            // Property-specific keywords boost
+            const highValueKeywords = ['luxury', 'property', 'realestate', 'home', 'house', 'estate', 'listing'];
+            const mediumValueKeywords = ['sale', 'buy', 'rent', 'investment', 'bedroom', 'location'];
+
+            if (highValueKeywords.some(kw => cleanTag.includes(kw))) {
+                score += 25;
+            } else if (mediumValueKeywords.some(kw => cleanTag.includes(kw))) {
+                score += 15;
+            }
+
+            // Engagement potential (shorter, catchier tags score higher)
+            if (length < 15 && !cleanTag.includes('_') && !cleanTag.includes('-')) {
+                score += 10;
+            }
+
+            // Cap score at 100
+            return Math.min(100, Math.max(0, score));
+        }
+
+        function calculateHashtagScore() {
+            const hashtags = Array.from(document.querySelectorAll('.hashtag:not(.active)'));
+            if (hashtags.length === 0) {
+                updateScoreDisplay(0);
+                return;
+            }
+
+            let totalScore = 0;
+            hashtags.forEach(el => {
+                const scoreEl = el.querySelector('.hashtag-score');
+                if (scoreEl) {
+                    totalScore += parseInt(scoreEl.textContent) || 0;
+                }
+            });
+
+            const avgScore = Math.round(totalScore / hashtags.length);
+            updateScoreDisplay(avgScore);
+        }
+
+        function updateScoreDisplay(score) {
+            document.getElementById('hashtagScore').textContent = `Score: ${score}/100`;
+            document.getElementById('hashtagScoreBar').style.width = `${score}%`;
+        }
+
+        function optimizeHashtags() {
+            const formData = currentData.formData || {};
+            const propertyType = formData.property_type || 'Property';
+            const bedrooms = formData.bedrooms || '';
+            const address = formData.address || '';
+
+            // Extract location from address
+            const locationParts = address.split(',');
+            const city = locationParts[locationParts.length - 2]?.trim().replace(/\s+/g, '') || 'Location';
+
+            // Generate optimized hashtags based on property data
+            const optimized = [
+                `#${propertyType.replace(/\s+/g, '')}ForSale`,
+                `#${city}Property`,
+                '#LuxuryHomes',
+                bedrooms ? `#${bedrooms}Bedroom` : '#ModernHome',
+                `#${city}RealEstate`,
+                '#PropertyInvestment',
+                '#HomeSale',
+                '#RealEstateListing'
+            ];
+
+            // Update currentData
+            currentData.hashtags = optimized.slice(0, 6);
+
+            // Reload hashtags display
+            loadHashtags();
+
+            showToast('Hashtags optimized for maximum reach!');
+        }
+    </script>
+</body>
+</html>

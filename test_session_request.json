@@ -1,0 +1,32 @@
+{
+  "user_email": "test@example.com",
+  "property": {
+    "address": "123 Test Street",
+    "price": "£500,000"
+  },
+  "agent": {
+    "name": "Test Agent",
+    "email": "agent@example.com"
+  },
+  "photos": [
+    {
+      "id": "photo1",
+      "name": "test.jpg",
+      "category": "cover",
+      "dataUrl": "data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/2wBDAAgGBgcGBQgHBwcJCQgKDBQNDAsLDBkSEw8UHRofHh0aHBwgJC4nICIsIxwcKDcpLDAxNDQ0Hyc5PTgyPC4zNDL/2wBDAQkJCQwLDBgNDRgyIRwhMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjIyMjL/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCwAA//2Q=="
+    }
+  ],
+  "pages": [
+    {
+      "id": "page1",
+      "type": "cover",
+      "title": "Test Property",
+      "photos": [],
+      "content": {},
+      "order": 0
+    }
+  ],
+  "preferences": {
+    "orientation": "landscape"
+  }
+}

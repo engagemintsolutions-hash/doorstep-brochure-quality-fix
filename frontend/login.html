@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Agent Login - Doorstep</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #e8f4f8 0%, #ffffff 50%, #ffe8e8 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-image:
+                radial-gradient(circle at 10% 20%, rgba(23, 162, 184, 0.23) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(255, 107, 107, 0.23) 0%, transparent 40%);
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .login-container {
+            position: relative;
+            z-index: 1;
+            background: white;
+            padding: 3rem;
+            border-radius: 16px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 420px;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .logo img {
+            height: 100px;
+            width: auto;
+            margin-bottom: 1rem;
+        }
+
+        .logo h1 {
+            color: #2c3e50;
+            font-size: 1.75rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .logo p {
+            color: #6c757d;
+            font-size: 0.95rem;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            color: #C20430;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.875rem 1rem;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #C20430;
+            box-shadow: 0 0 0 3px rgba(23, 162, 184, 0.1);
+        }
+
+        .form-group input::placeholder {
+            color: #adb5bd;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, #C20430 0%, #138496 100%);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .btn-login:hover {
+            background: linear-gradient(135deg, #138496 0%, #117a8b 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(23, 162, 184, 0.3);
+        }
+
+        .btn-login:active {
+            transform: translateY(0);
+        }
+
+        .error-message {
+            background: #ffe8e8;
+            border: 1px solid #ff6b6b;
+            border-left: 4px solid #ff6b6b;
+            color: #d63031;
+            padding: 0.875rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            display: none;
+            animation: shake 0.5s ease;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        .success-message {
+            background: #e8f5e9;
+            border: 1px solid #81c784;
+            border-left: 4px solid #4caf50;
+            color: #2e7d32;
+            padding: 0.875rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            font-size: 0.9rem;
+            display: none;
+            animation: slideIn 0.5s ease;
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 2rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e0e0e0;
+            color: #6c757d;
+            font-size: 0.85rem;
+        }
+
+        .credentials-hint {
+            background: #fff9e6;
+            border: 1px solid #ffd93d;
+            border-left: 4px solid #ffd93d;
+            padding: 0.875rem 1rem;
+            border-radius: 8px;
+            margin-bottom: 1.5rem;
+            font-size: 0.85rem;
+            color: #856404;
+        }
+
+        .credentials-hint strong {
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        /* Loading spinner */
+        .spinner {
+            border: 3px solid rgba(23, 162, 184, 0.1);
+            border-top: 3px solid #C20430;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            animation: spin 0.8s linear infinite;
+            display: inline-block;
+            margin-left: 0.5rem;
+            vertical-align: middle;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading .spinner {
+            display: inline-block;
+        }
+
+        .loading .btn-text {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo">
+            <img src="/static/doorstep-logo.png" alt="Doorstep Logo">
+            <h1>Agent Portal</h1>
+            <p>Property Listing Generator</p>
+        </div>
+
+        <!-- Demo credentials hint (remove in production) -->
+        <div class="credentials-hint">
+            <strong>🔐 Savills Demo:</strong>
+            Organization: Savills | Office: London | PIN: 2025<br>
+            Agent: james.smith@savills.com | Photographer: photographer@savills.com
+        </div>
+
+        <div id="errorMessage" class="error-message"></div>
+        <div id="successMessage" class="success-message"></div>
+
+        <form id="loginForm">
+            <div class="form-group">
+                <label for="organization">Organization</label>
+                <select
+                    id="organization"
+                    name="organization"
+                    required
+                    style="width: 100%; padding: 0.875rem 1rem; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1rem; font-family: inherit;"
+                >
+                    <option value="">Select organization...</option>
+                    <option value="savills">Savills (2 offices)</option>
+                    <option value="generic">Independent Agency (1 office)</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="office">Office Location</label>
+                <select
+                    id="office"
+                    name="office"
+                    required
+                    disabled
+                    style="width: 100%; padding: 0.875rem 1rem; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1rem; font-family: inherit;"
+                >
+                    <option value="">Select office...</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="role">Role</label>
+                <select
+                    id="role"
+                    name="role"
+                    required
+                    style="width: 100%; padding: 0.875rem 1rem; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1rem; font-family: inherit;"
+                >
+                    <option value="">Select role...</option>
+                    <option value="agent">Agent</option>
+                    <option value="photographer">Photographer</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="agentName">Agent Name</label>
+                <select
+                    id="agentName"
+                    name="agentName"
+                    required
+                    disabled
+                    style="width: 100%; padding: 0.875rem 1rem; border: 2px solid #e0e0e0; border-radius: 8px; font-size: 1rem; font-family: inherit;"
+                >
+                    <option value="">Select agent...</option>
+                </select>
+            </div>
+
+            <div class="form-group">
+                <label for="agentPin">Office PIN</label>
+                <input
+                    type="password"
+                    id="agentPin"
+                    name="agentPin"
+                    placeholder="Enter office PIN"
+                    maxlength="4"
+                    pattern="[0-9]{4}"
+                    required
+                    autocomplete="current-password"
+                >
+            </div>
+
+            <button type="submit" class="btn-login" id="loginBtn">
+                <span class="btn-text">Sign In</span>
+                <span class="spinner" style="display: none;"></span>
+            </button>
+        </form>
+
+        <div class="footer">
+            <p>Powered by Doorstep AI</p>
+            <p style="margin-top: 0.5rem; font-size: 0.8rem;">© 2025 All rights reserved</p>
+        </div>
+    </div>
+
+    <script>
+        console.log('🔐 Multi-tenant login page loaded');
+
+        const loginForm = document.getElementById('loginForm');
+        const organizationSelect = document.getElementById('organization');
+        const officeSelect = document.getElementById('office');
+        const roleSelect = document.getElementById('role');
+        const agentNameSelect = document.getElementById('agentName');
+        const agentPinInput = document.getElementById('agentPin');
+        const errorMessage = document.getElementById('errorMessage');
+        const successMessage = document.getElementById('successMessage');
+        const loginBtn = document.getElementById('loginBtn');
+
+        // Check if already logged in
+        if (localStorage.getItem('agentAuthorized') === 'true') {
+            window.location.href = '/static/index.html';
+        }
+
+        // Organizations are now hardcoded in HTML, no need to load from API
+        console.log('✅ Organizations loaded from HTML');
+
+        // Office data by organization (hardcoded for demo)
+        const ORGANIZATION_OFFICES = {
+            'savills': [
+                { office_id: 'savills_london', name: 'London', city: 'London', pin: '2025' },
+                { office_id: 'savills_manchester', name: 'Manchester', city: 'Manchester', pin: '2025' }
+            ],
+            'generic': [
+                { office_id: 'generic_main', name: 'Main Office', city: 'Main', pin: '1234' }
+            ]
+        };
+
+        // Agent data by office (hardcoded for demo)
+        const OFFICE_AGENTS = {
+            'savills_london': [
+                { name: 'James Smith', email: 'james.smith@savills.com', role: 'agent' },
+                { name: 'Emma Johnson', email: 'emma.johnson@savills.com', role: 'agent' },
+                { name: 'Oliver Brown', email: 'oliver.brown@savills.com', role: 'agent' },
+                { name: 'Sophie Williams', email: 'sophie.williams@savills.com', role: 'agent' },
+                { name: 'Thomas Davies', email: 'thomas.davies@savills.com', role: 'agent' },
+                { name: 'Anya Rowlings', email: 'photographer@savills.com', role: 'photographer' }
+            ],
+            'savills_manchester': [
+                { name: 'Michael Taylor', email: 'michael.taylor@savills.com', role: 'agent' },
+                { name: 'Sarah Wilson', email: 'sarah.wilson@savills.com', role: 'agent' },
+                { name: 'David Anderson', email: 'david.anderson@savills.com', role: 'agent' },
+                { name: 'Photographer Manchester', email: 'photographer.manchester@savills.com', role: 'photographer' }
+            ],
+            'generic_main': [
+                { name: 'Agent One', email: 'agent1@example.com', role: 'agent' },
+                { name: 'Agent Two', email: 'agent2@example.com', role: 'agent' },
+                { name: 'Photographer', email: 'photographer@example.com', role: 'photographer' }
+            ]
+        };
+
+        // When organization is selected, load its offices (hardcoded)
+        organizationSelect.addEventListener('change', (e) => {
+            const orgId = e.target.value;
+
+            if (!orgId) {
+                officeSelect.disabled = true;
+                officeSelect.innerHTML = '<option value="">Select office...</option>';
+                agentNameSelect.disabled = true;
+                agentNameSelect.innerHTML = '<option value="">Select agent...</option>';
+                return;
+            }
+
+            const offices = ORGANIZATION_OFFICES[orgId] || [];
+
+            officeSelect.innerHTML = '<option value="">Select office...</option>';
+
+            offices.forEach(office => {
+                const option = document.createElement('option');
+                option.value = office.office_id;
+                option.textContent = `${office.name} (${office.city})`;
+                option.dataset.pin = office.pin;
+                officeSelect.appendChild(option);
+            });
+
+            officeSelect.disabled = false;
+            console.log('✅ Loaded', offices.length, 'offices for', orgId);
+        });
+
+        // When office OR role changes, update agent list
+        function updateAgentList() {
+            const officeId = officeSelect.value;
+            const role = roleSelect.value;
+
+            if (!officeId || !role) {
+                agentNameSelect.disabled = true;
+                agentNameSelect.innerHTML = '<option value="">Select agent...</option>';
+                return;
+            }
+
+            const agents = OFFICE_AGENTS[officeId] || [];
+            const filteredAgents = agents.filter(agent => agent.role === role);
+
+            agentNameSelect.innerHTML = '<option value="">Select agent...</option>';
+
+            filteredAgents.forEach(agent => {
+                const option = document.createElement('option');
+                option.value = agent.email;
+                option.textContent = agent.name;
+                agentNameSelect.appendChild(option);
+            });
+
+            agentNameSelect.disabled = false;
+            console.log('✅ Loaded', filteredAgents.length, role + 's for', officeId);
+        }
+
+        officeSelect.addEventListener('change', updateAgentList);
+        roleSelect.addEventListener('change', updateAgentList);
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const orgId = organizationSelect.value;
+            const officeId = officeSelect.value;
+            const role = roleSelect.value;
+            const email = agentNameSelect.value; // Get email from dropdown
+            const pin = agentPinInput.value.trim();
+
+            // Hide previous messages
+            errorMessage.style.display = 'none';
+            successMessage.style.display = 'none';
+
+            // Show loading state
+            loginBtn.classList.add('loading');
+            loginBtn.disabled = true;
+
+            try {
+                // Call authentication API
+                const response = await fetch('/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        org_id: orgId,
+                        office_id: officeId,
+                        pin: pin,
+                        user_email: email
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok && data.success) {
+                    // Success!
+                    successMessage.textContent = `✅ Welcome ${data.user.name}! Redirecting to ${role === 'agent' ? 'agent' : 'photographer'} dashboard...`;
+                    successMessage.style.display = 'block';
+
+                    // Store session data
+                    localStorage.setItem('agentAuthorized', 'true');
+                    localStorage.setItem('officeId', data.office.office_id);
+                    localStorage.setItem('orgId', data.office.org_id);
+                    localStorage.setItem('userEmail', data.user.email);
+                    localStorage.setItem('userName', data.user.name);
+                    localStorage.setItem('userRole', data.user.role);
+                    localStorage.setItem('agentLoginTime', new Date().toISOString());
+
+                    // Store office stats for dashboard
+                    localStorage.setItem('officeStats', JSON.stringify(data.stats));
+
+                    console.log('✅ Login successful:', {
+                        user: data.user.name,
+                        role: data.user.role,
+                        office: data.office.office_id,
+                        stats: data.stats
+                    });
+
+                    // Redirect based on role after short delay
+                    setTimeout(() => {
+                        // Check user role and redirect accordingly
+                        const userRole = localStorage.getItem('userRole');
+
+                        if (userRole === 'photographer') {
+                            window.location.href = '/static/photographer_portal.html';
+                        } else {
+                            // Agent or admin goes to dashboard
+                            window.location.href = '/static/dashboard.html';
+                        }
+                    }, 1500);
+
+                } else {
+                    // Authentication failed
+                    throw new Error(data.detail || 'Authentication failed');
+                }
+
+            } catch (error) {
+                // Failed
+                loginBtn.classList.remove('loading');
+                loginBtn.disabled = false;
+
+                let errorMsg = '❌ Authentication failed. ';
+
+                if (error.message.includes('Invalid PIN')) {
+                    errorMsg += 'Invalid PIN. Please check and try again.';
+                } else if (error.message.includes('not found')) {
+                    errorMsg += 'User not found in this office.';
+                } else if (error.message.includes('not authorized')) {
+                    errorMsg += 'You are not authorized for this office.';
+                } else {
+                    errorMsg += error.message || 'Please check your credentials.';
+                }
+
+                errorMessage.textContent = errorMsg;
+                errorMessage.style.display = 'block';
+
+                // Shake animation
+                errorMessage.style.animation = 'none';
+                setTimeout(() => {
+                    errorMessage.style.animation = 'shake 0.5s ease';
+                }, 10);
+
+                // Clear PIN field
+                agentPinInput.value = '';
+                agentPinInput.focus();
+
+                console.log('❌ Login failed:', error.message);
+            }
+        });
+
+        // Auto-format PIN input (numbers only)
+        agentPinInput.addEventListener('input', (e) => {
+            e.target.value = e.target.value.replace(/[^0-9]/g, '').slice(0, 4);
+        });
+
+        // Focus first field on load
+        organizationSelect.focus();
+    </script>
+</body>
+</html>

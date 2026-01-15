@@ -1,0 +1,562 @@
+diff --git a/frontend/page_builder.js b/frontend/page_builder.js
+index 4c3cdce..72a83fe 100644
+--- a/frontend/page_builder.js
++++ b/frontend/page_builder.js
+@@ -7,10 +7,15 @@ console.log('📖 Page Builder loaded');
+ let brochurePages = [];
+ let selectedPhotoInBuilder = null;
+ let activePageId = null;
++let autoScrollInterval = null;
+ 
+ // Make brochurePages accessible globally for validation
+ window.brochurePages = brochurePages;
+ 
++// Auto-scroll configuration
++const AUTO_SCROLL_THRESHOLD = 100; // pixels from edge to start scrolling
++const AUTO_SCROLL_SPEED = 10; // pixels per frame
++
+ // Expose renderBrochurePages globally for Smart Defaults UX enhancements
+ // (exported at end of file with other window assignments)
+ 
+@@ -140,20 +145,49 @@ function collectFormDataAsBlocks() {
+     const agentPhone = document.getElementById('agentPhone')?.value;
+     const agentEmail = document.getElementById('agentEmail')?.value;
+ 
+-    if (agentName || agentPhone || agentEmail) {
++    // Check if agent photo checkbox is ticked
++    const includeAgent = document.getElementById('includeAgentPhoto')?.checked;
++
++    // If checkbox is ticked OR we have agent data, create agent block
++    if (includeAgent || agentName || agentPhone || agentEmail) {
++        // If checkbox is ticked but fields are empty, use default/stored values
++        let finalAgentName = agentName;
++        let finalAgentPhone = agentPhone;
++        let finalAgentEmail = agentEmail;
++
++        if (includeAgent && !agentName && !agentPhone && !agentEmail) {
++            // Get from localStorage (set by prePopulateAgentDetails)
++            const userEmail = localStorage.getItem('userEmail');
++            if (userEmail === 'james.smith@savills.com') {
++                finalAgentName = 'James Smith';
++                finalAgentPhone = '+44 7700 900123';
++                finalAgentEmail = 'james.smith@savills.com';
++                console.log('✅ Using default agent details for James Smith');
++            }
++        }
++
++        // Build agent content with available fields
+         const agentContent = [
+-            agentName,
+-            agentPhone,
+-            agentEmail
++            finalAgentName || agentName,
++            finalAgentPhone || agentPhone,
++            finalAgentEmail || agentEmail
+         ].filter(Boolean).join('\n');
+ 
+-        blocks.push({
+-            id: `block_${blockId++}`,
+-            type: 'agent_contact',
+-            title: '👤 Agent Contact',
+-            content: agentContent,
+-            data: { agentName, agentPhone, agentEmail }
+-        });
++        // Only create block if we have at least some content
++        if (agentContent) {
++            blocks.push({
++                id: `block_${blockId++}`,
++                type: 'agent_contact',
++                title: '👤 Agent Contact',
++                content: agentContent,
++                data: {
++                    agentName: finalAgentName || agentName,
++                    agentPhone: finalAgentPhone || agentPhone,
++                    agentEmail: finalAgentEmail || agentEmail
++                }
++            });
++            console.log('✅ Created agent_contact block');
++        }
+     }
+ 
+     // 5. FLOORPLAN BLOCK (if uploaded)
+@@ -291,6 +325,10 @@ function openPageBuilderModal() {
+     if (typeof initializeLearningSystem === 'function') {
+         initializeLearningSystem();
+     }
++    // Initialize keyboard navigation
++    if (typeof initKeyboardNavigation === 'function') {
++        setTimeout(() => initKeyboardNavigation(), 100);
++    }
+ }
+ 
+ function closePageBuilderModal() {
+@@ -305,6 +343,14 @@ function closePageBuilderModal() {
+     // Clear selection
+     selectedPhotoInBuilder = null;
+     activePageId = null;
++
++    // Deselect keyboard navigation item
++    if (typeof window.deselectItem === 'function') {
++        window.deselectItem();
++    }
++    if (typeof window.hideKeyboardInstructions === 'function') {
++        window.hideKeyboardInstructions();
++    }
+ }
+ 
+ function savePageBuilderChanges() {
+@@ -436,6 +482,14 @@ function useSmartDefaults() {
+ }
+ 
+ function generateSmartDefaultPages() {
++    // Use the new intelligent brochure builder if available
++    if (typeof window.generateSmartDefaultPagesIntelligent === 'function') {
++        console.log('🎯 Using intelligent brochure builder');
++        return window.generateSmartDefaultPagesIntelligent();
++    }
++
++    // Fallback to original implementation
++    console.log('⚠️ Using fallback brochure builder');
+     const pages = [];
+     let pageNumber = 1;
+ 
+@@ -569,12 +623,14 @@ function generateSmartDefaultPages() {
+     if (coverPhotos.length > 0) {
+         pages.push({
+             id: pageNumber++,
++            type: 'cover',  // Mark as cover page
+             name: 'Welcome Home',
+             contentBlocks: createPageContent(
+                 [coverPhotos[0]],
+                 ['location_info', 'property_details']
+             ),
+             locked: true,
++            layout: 'hero',  // Full page hero layout
+             theme: 'welcoming'
+         });
+     }
+@@ -653,24 +709,77 @@ function generateSmartDefaultPages() {
+ 
+     // FLOORPLAN PAGE: Always include if floorplan exists (not limited by page budget)
+     const floorplanBlock = contentBlocks.find(b => b.type === 'floorplan');
+-    if (floorplanBlock) {
++    if (floorplanBlock || window.floorplanFile) {
+         pages.push({
+             id: pageNumber++,
++            type: 'floorplan',  // Mark as floorplan page
+             name: 'Property Layout',
+-            contentBlocks: [floorplanBlock],
++            contentBlocks: floorplanBlock ? [floorplanBlock] : [{ type: 'floorplan', id: `floorplan_${Date.now()}` }],
+             locked: false,
+             theme: 'technical'
+         });
+         console.log('✅ Added floorplan page');
+     }
+ 
++    // LOCATION PAGE: Add if location enrichment exists
++    const state = window.UnifiedBrochureState;
++    if (state && state.property && state.property.locationEnrichment) {
++        const enrichment = state.property.locationEnrichment;
++        const locationBlocks = [];
++
++        if (enrichment.schools) {
++            locationBlocks.push({
++                type: 'schools',
++                id: `schools_${Date.now()}`,
++                icon: '🏫',
++                title: 'Schools & Education',
++                text: enrichment.schools
++            });
++        }
++        if (enrichment.transport) {
++            locationBlocks.push({
++                type: 'transport',
++                id: `transport_${Date.now()}`,
++                icon: '🚇',
++                title: 'Transport Links',
++                text: enrichment.transport
++            });
++        }
++        if (enrichment.amenities) {
++            locationBlocks.push({
++                type: 'amenities',
++                id: `amenities_${Date.now()}`,
++                icon: '🏪',
++                title: 'Local Amenities',
++                text: enrichment.amenities
++            });
++        }
++
++        if (locationBlocks.length > 0) {
++            pages.push({
++                id: pageNumber++,
++                type: 'location',  // Mark as location page
++                name: 'Location & Amenities',
++                contentBlocks: locationBlocks,
++                locked: false,
++                theme: 'informative'
++            });
++            console.log('✅ Added location page');
++        }
++    }
++
+     // FINAL PAGE: Agent Contact (always last if present)
+     const agentBlock = contentBlocks.find(b => b.type === 'agent_contact');
+-    if (agentBlock) {
++    if (agentBlock || (state && state.agent && state.agent.includePhoto)) {
+         pages.push({
+             id: pageNumber++,
++            type: 'contact',  // Mark as contact page
+             name: 'Get In Touch',
+-            contentBlocks: [agentBlock],
++            contentBlocks: agentBlock ? [agentBlock] : [{
++                type: 'agent_contact',
++                id: `agent_${Date.now()}`,
++                agent: state.agent
++            }],
+             locked: false,
+             theme: 'contact'
+         });
+@@ -687,6 +796,7 @@ function initializeDefaultPages() {
+ 
+     brochurePages = [{
+         id: 1,
++        type: 'cover',  // Mark as cover page
+         name: 'Cover',
+         contentBlocks: coverPhotos.length > 0 ? [{
+             id: 1,
+@@ -694,6 +804,7 @@ function initializeDefaultPages() {
+             photoId: coverPhotos[0]
+         }] : [],
+         locked: true,
++        layout: 'hero',  // Full page hero layout
+         theme: 'welcoming'
+     }];
+     window.brochurePages = brochurePages;  // Update global reference
+@@ -907,12 +1018,18 @@ function renderAvailablePhotos() {
+             // Bug #38 fix: photoId could be either unique ID or filename (backwards compatible)
+             // Bug #46 fix: Use window.uploadedPhotos for consistency
+             const photoData = window.uploadedPhotos.find(p => p.id === photoId || p.name === photoId);
+-            if (!photoData) return;
++            if (!photoData) {
++                console.warn('Photo not found in renderAvailablePhotos:', photoId);
++                return;
++            }
+ 
+             const img = document.createElement('img');
+-            img.src = photoData.dataUrl || photoData.url;  // Use dataUrl first (from file upload), fallback to url
++            img.src = photoData.dataUrl || photoData.data || photoData.url;  // Try dataUrl, data, then url
+             img.className = 'page-builder-photo-thumb';
+             img.dataset.photoId = photoId;
++            img.onerror = () => {
++                console.error('Failed to load thumbnail:', photoData);
++            };
+ 
+             if (usedPhotoIds.has(photoId)) {
+                 img.classList.add('used');
+@@ -930,9 +1047,14 @@ function renderAvailablePhotos() {
+                         type: 'new-photo'
+                     }));
+                     img.classList.add('dragging');
++                    startAutoScroll();
+                 };
+                 img.ondragend = (e) => {
+                     img.classList.remove('dragging');
++                    stopAutoScroll();
++                };
++                img.ondrag = (e) => {
++                    updateAutoScroll(e);
+                 };
+             }
+ 
+@@ -1046,7 +1168,16 @@ function createPageCard(page) {
+     // Drop zone handlers
+     contentContainer.ondragover = (e) => {
+         e.preventDefault();
+-        e.dataTransfer.dropEffect = 'move';
++        e.stopPropagation();
++
++        // ⭐ FIX: Set correct dropEffect based on what's being dragged
++        // Check effectAllowed to determine the correct dropEffect
++        if (e.dataTransfer.effectAllowed === 'move') {
++            e.dataTransfer.dropEffect = 'move';
++        } else {
++            e.dataTransfer.dropEffect = 'copy';
++        }
++
+         contentContainer.classList.add('drag-over');
+     };
+     contentContainer.ondragleave = (e) => {
+@@ -1056,10 +1187,12 @@ function createPageCard(page) {
+     };
+     contentContainer.ondrop = (e) => {
+         e.preventDefault();
++        e.stopPropagation();
+         contentContainer.classList.remove('drag-over');
+ 
+         try {
+             const data = JSON.parse(e.dataTransfer.getData('text/plain'));
++            console.log('Drop data received:', data);
+ 
+             // Handle new photo being dropped from left panel
+             if (data.type === 'new-photo' && data.photoId) {
+@@ -1074,6 +1207,7 @@ function createPageCard(page) {
+             }
+         } catch (err) {
+             console.error('Drop error:', err);
++            showToast('error', 'Failed to drop item');
+         }
+     };
+ 
+@@ -1109,14 +1243,56 @@ function createContentBlockElement(block, pageId) {
+     blockDiv.dataset.blockType = block.type;
+     blockDiv.draggable = true;
+ 
++    // Keyboard navigation support
++    const page = window.brochurePages.find(p => p.id === pageId);
++    if (page && page.contentBlocks) {
++        const blockIndex = page.contentBlocks.findIndex(b => b.id === block.id);
++        if (blockIndex >= 0) {
++            blockDiv.classList.add('keyboard-nav-selectable');
++            blockDiv.dataset.keyboardNav = block.type === 'photo' ? 'photo' : 'contentBlock';
++            blockDiv.dataset.pageId = pageId;
++            blockDiv.dataset.itemIndex = blockIndex;
++
++            // Click handler for keyboard selection
++            blockDiv.onclick = (e) => {
++                // Don't trigger if clicking remove button
++                if (e.target.classList.contains('block-remove-btn')) return;
++
++                e.stopPropagation();
++                if (block.type === 'photo' && typeof window.selectPhoto === 'function') {
++                    window.selectPhoto(pageId, blockIndex);
++                    if (typeof window.showKeyboardInstructions === 'function') {
++                        window.showKeyboardInstructions();
++                    }
++                } else if (typeof window.selectContentBlock === 'function') {
++                    window.selectContentBlock(pageId, blockIndex);
++                    if (typeof window.showKeyboardInstructions === 'function') {
++                        window.showKeyboardInstructions();
++                    }
++                }
++            };
++
++            // Add visual hint
++            const hint = document.createElement('div');
++            hint.className = 'keyboard-nav-hint';
++            hint.textContent = '⌨️ ↑↓';
++            blockDiv.appendChild(hint);
++        }
++    }
++
+     // Drag and drop handlers
+     blockDiv.ondragstart = (e) => {
+         e.dataTransfer.effectAllowed = 'move';
+         e.dataTransfer.setData('text/plain', JSON.stringify({ blockId: block.id, fromPageId: pageId }));
+         blockDiv.classList.add('dragging');
++        startAutoScroll();
+     };
+     blockDiv.ondragend = (e) => {
+         blockDiv.classList.remove('dragging');
++        stopAutoScroll();
++    };
++    blockDiv.ondrag = (e) => {
++        updateAutoScroll(e);
+     };
+ 
+     // Photo blocks
+@@ -1148,8 +1324,21 @@ function createContentBlockElement(block, pageId) {
+ 
+         blockDiv.classList.add('block-photo');
+         const img = document.createElement('img');
+-        img.src = photoData.dataUrl || photoData.url;  // Fix: use dataUrl
++        img.src = photoData.dataUrl || photoData.data || photoData.url;  // Fix: try dataUrl, data, then url
+         img.alt = 'Photo';
++        img.style.width = '100%';
++        img.style.height = 'auto';
++        img.style.display = 'block';
++        img.onerror = () => {
++            console.error('Failed to load image:', photoData);
++            img.style.display = 'none';
++            blockDiv.innerHTML = `
++                <div style="background: #f0f0f0; padding: 20px; text-align: center; color: #999;">
++                    <div>📷</div>
++                    <div style="font-size: 12px; margin-top: 8px;">Failed to load image</div>
++                </div>
++            `;
++        };
+         blockDiv.appendChild(img);
+ 
+         const removeBtn = document.createElement('button');
+@@ -1261,6 +1450,7 @@ function removeBlockFromPage(blockId, pageId) {
+     page.contentBlocks = page.contentBlocks.filter(b => b.id !== blockId);
+     window.brochurePages = brochurePages;
+     renderBrochurePages();
++    renderAvailablePhotos(); // ⭐ FIX: Refresh available photos when photo is removed
+     showToast('info', 'Content removed from page');
+ }
+ 
+@@ -1706,25 +1896,103 @@ function updatePageBuilderPreview() {
+         }
+     }
+ 
+-    // Render page cards in NEW inline section
++    // Render page cards in NEW inline section with drag-to-reorder
+     if (inlinePreviewContainer) {
+         const inlineCardsContainer = inlinePreviewContainer.querySelector('div');
+         if (inlineCardsContainer) {
+             inlineCardsContainer.innerHTML = '';
+-            brochurePages.forEach(page => {
++            brochurePages.forEach((page, index) => {
+                 const card = document.createElement('div');
+-                card.style.cssText = 'background: #f8f9fa; padding: 0.75rem; border-radius: 6px; border: 1px solid #dee2e6;';
++                card.style.cssText = 'background: #f8f9fa; padding: 0.75rem; border-radius: 6px; border: 1px solid #dee2e6; cursor: move; transition: all 0.2s;';
++                card.dataset.pageIndex = index;
++                card.draggable = !page.locked; // Can't reorder locked pages (like cover)
++
+                 const photoCount = page.contentBlocks.filter(b => b.type === 'photo').length;
+                 card.innerHTML = `
+-                    <div style="font-weight: bold; color: #17A2B8; margin-bottom: 0.25rem;">Page ${page.id}: ${page.name}</div>
++                    <div style="font-weight: bold; color: #17A2B8; margin-bottom: 0.25rem;">
++                        ${page.locked ? '🔒 ' : '☰ '}Page ${page.id}: ${page.name}
++                    </div>
+                     <div style="color: #6c757d; font-size: 0.85rem;">${photoCount} photo${photoCount !== 1 ? 's' : ''}</div>
+                 `;
++
++                // Drag and drop handlers for reordering
++                if (!page.locked) {
++                    card.ondragstart = (e) => {
++                        e.dataTransfer.effectAllowed = 'move';
++                        e.dataTransfer.setData('text/plain', JSON.stringify({ pageIndex: index, type: 'page-reorder' }));
++                        card.style.opacity = '0.5';
++                    };
++
++                    card.ondragend = (e) => {
++                        card.style.opacity = '1';
++                    };
++                }
++
++                card.ondragover = (e) => {
++                    e.preventDefault();
++                    e.dataTransfer.dropEffect = 'move';
++                    card.style.borderColor = '#17A2B8';
++                    card.style.background = '#e7f6f8';
++                };
++
++                card.ondragleave = (e) => {
++                    card.style.borderColor = '#dee2e6';
++                    card.style.background = '#f8f9fa';
++                };
++
++                card.ondrop = (e) => {
++                    e.preventDefault();
++                    card.style.borderColor = '#dee2e6';
++                    card.style.background = '#f8f9fa';
++
++                    try {
++                        const data = JSON.parse(e.dataTransfer.getData('text/plain'));
++                        if (data.type === 'page-reorder' && data.pageIndex !== undefined) {
++                            reorderPages(data.pageIndex, index);
++                        }
++                    } catch (err) {
++                        console.error('Drop error:', err);
++                    }
++                };
++
+                 inlineCardsContainer.appendChild(card);
+             });
+         }
+     }
+ }
+ 
++/**
++ * Reorder pages by moving a page from one position to another
++ */
++function reorderPages(fromIndex, toIndex) {
++    if (fromIndex === toIndex) return;
++
++    // Can't move page before cover (index 0)
++    if (toIndex === 0 && brochurePages[0]?.locked) {
++        showToast('warning', 'Cannot move pages before the cover page');
++        return;
++    }
++
++    console.log(`🔄 Reordering: moving page from position ${fromIndex} to ${toIndex}`);
++
++    // Remove page from old position
++    const [movedPage] = brochurePages.splice(fromIndex, 1);
++
++    // Insert at new position
++    brochurePages.splice(toIndex, 0, movedPage);
++
++    // Re-assign page IDs to maintain sequential order
++    brochurePages.forEach((page, idx) => {
++        page.id = idx + 1;
++    });
++
++    // Re-render
++    renderPageBuilderInlinePreview();
++    renderBrochurePages();
++
++    showToast('success', `✓ Page moved to position ${toIndex + 1}`);
++}
++
+ // ============================================
+ // EXPORT FOR GENERATION
+ // ============================================
+@@ -1747,6 +2015,55 @@ document.addEventListener('DOMContentLoaded', () => {
+     console.log('✅ Page builder ready');
+ });
+ 
++// ============================================
++// AUTO-SCROLL DURING DRAG
++// ============================================
++
++let currentMouseY = 0;
++let scrollTargetContainer = null;
++
++function startAutoScroll() {
++    // Find the pages container
++    scrollTargetContainer = document.getElementById('brochurePagesList');
++    if (!scrollTargetContainer) return;
++
++    // Start monitoring mouse position
++    if (!autoScrollInterval) {
++        autoScrollInterval = setInterval(performAutoScroll, 16); // ~60fps
++    }
++}
++
++function stopAutoScroll() {
++    if (autoScrollInterval) {
++        clearInterval(autoScrollInterval);
++        autoScrollInterval = null;
++    }
++    scrollTargetContainer = null;
++    currentMouseY = 0;
++}
++
++function updateAutoScroll(e) {
++    if (e.clientY > 0) {
++        currentMouseY = e.clientY;
++    }
++}
++
++function performAutoScroll() {
++    if (!scrollTargetContainer || currentMouseY === 0) return;
++
++    const containerRect = scrollTargetContainer.getBoundingClientRect();
++    const windowHeight = window.innerHeight;
++
++    // Scroll up if near top
++    if (currentMouseY < AUTO_SCROLL_THRESHOLD && containerRect.top < 0) {
++        scrollTargetContainer.scrollTop -= AUTO_SCROLL_SPEED;
++    }
++    // Scroll down if near bottom
++    else if (currentMouseY > (windowHeight - AUTO_SCROLL_THRESHOLD)) {
++        scrollTargetContainer.scrollTop += AUTO_SCROLL_SPEED;
++    }
++}
++
+ // Export functions to window for onclick handlers
+ window.openPageBuilderModal = openPageBuilderModal;
+ window.closePageBuilderModal = closePageBuilderModal;
