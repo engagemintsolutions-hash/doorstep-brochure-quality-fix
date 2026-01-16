@@ -353,6 +353,26 @@
                         Show Guides
                     </label>
                 </div>
+                <div class="quick-tools">
+                    <button id="eyedropperBtn" class="tool-btn" title="Eyedropper - Pick color from canvas" onclick="openEyedropper()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M2 22l1-1h3l9-9"/>
+                            <path d="M3 21v-3l9-9"/>
+                            <path d="M12 8l4-4 4 4-4 4"/>
+                            <path d="M16 4l4 4"/>
+                        </svg>
+                    </button>
+                    <button id="qrCodeQuickBtn" class="tool-btn" title="Add QR Code to page" onclick="addQRCodeQuick()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="7" height="7"/>
+                            <rect x="14" y="3" width="7" height="7"/>
+                            <rect x="3" y="14" width="7" height="7"/>
+                            <rect x="17" y="17" width="4" height="4"/>
+                            <line x1="14" y1="14" x2="14" y2="17"/>
+                            <line x1="17" y1="14" x2="21" y2="14"/>
+                        </svg>
+                    </button>
+                </div>
                 <div class="template-selector">
                     <button id="openTemplatesBtn" class="tool-btn primary" title="Choose Design Template">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -1218,6 +1238,43 @@
             } else {
                 console.warn('KeyboardShortcuts not available');
                 alert('Keyboard shortcuts help is loading. Press ? to view shortcuts.');
+            }
+        };
+
+        // Eyedropper function
+        window.openEyedropper = function() {
+            if (typeof ColorPicker !== 'undefined' && ColorPicker.startEyedropper) {
+                ColorPicker.startEyedropper().then(result => {
+                    if (result && result.sRGBHex) {
+                        // Copy to clipboard
+                        navigator.clipboard.writeText(result.sRGBHex).then(() => {
+                            showToast(`Color ${result.sRGBHex} copied to clipboard!`, 'success');
+                        });
+                    }
+                }).catch(e => console.log('Eyedropper cancelled'));
+            } else if (window.EyeDropper) {
+                // Direct browser API
+                const eyeDropper = new EyeDropper();
+                eyeDropper.open().then(result => {
+                    navigator.clipboard.writeText(result.sRGBHex).then(() => {
+                        showToast(`Color ${result.sRGBHex} copied to clipboard!`, 'success');
+                    });
+                }).catch(e => console.log('Eyedropper cancelled'));
+            } else {
+                alert('Eyedropper is not supported in this browser. Try Chrome or Edge.');
+            }
+        };
+
+        // Quick QR Code function
+        window.addQRCodeQuick = function() {
+            if (typeof ElementsLibrary !== 'undefined' && ElementsLibrary.addToCurrentPage) {
+                ElementsLibrary.addToCurrentPage('qrcode', '', '');
+                showToast('QR Code added to page!', 'success');
+            } else if (typeof addQRCodeToCurrentPage === 'function') {
+                addQRCodeToCurrentPage();
+                showToast('QR Code added to page!', 'success');
+            } else {
+                alert('QR Code feature is loading. Please try again in a moment.');
             }
         };
 
