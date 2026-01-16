@@ -42,7 +42,9 @@
       "Bash(pip show:*)",
       "Bash(pip install:*)",
       "Bash(where:*)",
-      "Bash(done)"
+      "Bash(done)",
+      "WebFetch(domain:doorstep-brochure-social-media-jan-2026-production.up.railway.app)",
+      "Bash(echo:*)"
     ]
   }
 }

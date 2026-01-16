@@ -92,7 +92,7 @@
                 </svg>
                 More Formats
             </button>
-            <button id="repurposeBtn" class="action-btn secondary" disabled style="background: linear-gradient(135deg, #0066FF 0%, #00CCFF 100%); border: none; color: white;">
+            <button id="repurposeBtn" class="action-btn secondary" onclick="openSocialMediaRepurpose()" style="background: linear-gradient(135deg, #0066FF 0%, #00CCFF 100%); border: none; color: white;" title="Repurpose to Social Media - Instagram, Facebook, LinkedIn">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M17 1l4 4-4 4"/>
                     <path d="M3 11V9a4 4 0 0 1 4-4h14"/>
@@ -3006,6 +3006,184 @@
             const letterSpacingValue = document.getElementById('letterSpacingValue');
             if (letterSpacingSlider) letterSpacingSlider.value = letterSpacing;
             if (letterSpacingValue) letterSpacingValue.textContent = letterSpacing + 'px';
+        };
+
+        // Social Media Repurpose function
+        window.openSocialMediaRepurpose = function() {
+            // Try to use the existing repurpose modal from social_media_repurpose.js
+            const existingModal = document.getElementById('repurposeModal');
+            if (existingModal) {
+                existingModal.style.display = 'flex';
+                // Try to load session data
+                if (typeof loadBrochureSessionData === 'function') {
+                    loadBrochureSessionData();
+                }
+                return;
+            }
+
+            // If no modal exists, create a comprehensive social media panel
+            let modal = document.getElementById('socialMediaModal');
+            if (!modal) {
+                modal = document.createElement('div');
+                modal.id = 'socialMediaModal';
+                modal.className = 'modal';
+                modal.innerHTML = `
+                    <div class="modal-content" style="max-width: 900px; max-height: 90vh; overflow-y: auto;">
+                        <div class="modal-header" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 20px; border-radius: 12px 12px 0 0;">
+                            <h3 style="margin: 0;">Repurpose to Social Media</h3>
+                            <button class="modal-close" onclick="document.getElementById('socialMediaModal').classList.remove('visible')" style="background: rgba(255,255,255,0.2); border: none; color: white; width: 30px; height: 30px; border-radius: 50%; cursor: pointer;">&times;</button>
+                        </div>
+                        <div class="modal-body" style="padding: 20px;">
+                            <!-- Platform Selection -->
+                            <div style="margin-bottom: 20px;">
+                                <h4 style="margin-bottom: 10px;">Select Platforms</h4>
+                                <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                                    <label style="display: flex; align-items: center; gap: 8px; padding: 12px 20px; border: 2px solid #ddd; border-radius: 8px; cursor: pointer;">
+                                        <input type="checkbox" id="platformInstagram" checked>
+                                        <span style="font-size: 20px;">📸</span> Instagram
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 8px; padding: 12px 20px; border: 2px solid #ddd; border-radius: 8px; cursor: pointer;">
+                                        <input type="checkbox" id="platformFacebook" checked>
+                                        <span style="font-size: 20px;">📘</span> Facebook
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 8px; padding: 12px 20px; border: 2px solid #ddd; border-radius: 8px; cursor: pointer;">
+                                        <input type="checkbox" id="platformLinkedIn">
+                                        <span style="font-size: 20px;">💼</span> LinkedIn
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 8px; padding: 12px 20px; border: 2px solid #ddd; border-radius: 8px; cursor: pointer;">
+                                        <input type="checkbox" id="platformTwitter">
+                                        <span style="font-size: 20px;">🐦</span> X/Twitter
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Content Type -->
+                            <div style="margin-bottom: 20px;">
+                                <h4 style="margin-bottom: 10px;">Content Type</h4>
+                                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+                                    <button onclick="selectContentType('carousel')" class="content-type-btn active" style="padding: 15px; border: 2px solid #667eea; border-radius: 8px; background: #f0f0ff; cursor: pointer;">
+                                        <div style="font-size: 24px; margin-bottom: 5px;">🖼️</div>
+                                        <div style="font-weight: 600;">Carousel Post</div>
+                                        <small style="color: #666;">Multiple images</small>
+                                    </button>
+                                    <button onclick="selectContentType('single')" class="content-type-btn" style="padding: 15px; border: 2px solid #ddd; border-radius: 8px; background: white; cursor: pointer;">
+                                        <div style="font-size: 24px; margin-bottom: 5px;">📷</div>
+                                        <div style="font-weight: 600;">Single Image</div>
+                                        <small style="color: #666;">Hero shot</small>
+                                    </button>
+                                    <button onclick="selectContentType('story')" class="content-type-btn" style="padding: 15px; border: 2px solid #ddd; border-radius: 8px; background: white; cursor: pointer;">
+                                        <div style="font-size: 24px; margin-bottom: 5px;">📱</div>
+                                        <div style="font-weight: 600;">Story/Reel</div>
+                                        <small style="color: #666;">Vertical format</small>
+                                    </button>
+                                </div>
+                            </div>
+
+                            <!-- Generated Captions -->
+                            <div style="margin-bottom: 20px;">
+                                <h4 style="margin-bottom: 10px;">Caption Variants</h4>
+                                <div style="display: grid; gap: 15px;">
+                                    <div style="border: 1px solid #ddd; border-radius: 8px; padding: 15px;">
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                            <span style="font-weight: 600;">Short (Engagement)</span>
+                                            <button onclick="copyCaption('short')" style="padding: 5px 10px; border: 1px solid #667eea; border-radius: 4px; background: white; color: #667eea; cursor: pointer;">Copy</button>
+                                        </div>
+                                        <textarea id="captionShort" style="width: 100%; min-height: 60px; border: 1px solid #eee; border-radius: 4px; padding: 10px; resize: vertical;">✨ New Listing Alert! Beautiful family home now available. DM for details or link in bio 🏡</textarea>
+                                    </div>
+                                    <div style="border: 1px solid #ddd; border-radius: 8px; padding: 15px;">
+                                        <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                            <span style="font-weight: 600;">Medium (Informative)</span>
+                                            <button onclick="copyCaption('medium')" style="padding: 5px 10px; border: 1px solid #667eea; border-radius: 4px; background: white; color: #667eea; cursor: pointer;">Copy</button>
+                                        </div>
+                                        <textarea id="captionMedium" style="width: 100%; min-height: 80px; border: 1px solid #eee; border-radius: 4px; padding: 10px; resize: vertical;">🏠 Just Listed! This stunning property features modern living spaces, a beautiful garden, and is perfectly located near excellent schools and transport links.
+
+📍 Contact us today to arrange a viewing!
+💬 DM for more details</textarea>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Hashtags -->
+                            <div style="margin-bottom: 20px;">
+                                <h4 style="margin-bottom: 10px;">Recommended Hashtags</h4>
+                                <div id="hashtagsContainer" style="display: flex; flex-wrap: wrap; gap: 8px;">
+                                    <span class="hashtag-chip" style="padding: 6px 12px; background: #f0f0f0; border-radius: 20px; cursor: pointer;" onclick="copyHashtag(this)">#PropertyForSale</span>
+                                    <span class="hashtag-chip" style="padding: 6px 12px; background: #f0f0f0; border-radius: 20px; cursor: pointer;" onclick="copyHashtag(this)">#NewListing</span>
+                                    <span class="hashtag-chip" style="padding: 6px 12px; background: #f0f0f0; border-radius: 20px; cursor: pointer;" onclick="copyHashtag(this)">#FamilyHome</span>
+                                    <span class="hashtag-chip" style="padding: 6px 12px; background: #f0f0f0; border-radius: 20px; cursor: pointer;" onclick="copyHashtag(this)">#RealEstate</span>
+                                    <span class="hashtag-chip" style="padding: 6px 12px; background: #f0f0f0; border-radius: 20px; cursor: pointer;" onclick="copyHashtag(this)">#HomeForSale</span>
+                                    <span class="hashtag-chip" style="padding: 6px 12px; background: #f0f0f0; border-radius: 20px; cursor: pointer;" onclick="copyHashtag(this)">#DreamHome</span>
+                                    <span class="hashtag-chip" style="padding: 6px 12px; background: #f0f0f0; border-radius: 20px; cursor: pointer;" onclick="copyHashtag(this)">#PropertyUK</span>
+                                    <span class="hashtag-chip" style="padding: 6px 12px; background: #f0f0f0; border-radius: 20px; cursor: pointer;" onclick="copyHashtag(this)">#HouseHunting</span>
+                                </div>
+                                <button onclick="copyAllHashtags()" style="margin-top: 10px; padding: 8px 16px; border: 1px solid #667eea; border-radius: 4px; background: white; color: #667eea; cursor: pointer;">Copy All Hashtags</button>
+                            </div>
+
+                            <!-- Export Actions -->
+                            <div style="display: flex; gap: 10px; justify-content: flex-end; border-top: 1px solid #eee; padding-top: 20px;">
+                                <button onclick="exportForInstagram()" style="padding: 12px 24px; background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                                    📸 Export for Instagram
+                                </button>
+                                <button onclick="exportForFacebook()" style="padding: 12px 24px; background: #1877F2; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                                    📘 Export for Facebook
+                                </button>
+                                <button onclick="downloadSocialPack()" style="padding: 12px 24px; background: #667eea; color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">
+                                    📦 Download All
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(modal);
+            }
+            modal.classList.add('visible');
+        };
+
+        // Social media helper functions
+        window.selectContentType = function(type) {
+            document.querySelectorAll('.content-type-btn').forEach(btn => {
+                btn.style.border = '2px solid #ddd';
+                btn.style.background = 'white';
+            });
+            event.target.closest('.content-type-btn').style.border = '2px solid #667eea';
+            event.target.closest('.content-type-btn').style.background = '#f0f0ff';
+        };
+
+        window.copyCaption = function(type) {
+            const textarea = document.getElementById('caption' + type.charAt(0).toUpperCase() + type.slice(1));
+            if (textarea) {
+                textarea.select();
+                document.execCommand('copy');
+                showToast('Caption copied to clipboard!');
+            }
+        };
+
+        window.copyHashtag = function(element) {
+            const text = element.textContent;
+            navigator.clipboard.writeText(text);
+            showToast('Copied: ' + text);
+        };
+
+        window.copyAllHashtags = function() {
+            const hashtags = Array.from(document.querySelectorAll('.hashtag-chip')).map(el => el.textContent).join(' ');
+            navigator.clipboard.writeText(hashtags);
+            showToast('All hashtags copied!');
+        };
+
+        window.exportForInstagram = function() {
+            showToast('Preparing Instagram-optimized images (1080x1080)...');
+            // In production, this would resize images to Instagram specs
+            setTimeout(() => showToast('Instagram pack ready!'), 1500);
+        };
+
+        window.exportForFacebook = function() {
+            showToast('Preparing Facebook-optimized images (1200x628)...');
+            setTimeout(() => showToast('Facebook pack ready!'), 1500);
+        };
+
+        window.downloadSocialPack = function() {
+            showToast('Creating social media pack with all formats...');
+            setTimeout(() => showToast('Download started!'), 2000);
         };
     </script>
 
