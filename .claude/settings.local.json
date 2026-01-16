@@ -41,7 +41,8 @@
       "WebFetch(domain:www.doorstepit.co.uk)",
       "Bash(pip show:*)",
       "Bash(pip install:*)",
-      "Bash(where:*)"
+      "Bash(where:*)",
+      "Bash(done)"
     ]
   }
 }

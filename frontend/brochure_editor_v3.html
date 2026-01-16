@@ -101,6 +101,16 @@
                 </svg>
                 Repurpose
             </button>
+            <button id="shareBtn" class="action-btn" onclick="openShareModal()" title="Share & Collaborate">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="18" cy="5" r="3"/>
+                    <circle cx="6" cy="12" r="3"/>
+                    <circle cx="18" cy="19" r="3"/>
+                    <line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/>
+                    <line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>
+                </svg>
+                Share
+            </button>
         </div>
     </header>
 
@@ -484,6 +494,18 @@
                             <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
                         </svg>
                     </button>
+                    <button id="animateElementBtn" class="tool-btn" title="Animate Element - Add entrance/exit animations" onclick="openAnimations()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polygon points="5 3 19 12 5 21 5 3"/>
+                        </svg>
+                    </button>
+                    <button id="helpTourBtn" class="tool-btn" title="Help Tour - Guided walkthrough of editor features" onclick="startOnboardingTour()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/>
+                            <line x1="12" y1="17" x2="12.01" y2="17"/>
+                        </svg>
+                    </button>
                 </div>
                 <div class="template-selector">
                     <button id="openTemplatesBtn" class="tool-btn primary" title="Choose Design Template">
@@ -548,6 +570,21 @@
                             <rect x="3" y="14" width="7" height="7"/>
                         </svg>
                         Graphics
+                    </button>
+                    <button id="openBackgroundsBtn" class="tool-btn" title="Page Backgrounds - Patterns, gradients, colors" onclick="openBackgrounds()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="2" y="2" width="20" height="20" rx="2"/>
+                            <path d="M2 12h20"/>
+                            <path d="M12 2v20"/>
+                        </svg>
+                        Backgrounds
+                    </button>
+                    <button id="openPhotoFramesBtn" class="tool-btn" title="Photo Frames - Shapes, decorative frames, grids" onclick="openPhotoFrames()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="3" width="18" height="18" rx="2"/>
+                            <rect x="6" y="6" width="12" height="12"/>
+                        </svg>
+                        Frames
                     </button>
                 </div>
             </div>
@@ -2443,6 +2480,504 @@
             if (typeof saveToHistory === 'function') {
                 saveToHistory('change letter spacing');
             }
+        };
+
+        // Animations function - opens animation panel for selected element
+        window.openAnimations = function() {
+            const selected = (typeof EditorState !== 'undefined') ?
+                (EditorState.selectedElement || (EditorState.selectedElements && EditorState.selectedElements[0])) :
+                document.querySelector('.canvas-element.selected, .design-element.selected');
+
+            if (!selected) {
+                alert('Please select an element first to add animations.');
+                return;
+            }
+
+            if (typeof Animations !== 'undefined' && Animations.showPanel) {
+                Animations.showPanel(selected);
+            } else if (typeof AnimationSystem !== 'undefined' && AnimationSystem.showPanel) {
+                AnimationSystem.showPanel(selected);
+            } else {
+                // Create a simple animation panel if main module not loaded
+                let modal = document.getElementById('animationsModal');
+                if (!modal) {
+                    modal = document.createElement('div');
+                    modal.id = 'animationsModal';
+                    modal.className = 'modal';
+                    modal.innerHTML = `
+                        <div class="modal-content" style="max-width: 500px;">
+                            <div class="modal-header">
+                                <h3>Element Animations</h3>
+                                <button class="modal-close" onclick="document.getElementById('animationsModal').classList.remove('visible')">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <p style="margin-bottom: 15px;">Choose an entrance animation:</p>
+                                <div class="animations-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;">
+                                    <button class="animation-btn" onclick="applySimpleAnimation('fadeIn')" style="padding: 15px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer;">
+                                        <span style="display: block; font-size: 24px; margin-bottom: 5px;">✨</span>
+                                        Fade In
+                                    </button>
+                                    <button class="animation-btn" onclick="applySimpleAnimation('slideUp')" style="padding: 15px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer;">
+                                        <span style="display: block; font-size: 24px; margin-bottom: 5px;">⬆️</span>
+                                        Slide Up
+                                    </button>
+                                    <button class="animation-btn" onclick="applySimpleAnimation('slideDown')" style="padding: 15px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer;">
+                                        <span style="display: block; font-size: 24px; margin-bottom: 5px;">⬇️</span>
+                                        Slide Down
+                                    </button>
+                                    <button class="animation-btn" onclick="applySimpleAnimation('slideLeft')" style="padding: 15px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer;">
+                                        <span style="display: block; font-size: 24px; margin-bottom: 5px;">⬅️</span>
+                                        Slide Left
+                                    </button>
+                                    <button class="animation-btn" onclick="applySimpleAnimation('slideRight')" style="padding: 15px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer;">
+                                        <span style="display: block; font-size: 24px; margin-bottom: 5px;">➡️</span>
+                                        Slide Right
+                                    </button>
+                                    <button class="animation-btn" onclick="applySimpleAnimation('zoomIn')" style="padding: 15px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer;">
+                                        <span style="display: block; font-size: 24px; margin-bottom: 5px;">🔍</span>
+                                        Zoom In
+                                    </button>
+                                    <button class="animation-btn" onclick="applySimpleAnimation('bounce')" style="padding: 15px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer;">
+                                        <span style="display: block; font-size: 24px; margin-bottom: 5px;">⚡</span>
+                                        Bounce
+                                    </button>
+                                    <button class="animation-btn" onclick="applySimpleAnimation('rotate')" style="padding: 15px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer;">
+                                        <span style="display: block; font-size: 24px; margin-bottom: 5px;">🔄</span>
+                                        Rotate
+                                    </button>
+                                    <button class="animation-btn" onclick="removeSimpleAnimation()" style="padding: 15px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer; background: #ffeeee;">
+                                        <span style="display: block; font-size: 24px; margin-bottom: 5px;">❌</span>
+                                        Remove
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    document.body.appendChild(modal);
+                }
+                modal.classList.add('visible');
+            }
+        };
+
+        // Simple animation helper
+        window.applySimpleAnimation = function(type) {
+            const selected = (typeof EditorState !== 'undefined') ?
+                (EditorState.selectedElement || (EditorState.selectedElements && EditorState.selectedElements[0])) :
+                document.querySelector('.canvas-element.selected, .design-element.selected');
+
+            if (!selected) return;
+
+            // Remove existing animations
+            selected.style.animation = '';
+            selected.classList.remove('animated');
+
+            // Add animation keyframes if not present
+            if (!document.getElementById('simpleAnimationStyles')) {
+                const style = document.createElement('style');
+                style.id = 'simpleAnimationStyles';
+                style.textContent = `
+                    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+                    @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+                    @keyframes slideDown { from { transform: translateY(-50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+                    @keyframes slideLeft { from { transform: translateX(50px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+                    @keyframes slideRight { from { transform: translateX(-50px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+                    @keyframes zoomIn { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+                    @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-20px); } }
+                    @keyframes rotate { from { transform: rotate(-180deg); opacity: 0; } to { transform: rotate(0); opacity: 1; } }
+                `;
+                document.head.appendChild(style);
+            }
+
+            // Apply animation
+            selected.style.animation = `${type} 0.6s ease-out forwards`;
+            selected.dataset.animation = type;
+
+            if (typeof saveToHistory === 'function') {
+                saveToHistory('add animation');
+            }
+            if (typeof showToast === 'function') {
+                showToast(`Applied ${type} animation`);
+            }
+
+            // Close modal
+            const modal = document.getElementById('animationsModal');
+            if (modal) modal.classList.remove('visible');
+        };
+
+        window.removeSimpleAnimation = function() {
+            const selected = (typeof EditorState !== 'undefined') ?
+                (EditorState.selectedElement || (EditorState.selectedElements && EditorState.selectedElements[0])) :
+                document.querySelector('.canvas-element.selected, .design-element.selected');
+
+            if (!selected) return;
+
+            selected.style.animation = '';
+            delete selected.dataset.animation;
+
+            if (typeof saveToHistory === 'function') {
+                saveToHistory('remove animation');
+            }
+            if (typeof showToast === 'function') {
+                showToast('Animation removed');
+            }
+
+            // Close modal
+            const modal = document.getElementById('animationsModal');
+            if (modal) modal.classList.remove('visible');
+        };
+
+        // Onboarding Tour function
+        window.startOnboardingTour = function() {
+            if (typeof Onboarding !== 'undefined' && Onboarding.start) {
+                // Reset and start fresh
+                if (Onboarding.reset) Onboarding.reset();
+                Onboarding.start();
+            } else {
+                // Simple walkthrough if Onboarding module not loaded
+                const steps = [
+                    { title: 'Welcome!', text: 'This editor lets you create professional brochures. Let me show you around.' },
+                    { title: 'Photos Panel', text: 'Upload your property photos here or browse free stock images.' },
+                    { title: 'Canvas', text: 'This is where you design. Drag elements, resize, and position them.' },
+                    { title: 'Elements Panel', text: 'Add shapes, icons, text, and QR codes from the right panel.' },
+                    { title: 'Layers', text: 'Control element stacking order in the Layers tab.' },
+                    { title: 'Templates', text: 'Choose from pre-designed templates to get started quickly.' },
+                    { title: 'Export', text: 'When done, export as PDF or image from the top menu.' }
+                ];
+
+                let currentStep = 0;
+
+                function showStep(index) {
+                    if (index >= steps.length) {
+                        alert('Tour complete! Start designing your brochure.');
+                        return;
+                    }
+
+                    const step = steps[index];
+                    const proceed = confirm(`${step.title}\n\n${step.text}\n\nClick OK for next tip, Cancel to end tour.`);
+
+                    if (proceed) {
+                        showStep(index + 1);
+                    }
+                }
+
+                showStep(0);
+            }
+        };
+
+        // Backgrounds Library function
+        window.openBackgrounds = function() {
+            if (typeof BackgroundsLibrary !== 'undefined' && BackgroundsLibrary.showBackgroundPanel) {
+                // Get the current page canvas
+                const canvas = document.getElementById('brochure-canvas') ||
+                              document.querySelector('.brochure-canvas') ||
+                              document.querySelector('.canvas-page');
+                BackgroundsLibrary.showBackgroundPanel(canvas);
+            } else {
+                // Create a simple background selector
+                let modal = document.getElementById('backgroundsModal');
+                if (!modal) {
+                    modal = document.createElement('div');
+                    modal.id = 'backgroundsModal';
+                    modal.className = 'modal';
+                    modal.innerHTML = `
+                        <div class="modal-content" style="max-width: 600px;">
+                            <div class="modal-header">
+                                <h3>Page Backgrounds</h3>
+                                <button class="modal-close" onclick="document.getElementById('backgroundsModal').classList.remove('visible')">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <div style="margin-bottom: 15px;">
+                                    <strong>Solid Colors</strong>
+                                    <div class="color-swatches" style="display: grid; grid-template-columns: repeat(8, 1fr); gap: 8px; margin-top: 10px;">
+                                        ${['#FFFFFF', '#F5F5F5', '#E0E0E0', '#1A1A2E', '#16213E', '#0F3460', '#E94560', '#00ADB5',
+                                          '#FFF8E7', '#FFE4C4', '#FFE4E1', '#E6E6FA', '#F0FFF0', '#E0FFFF', '#FFF0F5', '#FFFACD'].map(c => `
+                                            <button onclick="applyPageBackground('${c}')" style="width: 40px; height: 40px; background: ${c}; border: 2px solid #ddd; border-radius: 6px; cursor: pointer;"></button>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 15px;">
+                                    <strong>Gradients</strong>
+                                    <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; margin-top: 10px;">
+                                        ${[
+                                            'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                                            'linear-gradient(135deg, #f093fb 0%, #f5576c 100%)',
+                                            'linear-gradient(135deg, #4facfe 0%, #00f2fe 100%)',
+                                            'linear-gradient(135deg, #43e97b 0%, #38f9d7 100%)',
+                                            'linear-gradient(135deg, #fa709a 0%, #fee140 100%)',
+                                            'linear-gradient(135deg, #a8edea 0%, #fed6e3 100%)',
+                                            'linear-gradient(135deg, #1a1a2e 0%, #16213e 100%)',
+                                            'linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%)'
+                                        ].map(g => `
+                                            <button onclick="applyPageBackground('${g}')" style="width: 100%; height: 50px; background: ${g}; border: 2px solid #ddd; border-radius: 6px; cursor: pointer;"></button>
+                                        `).join('')}
+                                    </div>
+                                </div>
+                                <div>
+                                    <strong>Custom Color</strong>
+                                    <div style="display: flex; gap: 10px; margin-top: 10px;">
+                                        <input type="color" id="customBgColor" value="#FFFFFF" style="width: 50px; height: 40px; cursor: pointer;">
+                                        <button onclick="applyPageBackground(document.getElementById('customBgColor').value)" class="action-btn primary" style="flex: 1;">Apply Custom Color</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    document.body.appendChild(modal);
+                }
+                modal.classList.add('visible');
+            }
+        };
+
+        window.applyPageBackground = function(background) {
+            const canvas = document.getElementById('brochure-canvas') ||
+                          document.querySelector('.brochure-canvas') ||
+                          document.querySelector('.canvas-page');
+            if (!canvas) return;
+
+            if (background.includes('gradient')) {
+                canvas.style.background = background;
+            } else {
+                canvas.style.backgroundColor = background;
+                canvas.style.backgroundImage = 'none';
+            }
+
+            if (typeof saveToHistory === 'function') {
+                saveToHistory('change background');
+            }
+            if (typeof showToast === 'function') {
+                showToast('Background applied');
+            }
+
+            // Close modal
+            const modal = document.getElementById('backgroundsModal');
+            if (modal) modal.classList.remove('visible');
+        };
+
+        // Photo Frames function
+        window.openPhotoFrames = function() {
+            const selectedImage = window.selectedImageElement ||
+                document.querySelector('.canvas-element.selected img, .design-element.selected img');
+
+            if (!selectedImage) {
+                alert('Please select an image first to apply frames.');
+                return;
+            }
+
+            if (typeof PhotoFrames !== 'undefined' && PhotoFrames.showFramePanel) {
+                PhotoFrames.showFramePanel(selectedImage);
+            } else {
+                // Create a simple frame selector
+                let modal = document.getElementById('framesModal');
+                if (!modal) {
+                    modal = document.createElement('div');
+                    modal.id = 'framesModal';
+                    modal.className = 'modal';
+                    modal.innerHTML = `
+                        <div class="modal-content" style="max-width: 500px;">
+                            <div class="modal-header">
+                                <h3>Photo Frames & Shapes</h3>
+                                <button class="modal-close" onclick="document.getElementById('framesModal').classList.remove('visible')">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <p style="margin-bottom: 15px;">Choose a shape for your image:</p>
+                                <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
+                                    <button onclick="applyImageShape('none')" style="padding: 20px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer;">
+                                        <div style="font-size: 24px;">⬜</div>
+                                        <small>Square</small>
+                                    </button>
+                                    <button onclick="applyImageShape('circle')" style="padding: 20px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer;">
+                                        <div style="font-size: 24px;">⭕</div>
+                                        <small>Circle</small>
+                                    </button>
+                                    <button onclick="applyImageShape('rounded')" style="padding: 20px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer;">
+                                        <div style="font-size: 24px;">🔲</div>
+                                        <small>Rounded</small>
+                                    </button>
+                                    <button onclick="applyImageShape('oval')" style="padding: 20px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer;">
+                                        <div style="font-size: 24px;">💊</div>
+                                        <small>Oval</small>
+                                    </button>
+                                    <button onclick="applyImageShape('diamond')" style="padding: 20px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer;">
+                                        <div style="font-size: 24px;">💎</div>
+                                        <small>Diamond</small>
+                                    </button>
+                                    <button onclick="applyImageShape('hexagon')" style="padding: 20px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer;">
+                                        <div style="font-size: 24px;">⬡</div>
+                                        <small>Hexagon</small>
+                                    </button>
+                                    <button onclick="applyImageShape('star')" style="padding: 20px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer;">
+                                        <div style="font-size: 24px;">⭐</div>
+                                        <small>Star</small>
+                                    </button>
+                                    <button onclick="applyImageShape('heart')" style="padding: 20px; border: 1px solid #ddd; border-radius: 8px; cursor: pointer;">
+                                        <div style="font-size: 24px;">❤️</div>
+                                        <small>Heart</small>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    document.body.appendChild(modal);
+                }
+                modal.classList.add('visible');
+            }
+        };
+
+        window.applyImageShape = function(shape) {
+            const img = window.selectedImageElement ||
+                document.querySelector('.canvas-element.selected img, .design-element.selected img');
+            if (!img) return;
+
+            const container = img.closest('.canvas-element') || img.closest('.design-element') || img.parentElement;
+
+            // Reset previous shape
+            img.style.clipPath = '';
+            img.style.borderRadius = '';
+            container.style.clipPath = '';
+            container.style.borderRadius = '';
+
+            switch(shape) {
+                case 'circle':
+                    img.style.borderRadius = '50%';
+                    container.style.borderRadius = '50%';
+                    break;
+                case 'rounded':
+                    img.style.borderRadius = '20px';
+                    container.style.borderRadius = '20px';
+                    break;
+                case 'oval':
+                    img.style.borderRadius = '50% / 35%';
+                    container.style.borderRadius = '50% / 35%';
+                    break;
+                case 'diamond':
+                    img.style.clipPath = 'polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%)';
+                    break;
+                case 'hexagon':
+                    img.style.clipPath = 'polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%)';
+                    break;
+                case 'star':
+                    img.style.clipPath = 'polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%)';
+                    break;
+                case 'heart':
+                    img.style.clipPath = 'path("M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z")';
+                    break;
+                case 'none':
+                default:
+                    // Already reset
+                    break;
+            }
+
+            if (typeof saveToHistory === 'function') {
+                saveToHistory('change image shape');
+            }
+            if (typeof showToast === 'function') {
+                showToast(`Applied ${shape} shape`);
+            }
+
+            // Close modal
+            const modal = document.getElementById('framesModal');
+            if (modal) modal.classList.remove('visible');
+        };
+
+        // Share Modal function
+        window.openShareModal = function() {
+            if (typeof Sharing !== 'undefined' && Sharing.renderShareModal) {
+                Sharing.renderShareModal();
+            } else {
+                // Create a simple share modal
+                let modal = document.getElementById('shareModal');
+                if (!modal) {
+                    modal = document.createElement('div');
+                    modal.id = 'shareModal';
+                    modal.className = 'modal';
+                    modal.innerHTML = `
+                        <div class="modal-content" style="max-width: 500px;">
+                            <div class="modal-header">
+                                <h3>Share Your Design</h3>
+                                <button class="modal-close" onclick="document.getElementById('shareModal').classList.remove('visible')">&times;</button>
+                            </div>
+                            <div class="modal-body">
+                                <div style="margin-bottom: 20px;">
+                                    <label style="display: block; margin-bottom: 8px; font-weight: 500;">Share Link</label>
+                                    <div style="display: flex; gap: 10px;">
+                                        <input type="text" id="shareLink" value="${window.location.href}" readonly style="flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 6px;">
+                                        <button onclick="copyShareLink()" class="action-btn primary">Copy</button>
+                                    </div>
+                                </div>
+                                <div style="margin-bottom: 20px;">
+                                    <label style="display: block; margin-bottom: 8px; font-weight: 500;">Share via</label>
+                                    <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+                                        <button onclick="shareVia('email')" style="padding: 12px 20px; border: 1px solid #ddd; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 8px;">
+                                            📧 Email
+                                        </button>
+                                        <button onclick="shareVia('whatsapp')" style="padding: 12px 20px; border: 1px solid #ddd; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 8px; background: #25D366; color: white;">
+                                            💬 WhatsApp
+                                        </button>
+                                        <button onclick="shareVia('linkedin')" style="padding: 12px 20px; border: 1px solid #ddd; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 8px; background: #0077B5; color: white;">
+                                            💼 LinkedIn
+                                        </button>
+                                        <button onclick="shareVia('facebook')" style="padding: 12px 20px; border: 1px solid #ddd; border-radius: 6px; cursor: pointer; display: flex; align-items: center; gap: 8px; background: #1877F2; color: white;">
+                                            📘 Facebook
+                                        </button>
+                                    </div>
+                                </div>
+                                <div>
+                                    <label style="display: block; margin-bottom: 8px; font-weight: 500;">Permissions</label>
+                                    <select style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 6px;">
+                                        <option value="view">Can View</option>
+                                        <option value="comment">Can Comment</option>
+                                        <option value="edit">Can Edit</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                    document.body.appendChild(modal);
+                }
+                modal.classList.add('visible');
+            }
+        };
+
+        window.copyShareLink = function() {
+            const linkInput = document.getElementById('shareLink');
+            if (linkInput) {
+                linkInput.select();
+                document.execCommand('copy');
+                if (typeof showToast === 'function') {
+                    showToast('Link copied to clipboard');
+                } else {
+                    alert('Link copied!');
+                }
+            }
+        };
+
+        window.shareVia = function(platform) {
+            const url = encodeURIComponent(window.location.href);
+            const title = encodeURIComponent(document.title || 'My Brochure Design');
+            let shareUrl = '';
+
+            switch(platform) {
+                case 'email':
+                    shareUrl = `mailto:?subject=${title}&body=Check out my design: ${url}`;
+                    break;
+                case 'whatsapp':
+                    shareUrl = `https://wa.me/?text=${title} ${url}`;
+                    break;
+                case 'linkedin':
+                    shareUrl = `https://www.linkedin.com/sharing/share-offsite/?url=${url}`;
+                    break;
+                case 'facebook':
+                    shareUrl = `https://www.facebook.com/sharer/sharer.php?u=${url}`;
+                    break;
+            }
+
+            if (shareUrl) {
+                window.open(shareUrl, '_blank', 'width=600,height=400');
+            }
+
+            // Close modal
+            const modal = document.getElementById('shareModal');
+            if (modal) modal.classList.remove('visible');
         };
 
         // Update sliders when text element is selected
