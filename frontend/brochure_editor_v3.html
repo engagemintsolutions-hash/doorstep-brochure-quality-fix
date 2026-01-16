@@ -137,6 +137,50 @@
         </button>
     </div>
 
+    <!-- Floating Element Style Panel -->
+    <div id="elementStylePanel" class="element-style-panel" style="display: none;">
+        <div class="style-panel-header">
+            <span>Element Style</span>
+            <button class="close-panel-btn" onclick="closeElementStylePanel()">&times;</button>
+        </div>
+        <div class="style-controls">
+            <!-- Opacity Control -->
+            <div class="style-control-group">
+                <label>Opacity</label>
+                <input type="range" id="elementOpacity" min="0" max="100" value="100" oninput="setElementOpacity(this.value)">
+                <span id="opacityValue">100%</span>
+            </div>
+            <!-- Drop Shadow Control -->
+            <div class="style-control-group">
+                <label>Shadow</label>
+                <div class="shadow-controls">
+                    <input type="checkbox" id="shadowEnabled" onchange="toggleElementShadow(this.checked)">
+                    <input type="range" id="shadowBlur" min="0" max="50" value="10" oninput="updateElementShadow()" disabled>
+                    <input type="color" id="shadowColor" value="#000000" oninput="updateElementShadow()" disabled>
+                </div>
+            </div>
+            <!-- Border Control -->
+            <div class="style-control-group">
+                <label>Border</label>
+                <div class="border-controls">
+                    <input type="number" id="borderWidth" min="0" max="20" value="0" oninput="updateElementBorder()" style="width: 50px;">
+                    <select id="borderStyle" onchange="updateElementBorder()">
+                        <option value="solid">Solid</option>
+                        <option value="dashed">Dashed</option>
+                        <option value="dotted">Dotted</option>
+                    </select>
+                    <input type="color" id="borderColor" value="#000000" oninput="updateElementBorder()">
+                </div>
+            </div>
+            <!-- Border Radius -->
+            <div class="style-control-group">
+                <label>Corners</label>
+                <input type="range" id="borderRadius" min="0" max="50" value="0" oninput="setElementCorners(this.value)">
+                <span id="cornersValue">0px</span>
+            </div>
+        </div>
+    </div>
+
     <!-- Floating Text Formatting Toolbar -->
     <div id="textFormatToolbar" class="text-format-toolbar" style="display: none;">
         <!-- Bold/Italic/Underline -->
@@ -426,6 +470,18 @@
                             <rect x="17" y="17" width="4" height="4"/>
                             <line x1="14" y1="14" x2="14" y2="17"/>
                             <line x1="17" y1="14" x2="21" y2="14"/>
+                        </svg>
+                    </button>
+                    <button id="styleElementBtn" class="tool-btn" title="Element Style - Opacity, Shadow, Border" onclick="openStylePanelForSelected()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="3"/>
+                            <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/>
+                        </svg>
+                    </button>
+                    <button id="lockElementBtn" class="tool-btn" title="Lock/Unlock Element (Ctrl+L)" onclick="toggleElementLock()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
                         </svg>
                     </button>
                 </div>
@@ -1868,6 +1924,134 @@
                 if (gridOverlay) {
                     gridOverlay.style.display = 'none';
                 }
+            }
+        };
+
+        // Element Style Panel Functions
+        let currentStyledElement = null;
+
+        window.openElementStylePanel = function(element) {
+            currentStyledElement = element;
+            const panel = document.getElementById('elementStylePanel');
+            if (!panel) return;
+
+            // Position panel near element
+            const rect = element.getBoundingClientRect();
+            panel.style.position = 'fixed';
+            panel.style.left = Math.min(rect.right + 10, window.innerWidth - 260) + 'px';
+            panel.style.top = Math.max(rect.top, 60) + 'px';
+            panel.style.display = 'block';
+
+            // Load current element values
+            loadElementStyleValues(element);
+        };
+
+        window.closeElementStylePanel = function() {
+            const panel = document.getElementById('elementStylePanel');
+            if (panel) panel.style.display = 'none';
+            currentStyledElement = null;
+        };
+
+        window.openStylePanelForSelected = function() {
+            if (typeof EditorState !== 'undefined') {
+                const selected = EditorState.selectedElement ||
+                                (EditorState.selectedElements && EditorState.selectedElements[0]);
+                if (selected) {
+                    openElementStylePanel(selected);
+                } else {
+                    alert('Please select an element first to style it.');
+                }
+            } else {
+                alert('Please select an element first to style it.');
+            }
+        };
+
+        function loadElementStyleValues(element) {
+            const computedStyle = window.getComputedStyle(element);
+
+            // Opacity
+            const opacity = parseFloat(computedStyle.opacity) * 100;
+            document.getElementById('elementOpacity').value = opacity;
+            document.getElementById('opacityValue').textContent = Math.round(opacity) + '%';
+
+            // Shadow
+            const shadow = computedStyle.boxShadow;
+            const hasShadow = shadow && shadow !== 'none';
+            document.getElementById('shadowEnabled').checked = hasShadow;
+            document.getElementById('shadowBlur').disabled = !hasShadow;
+            document.getElementById('shadowColor').disabled = !hasShadow;
+
+            // Border
+            const borderWidth = parseInt(computedStyle.borderWidth) || 0;
+            document.getElementById('borderWidth').value = borderWidth;
+            document.getElementById('borderStyle').value = computedStyle.borderStyle || 'solid';
+
+            // Border radius
+            const radius = parseInt(computedStyle.borderRadius) || 0;
+            document.getElementById('borderRadius').value = radius;
+            document.getElementById('cornersValue').textContent = radius + 'px';
+        }
+
+        window.setElementOpacity = function(value) {
+            if (!currentStyledElement) return;
+            currentStyledElement.style.opacity = value / 100;
+            document.getElementById('opacityValue').textContent = value + '%';
+            if (typeof saveToHistory === 'function') {
+                saveToHistory('change opacity');
+            }
+        };
+
+        window.toggleElementShadow = function(enabled) {
+            document.getElementById('shadowBlur').disabled = !enabled;
+            document.getElementById('shadowColor').disabled = !enabled;
+
+            if (!currentStyledElement) return;
+
+            if (enabled) {
+                updateElementShadow();
+            } else {
+                currentStyledElement.style.boxShadow = 'none';
+            }
+            if (typeof saveToHistory === 'function') {
+                saveToHistory('toggle shadow');
+            }
+        };
+
+        window.updateElementShadow = function() {
+            if (!currentStyledElement) return;
+            if (!document.getElementById('shadowEnabled').checked) return;
+
+            const blur = document.getElementById('shadowBlur').value;
+            const color = document.getElementById('shadowColor').value;
+            currentStyledElement.style.boxShadow = `0 4px ${blur}px ${color}40`;
+            if (typeof saveToHistory === 'function') {
+                saveToHistory('update shadow');
+            }
+        };
+
+        window.updateElementBorder = function() {
+            if (!currentStyledElement) return;
+
+            const width = document.getElementById('borderWidth').value;
+            const style = document.getElementById('borderStyle').value;
+            const color = document.getElementById('borderColor').value;
+
+            if (parseInt(width) > 0) {
+                currentStyledElement.style.border = `${width}px ${style} ${color}`;
+            } else {
+                currentStyledElement.style.border = 'none';
+            }
+            if (typeof saveToHistory === 'function') {
+                saveToHistory('update border');
+            }
+        };
+
+        window.setElementCorners = function(value) {
+            if (!currentStyledElement) return;
+            currentStyledElement.style.borderRadius = value + 'px';
+            document.getElementById('cornersValue').textContent = value + 'px';
+            if (typeof saveToHistory === 'function') {
+                saveToHistory('change corners');
             }
         };
 
