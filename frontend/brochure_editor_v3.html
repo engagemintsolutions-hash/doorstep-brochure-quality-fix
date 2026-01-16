@@ -29,7 +29,7 @@
             </div>
         </div>
         <div class="header-right">
-            <!-- Undo/Redo Buttons -->
+            <!-- Undo/Redo Buttons with History Counter -->
             <div class="undo-redo-group">
                 <button id="undoBtn" class="action-btn icon-only" title="Undo (Ctrl+Z)" disabled onclick="undo()">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -37,6 +37,7 @@
                         <path d="M21 17a9 9 0 0 0-9-9 9 9 0 0 0-6 2.3L3 13"/>
                     </svg>
                 </button>
+                <span id="historyCounter" class="history-counter" title="History position" style="font-size: 11px; color: #666; min-width: 30px; text-align: center;">0/0</span>
                 <button id="redoBtn" class="action-btn icon-only" title="Redo (Ctrl+Y)" disabled onclick="redo()">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M21 7v6h-6"/>
@@ -272,6 +273,22 @@
         <button class="format-btn" id="textAnimationsBtn" title="Text Animations (22 effects)" onclick="openTextAnimationsPanel()">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <polygon points="5 3 19 12 5 21 5 3"/>
+            </svg>
+        </button>
+        <div class="toolbar-divider"></div>
+
+        <!-- Text Shadow Toggle -->
+        <button class="format-btn" id="textShadowBtn" title="Text Shadow" onclick="toggleTextShadow()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <text x="4" y="16" font-size="14" font-weight="bold" fill="currentColor">S</text>
+                <rect x="8" y="10" width="12" height="10" fill="#888" opacity="0.3" rx="1"/>
+            </svg>
+        </button>
+
+        <!-- Text Outline Toggle -->
+        <button class="format-btn" id="textOutlineBtn" title="Text Outline/Stroke" onclick="toggleTextOutline()">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <text x="6" y="17" font-size="16" font-weight="bold" fill="none" stroke="currentColor" stroke-width="1">A</text>
             </svg>
         </button>
     </div>
@@ -1148,6 +1165,50 @@
         });
 
         console.log('✨ Text formatting toolbar initialized with color pickers');
+
+        // Text Shadow Toggle function
+        window.toggleTextShadow = function() {
+            if (activeTextElement) {
+                const currentShadow = activeTextElement.style.textShadow;
+                if (currentShadow && currentShadow !== 'none') {
+                    activeTextElement.style.textShadow = 'none';
+                    document.getElementById('textShadowBtn').classList.remove('active');
+                    showToast('Text shadow removed', 'info');
+                } else {
+                    activeTextElement.style.textShadow = '2px 2px 4px rgba(0,0,0,0.3)';
+                    document.getElementById('textShadowBtn').classList.add('active');
+                    showToast('Text shadow applied', 'success');
+                }
+                if (typeof saveToHistory === 'function') {
+                    saveToHistory('toggle text shadow');
+                }
+            } else {
+                alert('Please select a text element first.');
+            }
+        };
+
+        // Text Outline Toggle function
+        window.toggleTextOutline = function() {
+            if (activeTextElement) {
+                const currentOutline = activeTextElement.style.webkitTextStroke || activeTextElement.style.textStroke;
+                if (currentOutline && currentOutline !== '0px') {
+                    activeTextElement.style.webkitTextStroke = '0px';
+                    activeTextElement.style.textStroke = '0px';
+                    document.getElementById('textOutlineBtn').classList.remove('active');
+                    showToast('Text outline removed', 'info');
+                } else {
+                    activeTextElement.style.webkitTextStroke = '1px #000';
+                    activeTextElement.style.textStroke = '1px #000';
+                    document.getElementById('textOutlineBtn').classList.add('active');
+                    showToast('Text outline applied', 'success');
+                }
+                if (typeof saveToHistory === 'function') {
+                    saveToHistory('toggle text outline');
+                }
+            } else {
+                alert('Please select a text element first.');
+            }
+        };
 
         // Advanced Font Picker function
         window.openAdvancedFontPicker = function() {

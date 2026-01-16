@@ -536,12 +536,20 @@ function redo() {
 function updateUndoRedoButtons() {
     const undoBtn = document.getElementById('undoBtn');
     const redoBtn = document.getElementById('redoBtn');
+    const historyCounter = document.getElementById('historyCounter');
 
     if (undoBtn) {
         undoBtn.disabled = EditorState.historyIndex <= 0;
     }
     if (redoBtn) {
         redoBtn.disabled = EditorState.historyIndex >= EditorState.history.length - 1;
+    }
+    // Update history counter display
+    if (historyCounter) {
+        const current = EditorState.historyIndex + 1;
+        const total = EditorState.history.length;
+        historyCounter.textContent = `${current}/${total}`;
+        historyCounter.title = `History: ${current} of ${total} states`;
     }
 }
 
