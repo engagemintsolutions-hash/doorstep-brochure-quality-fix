@@ -83,6 +83,14 @@
                 </svg>
                 Export PDF
             </button>
+            <button id="moreExportsBtn" class="action-btn secondary" onclick="openExportOptions()" title="PNG, JPG, SVG, Social Media sizes">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+                    <circle cx="8.5" cy="8.5" r="1.5"/>
+                    <polyline points="21 15 16 10 5 21"/>
+                </svg>
+                More Formats
+            </button>
             <button id="repurposeBtn" class="action-btn secondary" disabled style="background: linear-gradient(135deg, #0066FF 0%, #00CCFF 100%); border: none; color: white;">
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                     <path d="M17 1l4 4-4 4"/>
@@ -1262,6 +1270,34 @@
                 }).catch(e => console.log('Eyedropper cancelled'));
             } else {
                 alert('Eyedropper is not supported in this browser. Try Chrome or Edge.');
+            }
+        };
+
+        // Export Options function
+        window.openExportOptions = function() {
+            if (typeof EnhancedExport !== 'undefined' && EnhancedExport.renderPanel) {
+                let modal = document.getElementById('exportOptionsModal');
+                if (!modal) {
+                    modal = document.createElement('div');
+                    modal.id = 'exportOptionsModal';
+                    modal.className = 'modal';
+                    modal.innerHTML = `
+                        <div class="modal-content" style="max-width: 800px; max-height: 85vh;">
+                            <div class="modal-header">
+                                <h3>Export Options</h3>
+                                <button class="modal-close" onclick="document.getElementById('exportOptionsModal').style.display='none'">&times;</button>
+                            </div>
+                            <div class="modal-body" id="exportOptionsContent" style="overflow-y: auto; max-height: 65vh;"></div>
+                        </div>
+                    `;
+                    document.body.appendChild(modal);
+                    const canvas = document.getElementById('brochureCanvas');
+                    EnhancedExport.renderPanel(document.getElementById('exportOptionsContent'), canvas);
+                }
+                modal.style.display = 'flex';
+            } else {
+                console.warn('EnhancedExport not available');
+                alert('Export options are loading. Please try again in a moment.');
             }
         };
 
