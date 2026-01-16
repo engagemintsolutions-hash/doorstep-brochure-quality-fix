@@ -9,6 +9,13 @@ import os
 
 logger = logging.getLogger(__name__)
 
+# Vision model options - Sonnet is best balance of quality/cost for property photos
+VISION_MODELS = {
+    "haiku": "claude-3-5-haiku-20241022",      # Cheapest, may hallucinate
+    "sonnet": "claude-sonnet-4-20250514",       # Best value - recommended
+    "opus": "claude-opus-4-20250514",           # Best quality, expensive
+}
+
 
 class VisionClaudeClient:
     """
@@ -18,13 +25,14 @@ class VisionClaudeClient:
     features, room types, finishes, and generate captions.
     """
 
-    def __init__(self, api_key: str = None, rate_limiter=None):
+    def __init__(self, api_key: str = None, rate_limiter=None, model: str = None):
         """
         Initialize Claude vision client.
 
         Args:
             api_key: Anthropic API key
             rate_limiter: Optional GlobalRateLimiter instance for rate limiting
+            model: Vision model to use (haiku/sonnet/opus) - defaults to VISION_MODEL env var or sonnet
         """
         self.api_key = api_key or os.getenv('ANTHROPIC_API_KEY')
         if not self.api_key:
@@ -32,7 +40,12 @@ class VisionClaudeClient:
 
         self.client = anthropic.Anthropic(api_key=self.api_key)
         self.rate_limiter = rate_limiter
-        logger.info("Initialized Claude vision client")
+
+        # Get model from parameter, env var, or default to sonnet
+        model_key = model or os.getenv('VISION_MODEL', 'sonnet').lower()
+        self.model = VISION_MODELS.get(model_key, VISION_MODELS['sonnet'])
+
+        logger.info(f"Initialized Claude vision client with model: {self.model}")
 
     async def analyze_image(self, image_bytes: bytes, filename: str) -> Dict:
         """
@@ -62,9 +75,9 @@ class VisionClaudeClient:
                 await self.rate_limiter.wait_if_needed()
                 logger.debug(f"Rate limiter enforced for {filename}")
 
-            # Call Claude with vision
+            # Call Claude with vision using configured model
             message = self.client.messages.create(
-                model="claude-3-haiku-20240307",  # Claude 3 Haiku with vision (fast & affordable)
+                model=self.model,
                 max_tokens=1024,
                 messages=[
                     {
@@ -91,13 +104,16 @@ class VisionClaudeClient:
             response_text = message.content[0].text
             analysis = self._parse_claude_response(response_text, filename)
 
+            # Validate the response - check for hallucination indicators
+            analysis = self._validate_analysis(analysis, filename)
+
             logger.debug(f"Successfully analyzed {filename}: {analysis['room_type']}")
             return analysis
 
         except Exception as e:
             logger.error(f"Claude vision analysis failed for {filename}: {str(e)}")
-            # Fallback to basic analysis
-            return self._fallback_analysis(filename)
+            # Return minimal analysis that flags the image needs manual review
+            return self._fallback_analysis(filename, error=str(e))
 
     def _get_media_type(self, filename: str) -> str:
         """Determine media type from filename extension."""
@@ -178,16 +194,59 @@ CRITICAL: Only list features you can ACTUALLY SEE in this specific photo. Do not
 
         return result
 
-    def _fallback_analysis(self, filename: str) -> Dict:
-        """Fallback analysis if Claude API fails."""
+    def _validate_analysis(self, analysis: Dict, filename: str) -> Dict:
+        """
+        Validate the analysis to catch hallucinations and generic responses.
+        """
+        # List of generic/hallucinated terms that indicate poor analysis
+        HALLUCINATION_INDICATORS = [
+            "well_presented", "well presented", "modern_finish", "attractive",
+            "quality", "excellent", "beautiful", "stunning", "lovely",
+            "nice", "good condition", "immaculate", "pristine"
+        ]
+
+        # Check detected features for hallucinations
+        valid_features = []
+        for feature in analysis.get('detected_features', []):
+            feature_lower = feature.lower()
+            if not any(indicator in feature_lower for indicator in HALLUCINATION_INDICATORS):
+                valid_features.append(feature)
+
+        # If all features were hallucinated, flag for manual review
+        if not valid_features and analysis.get('detected_features'):
+            logger.warning(f"Possible hallucination detected for {filename} - features looked generic")
+            analysis['needs_review'] = True
+            analysis['detected_features'] = []
+
+        analysis['detected_features'] = valid_features
+
+        # Validate caption isn't generic
+        caption = analysis.get('suggested_caption', '').lower()
+        if any(indicator in caption for indicator in HALLUCINATION_INDICATORS):
+            # Generate a more honest caption based on room type
+            room_type = analysis.get('room_type', 'room')
+            analysis['suggested_caption'] = f"Property {room_type.replace('_', ' ')}"
+            analysis['needs_review'] = True
+
+        return analysis
+
+    def _fallback_analysis(self, filename: str, error: str = None) -> Dict:
+        """
+        Fallback analysis if Claude API fails.
+        Returns honest minimal data instead of hallucinated content.
+        """
+        logger.warning(f"Using fallback analysis for {filename}" + (f": {error}" if error else ""))
+
         return {
             "filename": filename,
-            "room_type": "living_room",
-            "detected_features": ["well_presented"],
-            "finishes": ["modern_finish"],
+            "room_type": "other",
+            "detected_features": [],  # Empty - don't hallucinate features
+            "finishes": [],
             "light_level": "moderate",
             "view_hint": None,
             "interior": True,
             "orientation_hint": None,
-            "suggested_caption": "Well presented property space with attractive features throughout"
+            "suggested_caption": "Property photograph",  # Honest minimal caption
+            "needs_review": True,  # Flag that this needs manual review
+            "analysis_error": error
         }
