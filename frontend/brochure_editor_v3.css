@@ -2484,6 +2484,27 @@ body {
     border-color: var(--border-dark);
 }
 
+/* Action Button Secondary Variant */
+.action-btn.secondary {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    color: var(--text-primary);
+}
+
+.action-btn.secondary:hover {
+    background: var(--bg-tertiary);
+    border-color: var(--border-dark);
+}
+
+/* History Counter in Undo/Redo Group */
+.history-counter {
+    font-size: 11px;
+    color: var(--text-secondary);
+    min-width: 35px;
+    text-align: center;
+    font-family: var(--font-mono);
+}
+
 /* ============================================================================
    TOAST
    ============================================================================ */

@@ -307,6 +307,31 @@ function isElementLocked(element) {
 window.toggleElementLock = toggleElementLock;
 window.isElementLocked = isElementLocked;
 
+// Make undo/redo globally available (called from HTML onclick)
+window.undo = function() {
+    if (typeof undo === 'function') undo();
+};
+window.redo = function() {
+    if (typeof redo === 'function') redo();
+};
+
+// Make page functions globally available
+window.duplicateCurrentPage = function() {
+    if (typeof duplicateCurrentPage === 'function') duplicateCurrentPage();
+};
+
+// Skip AI generation function
+window.skipAIGeneration = function() {
+    console.log('Skipping AI generation...');
+    // Hide any AI loading states
+    const loadingEl = document.querySelector('.ai-loading, .generation-loading');
+    if (loadingEl) loadingEl.style.display = 'none';
+    // Show manual entry mode
+    if (typeof showToast === 'function') {
+        showToast('AI generation skipped - entering manual mode');
+    }
+};
+
 /**
  * Show keyboard shortcuts help modal
  */
@@ -4149,8 +4174,11 @@ function initializeEventListeners() {
     document.getElementById('fitToWidthBtn').addEventListener('click', fitToWidth);
     document.getElementById('showGuidesToggle').addEventListener('change', toggleGuides);
 
-    // Error modal
-    document.querySelector('.modal-close').addEventListener('click', hideError);
+    // Error modal - use specific selector to avoid grabbing wrong modal's close button
+    const errorModalClose = document.querySelector('#errorModal .modal-close');
+    if (errorModalClose) {
+        errorModalClose.addEventListener('click', hideError);
+    }
     document.getElementById('errorBackBtn').addEventListener('click', () => {
         window.location.href = '/static/index.html';
     });
