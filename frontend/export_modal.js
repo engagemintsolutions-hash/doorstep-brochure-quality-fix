@@ -59,6 +59,17 @@ const ExportModal = (function() {
                 { label: 'Standard (85%)', value: 0.85, size: '~300 KB' },
                 { label: 'Lossless (100%)', value: 1.0, size: '~500 KB' }
             ]
+        },
+        html: {
+            name: 'HTML',
+            icon: '🏠',
+            description: 'Professional brochure webpage',
+            extension: 'html',
+            mimeType: 'text/html',
+            supportsTransparency: false,
+            qualities: [
+                { label: 'Standard', value: 1, size: '~1-2 MB' }
+            ]
         }
     };
 
@@ -371,6 +382,9 @@ const ExportModal = (function() {
                 case 'webp':
                     await exportWebP(canvas, { filename, quality: currentQuality, transparent });
                     break;
+                case 'html':
+                    await exportHTML({ filename });
+                    break;
             }
 
             updateProgress(100, 'Download complete!');
@@ -536,6 +550,102 @@ const ExportModal = (function() {
         updateProgress(95, 'Saving PDF...');
 
         pdf.save(`${options.filename}.pdf`);
+    }
+
+    /**
+     * Export to HTML - Professional UK estate agent brochure
+     */
+    async function exportHTML(options = {}) {
+        updateProgress(20, 'Gathering brochure data...');
+
+        try {
+            // Get pages data from EditorState or brochureData
+            const pages = window.EditorState?.sessionData?.pages ||
+                          window.brochureData?.pages ||
+                          [];
+
+            updateProgress(40, 'Generating HTML brochure...');
+
+            // Use the generateHTMLPreview function from multi_format_export.js
+            let htmlContent;
+            if (typeof generateHTMLPreview === 'function') {
+                htmlContent = generateHTMLPreview(pages);
+            } else if (typeof window.generateHTMLPreview === 'function') {
+                htmlContent = window.generateHTMLPreview(pages);
+            } else {
+                // Fallback: generate basic HTML
+                htmlContent = generateBasicHTML(pages);
+            }
+
+            updateProgress(70, 'Preparing download...');
+
+            // Create blob and download
+            const blob = new Blob([htmlContent], { type: 'text/html;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = `${options.filename || 'brochure'}.html`;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+
+            updateProgress(90, 'Downloading...');
+            console.log('[ExportModal] HTML brochure exported successfully');
+
+        } catch (error) {
+            console.error('[ExportModal] HTML export failed:', error);
+            throw error;
+        }
+    }
+
+    /**
+     * Fallback basic HTML generator
+     */
+    function generateBasicHTML(pages) {
+        const property = window.brochureData?.property || {};
+        const photos = window.uploadedPhotos || [];
+
+        return `<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>${property.address || 'Property Brochure'}</title>
+    <style>
+        body { font-family: Georgia, serif; max-width: 900px; margin: 0 auto; padding: 40px; }
+        h1 { color: #722F37; border-bottom: 2px solid #722F37; padding-bottom: 10px; }
+        .price { font-size: 1.5em; color: #722F37; }
+        .gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 20px 0; }
+        .gallery img { width: 100%; height: 200px; object-fit: cover; }
+        .section { margin: 30px 0; }
+        .section h2 { color: #722F37; }
+    </style>
+</head>
+<body>
+    <h1>${property.address || 'Property'}</h1>
+    <p class="price">${property.price || ''}</p>
+    <p>${property.bedrooms || ''} bedrooms | ${property.bathrooms || ''} bathrooms</p>
+
+    ${photos.length > 0 ? `
+    <div class="gallery">
+        ${photos.slice(0, 9).map(p => `<img src="${p.dataUrl || p.url}" alt="Property photo">`).join('')}
+    </div>
+    ` : ''}
+
+    ${pages.map(page => `
+    <div class="section">
+        <h2>${page.name || ''}</h2>
+        <p>${page.content?.description || ''}</p>
+    </div>
+    `).join('')}
+
+    <footer style="margin-top: 40px; padding-top: 20px; border-top: 1px solid #ccc; text-align: center; color: #666;">
+        <p>Doorstep | hello@doorstep.co.uk</p>
+    </footer>
+</body>
+</html>`;
     }
 
     /**
