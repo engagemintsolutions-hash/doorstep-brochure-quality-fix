@@ -559,10 +559,24 @@ const ExportModal = (function() {
         updateProgress(20, 'Gathering brochure data...');
 
         try {
-            // Get pages data from EditorState or brochureData
-            const pages = window.EditorState?.sessionData?.pages ||
-                          window.brochureData?.pages ||
-                          [];
+            // Get session data from EditorState (the authoritative source)
+            const sessionData = window.EditorState?.sessionData || {};
+            const pages = sessionData.pages || [];
+
+            // Also update window.brochureData for generateHTMLPreview compatibility
+            if (!window.brochureData) window.brochureData = {};
+            window.brochureData.property = sessionData.property || {};
+            window.brochureData.pages = pages;
+
+            // Get photos from EditorState or uploaded photos
+            if (!window.uploadedPhotos) window.uploadedPhotos = [];
+            if (sessionData.photos && sessionData.photos.length > 0) {
+                window.uploadedPhotos = sessionData.photos;
+            }
+
+            console.log('[ExportHTML] Session data:', sessionData);
+            console.log('[ExportHTML] Pages:', pages.length);
+            console.log('[ExportHTML] Photos:', window.uploadedPhotos?.length || 0);
 
             updateProgress(40, 'Generating HTML brochure...');
 
@@ -604,8 +618,13 @@ const ExportModal = (function() {
      * Fallback basic HTML generator
      */
     function generateBasicHTML(pages) {
-        const property = window.brochureData?.property || {};
-        const photos = window.uploadedPhotos || [];
+        // Get data from EditorState (authoritative) or fallback to window globals
+        const sessionData = window.EditorState?.sessionData || {};
+        const property = sessionData.property || window.brochureData?.property || {};
+        const photos = sessionData.photos || window.uploadedPhotos || [];
+
+        console.log('[generateBasicHTML] Property:', property);
+        console.log('[generateBasicHTML] Photos:', photos.length);
 
         return `<!DOCTYPE html>
 <html lang="en">
