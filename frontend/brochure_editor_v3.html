@@ -9,6 +9,9 @@
     <link rel="stylesheet" href="social_media_repurpose.css?v=20251028_SECTION1">
     <link rel="stylesheet" href="extended_features.css?v=20260115_CANVA2">
     <link rel="stylesheet" href="template_mega_library.css?v=20260115_MEGA">
+    <!-- PDF Export Libraries -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
     <!-- Header Bar -->
@@ -431,8 +434,8 @@
                     </button>
                     <select id="zoomLevelSelect" class="zoom-select" title="Zoom Level" onchange="setZoomFromDropdown(this.value)">
                         <option value="0.25">25%</option>
-                        <option value="0.50">50%</option>
-                        <option value="0.65" selected>65%</option>
+                        <option value="0.50" selected>50%</option>
+                        <option value="0.65">65%</option>
                         <option value="0.75">75%</option>
                         <option value="1.00">100%</option>
                         <option value="1.25">125%</option>
@@ -817,25 +820,9 @@
                 <button id="closeTemplatesBtn" class="close-panel-btn" title="Close">&times;</button>
             </div>
             <div class="templates-content">
-                <div class="templates-info">
-                    <p>Choose a design template to instantly transform your brochure's appearance with professional color schemes, borders, and accents.</p>
-                </div>
-
-                <!-- Free Templates -->
-                <div class="template-section">
-                    <h3>✨ Free Templates</h3>
-                    <div class="template-grid" id="freeTemplatesGrid">
-                        <!-- Generated dynamically -->
-                    </div>
-                </div>
-
-                <!-- Premium Templates -->
-                <div class="template-section">
-                    <h3>👑 Premium Templates</h3>
-                    <p class="premium-note">Unlock premium templates for more sophisticated designs</p>
-                    <div class="template-grid premium-grid" id="premiumTemplatesGrid">
-                        <!-- Generated dynamically -->
-                    </div>
+                <!-- Template Picker with Categories (My Templates, All, UK Agencies, etc.) -->
+                <div id="templatePickerOverlay">
+                    <!-- Will be populated by TemplatePicker.render() -->
                 </div>
 
                 <!-- Reset Option -->
@@ -987,7 +974,10 @@
     <script src="image_editor.js?v=20251231_CANVA_EDIT"></script>
     <script src="photo_gallery_manager.js?v=20251020_CLEAN_TEMPLATES"></script>
     <script src="post_export_system.js?v=20251020_ADVANCED_AI"></script>
+    <script src="multi_format_export.js?v=20260121_HTML_EXPORT"></script>
+    <script src="export_modal.js?v=20260121_HTML_EXPORT"></script>
     <script src="brochure_templates.js?v=20251020_TEMPLATE_DEBUG"></script>
+    <script src="page_layouts.js?v=20260118_LAYOUTS"></script>
     <script src="social_media_repurpose.js?v=20251028_SECTION1"></script>
     <script>
         // Initialize templates panel (overlay)
@@ -1034,8 +1024,15 @@
 
             // Initialize templates when panel opens
             function initializeTemplates() {
-                const hasPremium = false; // TODO: Check user's subscription
-                populateTemplates(hasPremium);
+                // Use the new TemplatePicker with categories (My Templates, All, UK Agencies, etc.)
+                if (window.TemplatePicker && typeof window.TemplatePicker.render === 'function') {
+                    console.log('📋 Using new TemplatePicker with categories');
+                    window.TemplatePicker.render('templatePickerOverlay');
+                } else {
+                    console.error('❌ TemplatePicker not loaded, falling back to legacy');
+                    const hasPremium = false;
+                    populateTemplates(hasPremium);
+                }
             }
 
             // Populate template grids
@@ -3477,6 +3474,7 @@
     <script src="brand_kit_v2.js?v=20260116_BRAND"></script>
     <script src="ai_content.js?v=20260116_AI"></script>
     <script src="quick_actions.js?v=20260116_QUICK"></script>
+    <script src="button_handlers.js?v=20260119_HANDLERS"></script>
 
     <!-- Canva-Rival Features -->
     <script src="property_graphics.js?v=20260116_GRAPHICS"></script>
