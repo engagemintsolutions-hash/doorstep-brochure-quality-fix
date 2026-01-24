@@ -135,6 +135,36 @@ const BrandKitV2 = (function() {
                 body: 'Lato'
             }
         },
+        doorstep: {
+            name: 'Doorstep',
+            colors: {
+                primary: '#722F37',
+                secondary: '#F8F4E8',
+                accent: '#CE171E',
+                background: '#FAF9F6',
+                text: '#2d2d2d'
+            },
+            fonts: {
+                heading: 'Playfair Display',
+                subheading: 'Inter',
+                body: 'Inter'
+            }
+        },
+        doorstep_dark: {
+            name: 'Doorstep Dark',
+            colors: {
+                primary: '#4A1F24',
+                secondary: '#D4AF37',
+                accent: '#722F37',
+                background: '#1a1a1a',
+                text: '#F8F4E8'
+            },
+            fonts: {
+                heading: 'Playfair Display',
+                subheading: 'Inter',
+                body: 'Inter'
+            }
+        },
         coastal: {
             name: 'Coastal Living',
             colors: {
@@ -310,6 +340,117 @@ const BrandKitV2 = (function() {
     }
 
     /**
+     * Handle logo file upload
+     */
+    function handleLogoUpload(file, type = 'primary', onApply) {
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            // Detect format
+            const isSVG = file.type === 'image/svg+xml' || file.name.toLowerCase().endsWith('.svg');
+            const format = isSVG ? 'SVG (Vector)' : file.type.split('/')[1]?.toUpperCase() || 'Image';
+
+            addLogo({
+                name: file.name.replace(/\.[^/.]+$/, ''),
+                url: ev.target.result,
+                type: type,
+                format: format,
+                isSVG: isSVG
+            });
+
+            console.log(`✅ Logo uploaded: ${file.name} (${format}, type: ${type})`);
+
+            // Refresh panel
+            if (panelElement) {
+                showPanel(onApply);
+            }
+        };
+        reader.readAsDataURL(file);
+    }
+
+    /**
+     * Add logo to the current brochure page
+     */
+    function addLogoToCurrentPage(logoUrl, options = {}) {
+        const page = document.querySelector('.brochure-page.active') ||
+                    document.querySelector('.brochure-page');
+
+        if (!page) {
+            console.warn('No brochure page found');
+            alert('Please create a page first');
+            return;
+        }
+
+        const {
+            width = 150,
+            height = 60,
+            x = 40,
+            y = 40
+        } = options;
+
+        // Create logo element
+        const logoElement = document.createElement('div');
+        logoElement.className = 'brochure-element image-element logo-element';
+        logoElement.style.cssText = `
+            position: absolute;
+            left: ${x}px;
+            top: ${y}px;
+            width: ${width}px;
+            height: ${height}px;
+            cursor: move;
+            z-index: 100;
+        `;
+
+        const img = document.createElement('img');
+        img.src = logoUrl;
+        img.style.cssText = `
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+        `;
+        img.draggable = false;
+
+        logoElement.appendChild(img);
+        page.appendChild(logoElement);
+
+        // Make it selectable/draggable if editor functions exist
+        if (typeof window.makeElementDraggable === 'function') {
+            window.makeElementDraggable(logoElement);
+        }
+        if (typeof window.makeElementSelectable === 'function') {
+            window.makeElementSelectable(logoElement);
+        }
+
+        console.log('✅ Logo added to page');
+
+        // Select the element
+        if (typeof window.selectElement === 'function') {
+            window.selectElement(logoElement);
+        }
+
+        return logoElement;
+    }
+
+    /**
+     * Get primary logo URL
+     */
+    function getPrimaryLogo() {
+        if (!currentKit) loadKit();
+        const primary = currentKit.logos.find(l => l.type === 'primary') || currentKit.logos[0];
+        return primary?.url || null;
+    }
+
+    /**
+     * Get white/light logo URL
+     */
+    function getWhiteLogo() {
+        if (!currentKit) loadKit();
+        const white = currentKit.logos.find(l => l.type === 'white');
+        return white?.url || getPrimaryLogo();
+    }
+
+    /**
      * Show brand kit panel
      */
     function showPanel(onApply) {
@@ -388,18 +529,46 @@ const BrandKitV2 = (function() {
                 <div class="bk-tab-content" data-content="logos">
                     <div class="bk-section">
                         <h4>Brand Logos</h4>
+                        <p class="bk-hint">Upload your agency logo (SVG recommended for best quality)</p>
                         <div class="bk-logos-grid">
                             ${currentKit.logos.map(logo => `
-                                <div class="bk-logo-item" data-id="${logo.id}">
+                                <div class="bk-logo-item" data-id="${logo.id}" data-url="${logo.url}">
+                                    <div class="bk-logo-type ${logo.type || 'primary'}">${logo.type === 'white' ? '⬜' : logo.type === 'icon' ? '◻' : '⬛'}</div>
                                     <img src="${logo.url}" alt="${logo.name}">
-                                    <span>${logo.name}</span>
-                                    <button class="bk-remove-logo">&times;</button>
+                                    <span class="bk-logo-name">${logo.name}</span>
+                                    <span class="bk-logo-format">${logo.format || 'image'}</span>
+                                    <div class="bk-logo-actions">
+                                        <button class="bk-add-to-page" title="Add to page">+</button>
+                                        <button class="bk-remove-logo" title="Remove">&times;</button>
+                                    </div>
                                 </div>
                             `).join('')}
                             <label class="bk-add-logo">
-                                <input type="file" accept="image/*" style="display:none">
+                                <input type="file" accept=".svg,.png,.jpg,.jpeg,.webp,image/svg+xml,image/png,image/jpeg,image/webp" style="display:none">
                                 <span class="bk-add-icon">+</span>
                                 <span>Add Logo</span>
+                                <span class="bk-formats">SVG, PNG, JPG</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="bk-section">
+                        <h4>Logo Variants</h4>
+                        <p class="bk-hint">Upload different versions for different backgrounds</p>
+                        <div class="bk-variant-btns">
+                            <label class="bk-variant-btn" data-type="primary">
+                                <input type="file" accept=".svg,.png,.jpg,.jpeg,.webp,image/svg+xml,image/png,image/jpeg" style="display:none">
+                                <span class="bk-variant-icon">⬛</span>
+                                <span>Primary</span>
+                            </label>
+                            <label class="bk-variant-btn" data-type="white">
+                                <input type="file" accept=".svg,.png,.jpg,.jpeg,.webp,image/svg+xml,image/png,image/jpeg" style="display:none">
+                                <span class="bk-variant-icon">⬜</span>
+                                <span>White</span>
+                            </label>
+                            <label class="bk-variant-btn" data-type="icon">
+                                <input type="file" accept=".svg,.png,.jpg,.jpeg,.webp,image/svg+xml,image/png,image/jpeg" style="display:none">
+                                <span class="bk-variant-icon">◻</span>
+                                <span>Icon Only</span>
                             </label>
                         </div>
                     </div>
@@ -486,19 +655,26 @@ const BrandKitV2 = (function() {
 
         // Logo upload
         panel.querySelector('.bk-add-logo input').onchange = (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (ev) => {
-                    addLogo({
-                        name: file.name.replace(/\.[^/.]+$/, ''),
-                        url: ev.target.result
-                    });
-                    showPanel(onApply); // Refresh
-                };
-                reader.readAsDataURL(file);
-            }
+            handleLogoUpload(e.target.files[0], 'primary', onApply);
         };
+
+        // Logo variant uploads
+        panel.querySelectorAll('.bk-variant-btn input').forEach(input => {
+            input.onchange = (e) => {
+                const type = input.closest('.bk-variant-btn').dataset.type;
+                handleLogoUpload(e.target.files[0], type, onApply);
+            };
+        });
+
+        // Add logo to page
+        panel.querySelectorAll('.bk-add-to-page').forEach(btn => {
+            btn.onclick = (e) => {
+                e.stopPropagation();
+                const logoItem = btn.closest('.bk-logo-item');
+                const logoUrl = logoItem.dataset.url;
+                addLogoToCurrentPage(logoUrl);
+            };
+        });
 
         // Remove logos
         panel.querySelectorAll('.bk-remove-logo').forEach(btn => {
@@ -929,6 +1105,130 @@ const BrandKitV2 = (function() {
             .bk-apply:hover {
                 background: #5b4cdb;
             }
+
+            /* Logo UI Enhancements */
+            .bk-hint {
+                font-size: 11px;
+                color: #666;
+                margin: -5px 0 12px;
+            }
+
+            .bk-logo-item {
+                position: relative;
+            }
+
+            .bk-logo-type {
+                position: absolute;
+                top: 5px;
+                left: 5px;
+                font-size: 10px;
+                opacity: 0.5;
+            }
+
+            .bk-logo-name {
+                font-weight: 500;
+            }
+
+            .bk-logo-format {
+                display: block;
+                font-size: 9px;
+                color: #6c5ce7;
+                margin-top: 2px;
+            }
+
+            .bk-logo-actions {
+                position: absolute;
+                top: 5px;
+                right: 5px;
+                display: flex;
+                gap: 4px;
+                opacity: 0;
+                transition: opacity 0.2s;
+            }
+
+            .bk-logo-item:hover .bk-logo-actions {
+                opacity: 1;
+            }
+
+            .bk-add-to-page {
+                width: 22px;
+                height: 22px;
+                background: #6c5ce7;
+                border: none;
+                border-radius: 4px;
+                color: #fff;
+                font-size: 14px;
+                cursor: pointer;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+            .bk-add-to-page:hover {
+                background: #5b4cdb;
+            }
+
+            .bk-formats {
+                display: block;
+                font-size: 9px;
+                color: #666;
+                margin-top: 4px;
+            }
+
+            .bk-variant-btns {
+                display: flex;
+                gap: 10px;
+            }
+
+            .bk-variant-btn {
+                flex: 1;
+                padding: 15px 10px;
+                background: rgba(255,255,255,0.03);
+                border: 2px dashed rgba(255,255,255,0.15);
+                border-radius: 8px;
+                text-align: center;
+                cursor: pointer;
+                transition: all 0.2s;
+            }
+
+            .bk-variant-btn:hover {
+                border-color: #6c5ce7;
+                background: rgba(108, 92, 231, 0.1);
+            }
+
+            .bk-variant-icon {
+                display: block;
+                font-size: 20px;
+                margin-bottom: 5px;
+            }
+
+            .bk-variant-btn span:last-child {
+                font-size: 10px;
+                color: #888;
+            }
+
+            /* Logo element on page */
+            .logo-element {
+                border: 2px solid transparent;
+                border-radius: 4px;
+                transition: border-color 0.2s;
+            }
+
+            .logo-element:hover,
+            .logo-element.selected {
+                border-color: #6c5ce7;
+            }
+
+            .logo-element.selected::after {
+                content: 'Logo';
+                position: absolute;
+                bottom: -20px;
+                left: 50%;
+                transform: translateX(-50%);
+                font-size: 10px;
+                color: #6c5ce7;
+                white-space: nowrap;
+            }
         `;
         document.head.appendChild(style);
     }
@@ -954,6 +1254,9 @@ const BrandKitV2 = (function() {
         removeCustomColor,
         applyToSelection,
         showPanel,
+        addLogoToCurrentPage,
+        getPrimaryLogo,
+        getWhiteLogo,
         PRESET_KITS,
         isLoaded: true
     };

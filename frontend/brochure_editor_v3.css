@@ -119,6 +119,7 @@ body {
     padding: 0 var(--spacing-lg);
     z-index: 1000;
     box-shadow: var(--shadow-sm);
+    overflow: hidden; /* Prevent content overflow */
 }
 
 .header-left,
@@ -130,7 +131,9 @@ body {
 }
 
 .header-left {
-    flex: 1;
+    flex: 0 1 auto;
+    min-width: 0;
+    overflow: hidden;
 }
 
 .header-center {
@@ -138,8 +141,10 @@ body {
 }
 
 .header-right {
-    flex: 1;
+    flex: 0 1 auto;
     justify-content: flex-end;
+    overflow: hidden;
+    max-width: 50%;
 }
 
 .editor-title {
@@ -294,6 +299,12 @@ body {
     display: grid;
     grid-template-columns: var(--sidebar-width) var(--sidebar-width) 1fr var(--properties-width);
     overflow: hidden;
+}
+
+/* Ensure grid children don't overflow due to borders */
+.editor-main > * {
+    min-width: 0;
+    box-sizing: border-box;
 }
 
 /* ============================================================================
@@ -593,6 +604,7 @@ body {
     flex-direction: column;
     overflow: hidden;
     background: var(--bg-secondary);
+    min-width: 0; /* Allow shrinking in grid */
 }
 
 .canvas-toolbar {
@@ -601,14 +613,49 @@ body {
     border-bottom: 1px solid var(--border-color);
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start;
+    gap: var(--spacing-md);
     padding: 0 var(--spacing-lg);
+    overflow-x: auto;
+    overflow-y: hidden;
+    /* Hide scrollbar but allow scrolling */
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-color) transparent;
+}
+
+.canvas-toolbar::-webkit-scrollbar {
+    height: 4px;
+}
+
+.canvas-toolbar::-webkit-scrollbar-track {
+    background: transparent;
+}
+
+.canvas-toolbar::-webkit-scrollbar-thumb {
+    background: var(--border-color);
+    border-radius: 2px;
+}
+
+.canvas-toolbar::-webkit-scrollbar-thumb:hover {
+    background: var(--border-dark);
+}
+
+/* Ensure toolbar button groups display horizontally (higher specificity to override social_media_repurpose.css) */
+.canvas-toolbar .template-selector,
+.canvas-toolbar .property-tools,
+.canvas-toolbar .quick-tools,
+.canvas-toolbar .view-mode {
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-sm);
+    flex-shrink: 0;
 }
 
 .zoom-controls {
     display: flex;
     align-items: center;
     gap: var(--spacing-sm);
+    flex-shrink: 0;
 }
 
 .zoom-label {
@@ -2614,7 +2661,7 @@ body {
    RESPONSIVE (for smaller screens)
    ============================================================================ */
 
-@media (max-width: 1400px) {
+@media (max-width: 1300px) {
     :root {
         --sidebar-width: 200px;
         --properties-width: 240px;
@@ -3255,71 +3302,79 @@ body {
 .template-grid {
     display: grid;
     grid-template-columns: 1fr;
-    gap: 12px;
+    gap: 20px;
+    padding: 8px;
 }
 
 .template-card {
-    border: 2px solid #e5e7eb;
-    border-radius: 8px;
-    padding: 12px;
+    border: 3px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 0;
     cursor: pointer;
     transition: all 0.2s ease;
     background: white;
+    overflow: hidden;
 }
 
 .template-card:hover {
     border-color: #667eea;
-    box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
-    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(102, 126, 234, 0.2);
+    transform: translateY(-4px);
 }
 
 .template-card.active {
-    border-color: #667eea;
-    background: linear-gradient(135deg, rgba(102, 126, 234, 0.05) 0%, rgba(118, 75, 162, 0.05) 100%);
+    border-color: #28a745;
+    border-width: 4px;
+    background: linear-gradient(135deg, rgba(40, 167, 69, 0.05) 0%, rgba(40, 167, 69, 0.1) 100%);
 }
 
 .template-card-header {
     display: flex;
     align-items: center;
-    gap: 10px;
-    margin-bottom: 8px;
+    gap: 16px;
+    padding: 16px 20px;
+    background: #f8f9fa;
+    border-bottom: 2px solid #eee;
 }
 
 .template-preview {
-    font-size: 24px;
-    width: 40px;
-    height: 40px;
+    font-size: 48px;
+    width: 80px;
+    height: 80px;
     display: flex;
     align-items: center;
     justify-content: center;
-    border-radius: 6px;
-    border: 1px solid #e5e7eb;
+    border-radius: 12px;
+    border: 2px solid #e5e7eb;
     background: white;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
 .template-info {
     flex: 1;
+    padding: 8px 0;
 }
 
 .template-name {
-    font-size: 14px;
-    font-weight: 600;
+    font-size: 20px;
+    font-weight: 700;
     color: var(--text-primary);
-    margin-bottom: 2px;
+    margin-bottom: 6px;
 }
 
 .template-description {
-    font-size: 12px;
+    font-size: 15px;
     color: var(--text-secondary);
-    line-height: 1.4;
+    line-height: 1.5;
+    margin-top: 4px;
 }
 
 .template-tier {
     display: inline-block;
-    padding: 2px 8px;
-    border-radius: 4px;
-    font-size: 10px;
-    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 700;
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
@@ -4048,9 +4103,13 @@ body {
     flex-direction: column;
     background: white;
     border-left: 1px solid var(--border-color);
-    width: 280px;
-    height: calc(100vh - 60px);
+    /* Ensure panel maintains its intended width */
+    min-width: var(--properties-width);
+    width: var(--properties-width);
+    height: calc(100vh - var(--header-height));
     overflow: hidden;
+    box-sizing: border-box;
+    flex-shrink: 0;
 }
 
 /* Panel Tabs */
@@ -5774,34 +5833,86 @@ body {
     font-weight: 500;
 }
 
-/* Templates Grid */
+/* Templates Grid - LARGER previews */
 .templates-grid {
     flex: 1;
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-    padding: 12px;
+    grid-template-columns: 1fr;  /* Single column for larger previews */
+    gap: 16px;
+    padding: 16px;
     overflow-y: auto;
 }
 
-/* Template Card */
+/* Template Card - Enhanced */
 .template-card {
     display: flex;
     flex-direction: column;
     background: var(--bg-primary);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
     overflow: hidden;
     cursor: pointer;
-    transition: all 0.15s ease;
+    transition: all 0.2s ease;
 }
 
 .template-card:hover {
     border-color: var(--primary-color);
-    box-shadow: var(--shadow-md);
-    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    transform: translateY(-3px);
 }
 
+.template-card.active {
+    border-color: #28a745;
+    border-width: 3px;
+}
+
+/* SVG Preview - Main visual */
+.template-preview-svg {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 180px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.template-preview-svg svg {
+    width: 100%;
+    height: auto;
+    max-height: 160px;
+    border-radius: 6px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/* Template Info with color swatches */
+.template-info {
+    padding: 12px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.template-colors {
+    display: flex;
+    gap: 6px;
+}
+
+.template-colors span {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    border: 2px solid rgba(0,0,0,0.1);
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.template-name {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+/* Legacy preview support */
 .template-preview {
     aspect-ratio: 4/3;
     border-radius: 0;
@@ -6911,4 +7022,1930 @@ body {
 .social-presets-select:focus {
     outline: none;
     border-color: var(--primary-color);
+}
+
+/* ============================================================================
+   PROFESSIONAL ESTATE AGENT TEMPLATE STYLES
+   Based on Savills, Knight Frank, Hamptons, Strutt & Parker designs
+   ============================================================================ */
+
+/* ===========================================
+   TEMPLATE: PREMIUM CLASSIC (Savills/Knight Frank Style)
+   - Elegant serif typography
+   - Subtle borders with gold accents
+   - Clean minimalist layout
+   =========================================== */
+
+.template-premium-classic .brochure-page {
+    --template-primary: #1a1a1a;
+    --template-accent: #C9A961;
+    --template-bg: #FDFCFA;
+    border: 1px solid #e5e5e5;
+}
+
+.template-premium-classic .cover-page {
+    background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.7) 100%);
+}
+
+.template-premium-classic .cover-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 400;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    font-size: 38px;
+}
+
+.template-premium-classic .cover-subtitle {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-weight: 300;
+    letter-spacing: 2px;
+    font-size: 16px;
+}
+
+.template-premium-classic .section-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 24px;
+    font-weight: 400;
+    letter-spacing: 1px;
+    border-bottom: 1px solid var(--template-accent);
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+}
+
+.template-premium-classic .page-text {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 14px;
+    line-height: 1.9;
+    color: #3a3a3a;
+}
+
+/* Premium Classic - Decorative corner element */
+.template-premium-classic .brochure-page::before {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    right: 20px;
+    bottom: 20px;
+    border: 1px solid rgba(201, 169, 97, 0.3);
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* ===========================================
+   TEMPLATE: MODERN MINIMAL (Contemporary Agency Style)
+   - Sans-serif typography
+   - High contrast
+   - Bold geometric elements
+   =========================================== */
+
+.template-modern-minimal .brochure-page {
+    --template-primary: #000000;
+    --template-accent: #f5f5f5;
+    --template-bg: #ffffff;
+}
+
+.template-modern-minimal .cover-title {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-weight: 700;
+    letter-spacing: -1px;
+    font-size: 48px;
+    text-transform: none;
+}
+
+.template-modern-minimal .cover-subtitle {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-weight: 400;
+    letter-spacing: 0;
+    font-size: 18px;
+}
+
+.template-modern-minimal .section-title {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -0.5px;
+    border-bottom: 4px solid #000;
+    padding-bottom: 8px;
+    margin-bottom: 24px;
+}
+
+.template-modern-minimal .page-text {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    color: #333;
+}
+
+/* Modern Minimal - Bold accent bar */
+.template-modern-minimal .brochure-page::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 8px;
+    height: 100%;
+    background: #000;
+    z-index: 1;
+}
+
+/* ===========================================
+   TEMPLATE: COUNTRY ESTATE (Strutt & Parker Style)
+   - Warm earthy tones
+   - Traditional serif fonts
+   - Botanical/organic accents
+   =========================================== */
+
+.template-country-estate .brochure-page {
+    --template-primary: #2B5940;
+    --template-accent: #B8A888;
+    --template-bg: #F9F8F3;
+    background: #F9F8F3;
+}
+
+.template-country-estate .cover-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 500;
+    letter-spacing: 2px;
+    font-size: 36px;
+    color: #2B5940;
+    text-shadow: none;
+}
+
+.template-country-estate .cover-overlay {
+    background: linear-gradient(180deg,
+        rgba(249,248,243,0.3) 0%,
+        rgba(249,248,243,0.95) 100%) !important;
+}
+
+.template-country-estate .section-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 26px;
+    font-weight: 500;
+    color: #2B5940;
+    border-bottom: 2px solid #B8A888;
+    padding-bottom: 12px;
+}
+
+.template-country-estate .page-text {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 15px;
+    line-height: 1.85;
+    color: #3d4a3e;
+}
+
+/* Country Estate - Organic corner flourish */
+.template-country-estate .brochure-page::after {
+    content: '❧';
+    position: absolute;
+    bottom: 25px;
+    right: 30px;
+    font-size: 24px;
+    color: #B8A888;
+    opacity: 0.6;
+    z-index: 1;
+}
+
+/* ===========================================
+   TEMPLATE: LUXURY NOIR (High-End London Style)
+   - Dark sophisticated palette
+   - Gold metallic accents
+   - Premium feel
+   =========================================== */
+
+.template-luxury-noir .brochure-page {
+    --template-primary: #D4AF37;
+    --template-accent: #1a1a1a;
+    --template-bg: #0a0a0a;
+    background: #0a0a0a;
+    color: #ffffff;
+}
+
+.template-luxury-noir .cover-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 400;
+    letter-spacing: 4px;
+    font-size: 40px;
+    color: #D4AF37;
+    text-transform: uppercase;
+}
+
+.template-luxury-noir .cover-subtitle {
+    color: #ffffff;
+    letter-spacing: 3px;
+}
+
+.template-luxury-noir .cover-overlay {
+    background: linear-gradient(180deg,
+        rgba(10,10,10,0.2) 0%,
+        rgba(10,10,10,0.95) 100%) !important;
+}
+
+.template-luxury-noir .section-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 28px;
+    font-weight: 400;
+    color: #D4AF37;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    border-bottom: 1px solid #D4AF37;
+    padding-bottom: 12px;
+}
+
+.template-luxury-noir .page-text {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 15px;
+    line-height: 1.9;
+    color: #e0e0e0;
+}
+
+/* Luxury Noir - Gold corner brackets */
+.template-luxury-noir .brochure-page::before,
+.template-luxury-noir .brochure-page::after {
+    content: '';
+    position: absolute;
+    width: 60px;
+    height: 60px;
+    border: 2px solid #D4AF37;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.template-luxury-noir .brochure-page::before {
+    top: 25px;
+    left: 25px;
+    border-right: none;
+    border-bottom: none;
+}
+
+.template-luxury-noir .brochure-page::after {
+    bottom: 25px;
+    right: 25px;
+    border-left: none;
+    border-top: none;
+}
+
+/* ===========================================
+   TEMPLATE: COASTAL CONTEMPORARY
+   - Light airy blues
+   - Clean modern feel
+   - Seaside property style
+   =========================================== */
+
+.template-coastal .brochure-page {
+    --template-primary: #0077BE;
+    --template-accent: #E8D5B7;
+    --template-bg: #F8FBFD;
+    background: #F8FBFD;
+}
+
+.template-coastal .cover-title {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-weight: 300;
+    letter-spacing: 2px;
+    font-size: 42px;
+    color: #ffffff;
+}
+
+.template-coastal .section-title {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 26px;
+    font-weight: 300;
+    color: #0077BE;
+    letter-spacing: 1px;
+    border-bottom: 3px solid #0077BE;
+    padding-bottom: 10px;
+}
+
+.template-coastal .page-text {
+    font-family: 'Inter', -apple-system, sans-serif;
+    font-size: 14px;
+    line-height: 1.8;
+    color: #4a6273;
+}
+
+/* Coastal - Wave accent */
+.template-coastal .brochure-page::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 6px;
+    background: linear-gradient(90deg, #0077BE, #00A3E0, #0077BE);
+    z-index: 1;
+}
+
+/* ===========================================
+   TEMPLATE: HERITAGE BURGUNDY (Period Property Style)
+   - Rich burgundy and antique gold
+   - Classic Victorian feel
+   - Ornate details
+   =========================================== */
+
+.template-heritage .brochure-page {
+    --template-primary: #6B1F3A;
+    --template-accent: #BF9B30;
+    --template-bg: #FFFEF9;
+    background: #FFFEF9;
+}
+
+.template-heritage .cover-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-weight: 600;
+    letter-spacing: 2px;
+    font-size: 38px;
+    color: #ffffff;
+}
+
+.template-heritage .section-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 26px;
+    font-weight: 600;
+    color: #6B1F3A;
+    border-bottom: 2px solid #BF9B30;
+    padding-bottom: 10px;
+}
+
+.template-heritage .page-text {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 15px;
+    line-height: 1.85;
+    color: #3d2a2e;
+}
+
+/* Heritage - Double border frame */
+.template-heritage .brochure-page::before {
+    content: '';
+    position: absolute;
+    top: 15px;
+    left: 15px;
+    right: 15px;
+    bottom: 15px;
+    border: 1px solid #6B1F3A;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.template-heritage .brochure-page::after {
+    content: '';
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    right: 20px;
+    bottom: 20px;
+    border: 1px solid #BF9B30;
+    pointer-events: none;
+    z-index: 1;
+}
+
+/* ===========================================
+   PROFESSIONAL PHOTO LAYOUTS
+   =========================================== */
+
+/* Professional Photo Grid - 2 column with gap */
+.photo-grid-professional {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.photo-grid-professional img {
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    border-radius: 0;
+}
+
+/* Large Hero + 2 Small */
+.photo-layout-hero-pair {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 10px;
+    height: 100%;
+}
+
+.photo-layout-hero-pair .hero-photo {
+    grid-row: span 2;
+}
+
+.photo-layout-hero-pair img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Masonry-style staggered grid */
+.photo-layout-masonry {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-auto-rows: 150px;
+    gap: 10px;
+}
+
+.photo-layout-masonry .photo-item:nth-child(1) {
+    grid-column: span 2;
+    grid-row: span 2;
+}
+
+.photo-layout-masonry img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* ===========================================
+   PROFESSIONAL TYPOGRAPHY ENHANCEMENTS
+   =========================================== */
+
+/* Pull Quote Style */
+.pull-quote {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 22px;
+    font-style: italic;
+    line-height: 1.6;
+    color: #333;
+    padding: 20px 30px;
+    border-left: 4px solid var(--template-primary, #C9A961);
+    margin: 25px 0;
+    background: rgba(0,0,0,0.02);
+}
+
+/* Key Features List - Professional Style */
+.features-list-professional {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    columns: 2;
+    column-gap: 30px;
+}
+
+.features-list-professional li {
+    padding: 8px 0 8px 25px;
+    position: relative;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    line-height: 1.5;
+    color: #333;
+    break-inside: avoid;
+}
+
+.features-list-professional li::before {
+    content: '•';
+    position: absolute;
+    left: 8px;
+    color: var(--template-primary, #C9A961);
+    font-size: 18px;
+    line-height: 1;
+    top: 8px;
+}
+
+/* Property Stats Bar */
+.property-stats-bar {
+    display: flex;
+    justify-content: space-around;
+    padding: 20px;
+    background: rgba(0,0,0,0.03);
+    border-top: 1px solid rgba(0,0,0,0.08);
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+    margin: 20px 0;
+}
+
+.stat-item {
+    text-align: center;
+}
+
+.stat-value {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--template-primary, #1a1a1a);
+    display: block;
+}
+
+.stat-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #666;
+    margin-top: 4px;
+}
+
+/* Agent Card - Professional */
+.agent-card-professional {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    background: rgba(0,0,0,0.02);
+    border-left: 4px solid var(--template-primary, #C9A961);
+}
+
+.agent-card-professional .agent-photo {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.agent-card-professional .agent-info h4 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 18px;
+    font-weight: 600;
+    margin: 0 0 5px 0;
+}
+
+.agent-card-professional .agent-info p {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    color: #666;
+    margin: 0;
+}
+
+/* ===========================================
+   DECORATIVE ELEMENTS
+   =========================================== */
+
+/* Elegant Divider */
+.divider-elegant {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin: 25px 0;
+}
+
+.divider-elegant::before,
+.divider-elegant::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0,0,0,0.2), transparent);
+}
+
+.divider-elegant span {
+    font-size: 18px;
+    color: var(--template-accent, #C9A961);
+}
+
+/* Corner Flourish */
+.corner-flourish {
+    position: absolute;
+    width: 80px;
+    height: 80px;
+    pointer-events: none;
+    z-index: 1;
+}
+
+.corner-flourish.top-left {
+    top: 20px;
+    left: 20px;
+    border-top: 2px solid var(--template-primary, #C9A961);
+    border-left: 2px solid var(--template-primary, #C9A961);
+}
+
+.corner-flourish.top-right {
+    top: 20px;
+    right: 20px;
+    border-top: 2px solid var(--template-primary, #C9A961);
+    border-right: 2px solid var(--template-primary, #C9A961);
+}
+
+.corner-flourish.bottom-left {
+    bottom: 20px;
+    left: 20px;
+    border-bottom: 2px solid var(--template-primary, #C9A961);
+    border-left: 2px solid var(--template-primary, #C9A961);
+}
+
+.corner-flourish.bottom-right {
+    bottom: 20px;
+    right: 20px;
+    border-bottom: 2px solid var(--template-primary, #C9A961);
+    border-right: 2px solid var(--template-primary, #C9A961);
+}
+
+/* Page Number - Professional */
+.page-number-professional {
+    position: absolute;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    color: #999;
+    letter-spacing: 2px;
+}
+
+/* Logo Placeholder */
+.logo-placeholder-professional {
+    position: absolute;
+    bottom: 25px;
+    right: 30px;
+    opacity: 0.8;
+}
+
+.logo-placeholder-professional img {
+    max-height: 40px;
+    width: auto;
+}
+
+/* ===========================================
+   RESPONSIVE TEMPLATE ADJUSTMENTS
+   =========================================== */
+
+@media print {
+    .template-premium-classic .brochure-page::before,
+    .template-modern-minimal .brochure-page::before,
+    .template-country-estate .brochure-page::after,
+    .template-luxury-noir .brochure-page::before,
+    .template-luxury-noir .brochure-page::after,
+    .template-coastal .brochure-page::after,
+    .template-heritage .brochure-page::before,
+    .template-heritage .brochure-page::after {
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
+}
+
+/* ============================================================================
+   PROFESSIONAL PAGE LAYOUTS & COMPONENTS
+   ============================================================================ */
+
+/* Property Stats Row */
+.property-stats-row {
+    display: flex;
+    justify-content: flex-start;
+    gap: 40px;
+    padding: 25px 0;
+    border-top: 1px solid rgba(0,0,0,0.1);
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+    margin: 25px 0;
+}
+
+.property-stats-row .stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.property-stats-row .stat-icon {
+    font-size: 24px;
+    margin-bottom: 8px;
+}
+
+.property-stats-row .stat-value {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--template-primary, #1a1a1a);
+}
+
+.property-stats-row .stat-label {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #888;
+}
+
+/* Property Stats Grid */
+.property-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+    margin: 25px 0;
+}
+
+.property-stats-grid .stat-box {
+    background: var(--template-accent, #f5f5f5);
+    padding: 20px;
+    text-align: center;
+    border-radius: 8px;
+}
+
+.property-stats-grid .stat-box .value {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 32px;
+    font-weight: 600;
+    color: var(--template-primary, #1a1a1a);
+}
+
+.property-stats-grid .stat-box .label {
+    font-size: 12px;
+    color: #666;
+    margin-top: 5px;
+}
+
+/* Feature Pills */
+.feature-pills {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin: 20px 0;
+}
+
+.feature-pill {
+    background: var(--template-accent, #f0f0f0);
+    color: var(--template-primary, #333);
+    padding: 8px 16px;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 500;
+    border-radius: 20px;
+}
+
+.feature-pill.highlight {
+    background: var(--template-primary, #C20430);
+    color: white;
+}
+
+/* Two Column Features */
+.features-two-column {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 40px;
+    margin: 25px 0;
+}
+
+.features-two-column .feature-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 8px 0;
+}
+
+.features-two-column .feature-icon {
+    width: 20px;
+    height: 20px;
+    background: var(--template-primary, #C20430);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 10px;
+    flex-shrink: 0;
+}
+
+.features-two-column .feature-text {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    color: #333;
+}
+
+/* Gallery Layouts */
+.gallery-hero-side {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 10px;
+    height: 100%;
+    padding: 20px;
+}
+
+.gallery-hero-side .hero-image {
+    grid-row: span 2;
+}
+
+.gallery-hero-side img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+.gallery-grid-2x2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: 1fr 1fr;
+    gap: 15px;
+    height: 100%;
+    padding: 30px;
+}
+
+.gallery-grid-2x2 img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 4px;
+}
+
+/* Agent Card */
+.agent-card-full {
+    display: flex;
+    gap: 25px;
+    padding: 30px;
+    background: var(--template-accent, #f8f8f8);
+    border-left: 4px solid var(--template-primary, #C20430);
+    margin: 30px 0;
+}
+
+.agent-card-full .agent-photo {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid white;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+}
+
+.agent-card-full .agent-name {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0 0 5px 0;
+}
+
+.agent-card-full .agent-title {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 15px;
+}
+
+.agent-card-full .contact-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+/* Contact CTA Button */
+.contact-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--template-primary, #C20430);
+    color: white;
+    padding: 14px 28px;
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+}
+
+/* Cover Layout: Hero */
+.cover-layout-hero {
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+.cover-layout-hero .cover-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.cover-layout-hero .cover-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, rgba(0,0,0,0) 0%, rgba(0,0,0,0.7) 100%);
+}
+
+.cover-layout-hero .cover-content {
+    position: absolute;
+    bottom: 60px;
+    left: 50px;
+    right: 50px;
+    color: white;
+    z-index: 10;
+}
+
+.cover-layout-hero .price-badge {
+    position: absolute;
+    top: 30px;
+    right: 30px;
+    background: var(--template-primary, #C20430);
+    color: white;
+    padding: 12px 24px;
+    font-weight: 700;
+    font-size: 18px;
+}
+
+/* Cover Layout: Split */
+.cover-layout-split {
+    display: grid;
+    grid-template-columns: 55% 45%;
+    height: 100%;
+}
+
+.cover-layout-split .cover-image-section {
+    position: relative;
+    overflow: hidden;
+}
+
+.cover-layout-split .cover-image-section img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.cover-layout-split .cover-content-section {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 50px;
+    background: var(--template-bg, #ffffff);
+}
+
+.cover-layout-split h1 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 36px;
+    margin: 0 0 15px 0;
+}
+
+.cover-layout-split .price {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 32px;
+    font-weight: 600;
+    color: var(--template-primary, #C20430);
+}
+
+/* Branding Footer */
+.branding-footer {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(255,255,255,0.95);
+    border-top: 1px solid #eee;
+}
+
+.branding-footer .agency-logo {
+    height: 30px;
+    width: auto;
+}
+
+.branding-footer .agency-contact {
+    font-size: 12px;
+    color: #666;
+    text-align: right;
+}
+
+/* ===========================================
+   PRO BLOCKS PANEL STYLES
+   =========================================== */
+
+.pro-blocks-section {
+    padding: 10px 0;
+}
+
+.pro-block-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    padding: 12px 8px;
+    background: var(--bg-secondary, #f8f8f8);
+    border: 1px solid var(--border-color, #e0e0e0);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-height: 70px;
+}
+
+.pro-block-btn:hover {
+    background: var(--bg-hover, #f0f0f0);
+    border-color: var(--primary-color, #C20430);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.pro-block-btn .block-label {
+    font-size: 10px;
+    font-weight: 500;
+    color: var(--text-secondary, #666);
+    text-align: center;
+}
+
+.pro-block-btn:hover .block-label {
+    color: var(--primary-color, #C20430);
+}
+
+#pro-blocks-content .element-category {
+    margin-bottom: 16px;
+}
+
+#pro-blocks-content .category-title {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-secondary, #666);
+    margin-bottom: 8px;
+    padding-bottom: 4px;
+    border-bottom: 1px solid var(--border-color, #e5e5e5);
+}
+
+/* ============================================================================
+   ADDITIONAL PROFESSIONAL COMPONENTS
+   ============================================================================ */
+
+/* ===========================================
+   DECORATIVE DIVIDERS
+   =========================================== */
+
+.divider-elegant {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin: 30px 0;
+    width: 100%;
+}
+
+.divider-elegant::before,
+.divider-elegant::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(0,0,0,0.2), transparent);
+}
+
+.divider-elegant .divider-icon {
+    font-size: 16px;
+    color: var(--template-primary, #C9A961);
+}
+
+.divider-simple {
+    width: 100%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--template-primary, #333), transparent);
+    margin: 25px 0;
+}
+
+.divider-double {
+    width: 100%;
+    height: 6px;
+    border-top: 1px solid var(--template-primary, #333);
+    border-bottom: 1px solid var(--template-primary, #333);
+    margin: 25px 0;
+}
+
+.divider-ornate {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    margin: 30px 0;
+}
+
+.divider-ornate::before,
+.divider-ornate::after {
+    content: '';
+    width: 80px;
+    height: 1px;
+    background: var(--template-primary, #C9A961);
+}
+
+.divider-ornate .ornament {
+    font-size: 20px;
+    color: var(--template-primary, #C9A961);
+}
+
+/* ===========================================
+   STATUS BADGES
+   =========================================== */
+
+.status-badge {
+    display: inline-block;
+    padding: 8px 20px;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.status-badge.sold {
+    background: #C20430;
+    color: white;
+}
+
+.status-badge.under-offer {
+    background: #E67E22;
+    color: white;
+}
+
+.status-badge.new {
+    background: #27AE60;
+    color: white;
+}
+
+.status-badge.price-reduced {
+    background: #8E44AD;
+    color: white;
+}
+
+.status-badge.premium {
+    background: linear-gradient(135deg, #D4AF37, #F4E4BA, #D4AF37);
+    color: #1a1a1a;
+    border: 1px solid #D4AF37;
+}
+
+.status-badge-ribbon {
+    position: absolute;
+    top: 20px;
+    right: -35px;
+    transform: rotate(45deg);
+    padding: 8px 40px;
+    font-size: 11px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+
+/* ===========================================
+   PROPERTY HIGHLIGHT BOXES
+   =========================================== */
+
+.highlight-box {
+    padding: 25px;
+    border-radius: 8px;
+    margin: 20px 0;
+}
+
+.highlight-box.elegant {
+    background: linear-gradient(135deg, #f8f6f2, #fff);
+    border: 1px solid #e8e4dc;
+    border-left: 4px solid var(--template-primary, #C9A961);
+}
+
+.highlight-box.modern {
+    background: #f5f5f5;
+    border-left: 5px solid var(--template-primary, #000);
+}
+
+.highlight-box.luxury {
+    background: linear-gradient(135deg, #1a1a1a, #2d2d2d);
+    color: white;
+    border: 1px solid #D4AF37;
+}
+
+.highlight-box .highlight-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: var(--template-primary, #1a1a1a);
+}
+
+.highlight-box.luxury .highlight-title {
+    color: #D4AF37;
+}
+
+.highlight-box .highlight-text {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+    line-height: 1.7;
+    color: #555;
+}
+
+.highlight-box.luxury .highlight-text {
+    color: #ccc;
+}
+
+/* Key Selling Points Box */
+.selling-points-box {
+    background: var(--template-accent, #f9f9f9);
+    padding: 30px;
+    border-radius: 8px;
+    margin: 25px 0;
+}
+
+.selling-points-box h4 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 20px;
+    margin: 0 0 20px 0;
+    color: var(--template-primary, #1a1a1a);
+    text-align: center;
+}
+
+.selling-points-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+}
+
+.selling-point {
+    text-align: center;
+    padding: 15px;
+}
+
+.selling-point .icon {
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+.selling-point .title {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: #333;
+}
+
+/* ===========================================
+   TESTIMONIAL / QUOTE BLOCKS
+   =========================================== */
+
+.testimonial-block {
+    position: relative;
+    padding: 30px 40px;
+    background: var(--template-accent, #f8f8f8);
+    margin: 30px 0;
+}
+
+.testimonial-block::before {
+    content: '"';
+    position: absolute;
+    top: 10px;
+    left: 20px;
+    font-family: Georgia, serif;
+    font-size: 60px;
+    color: var(--template-primary, #C9A961);
+    opacity: 0.3;
+    line-height: 1;
+}
+
+.testimonial-block .quote-text {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 18px;
+    font-style: italic;
+    line-height: 1.7;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.testimonial-block .quote-author {
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--template-primary, #1a1a1a);
+}
+
+.testimonial-block .quote-source {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    color: #888;
+}
+
+/* Pull Quote Style */
+.pull-quote {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 24px;
+    font-style: italic;
+    line-height: 1.5;
+    color: var(--template-primary, #333);
+    padding: 20px 0;
+    border-top: 3px solid var(--template-primary, #C9A961);
+    border-bottom: 3px solid var(--template-primary, #C9A961);
+    margin: 30px 0;
+    text-align: center;
+}
+
+/* ===========================================
+   FLOOR PLAN SECTION
+   =========================================== */
+
+.floorplan-container {
+    background: #fff;
+    padding: 30px;
+    border: 1px solid #eee;
+    margin: 25px 0;
+}
+
+.floorplan-container h3 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 22px;
+    margin: 0 0 20px 0;
+    text-align: center;
+    color: var(--template-primary, #1a1a1a);
+}
+
+.floorplan-image-placeholder {
+    background: #f5f5f5;
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #999;
+    font-size: 14px;
+    border: 2px dashed #ddd;
+    margin-bottom: 20px;
+}
+
+.floorplan-legend {
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    color: #666;
+}
+
+.room-dimensions-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.room-dimension {
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 15px;
+    background: #f9f9f9;
+    border-left: 3px solid var(--template-primary, #C20430);
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+}
+
+.room-dimension .room-name {
+    font-weight: 600;
+    color: #333;
+}
+
+.room-dimension .room-size {
+    color: #666;
+}
+
+/* ===========================================
+   LOCATION / TRANSPORT SECTION
+   =========================================== */
+
+.location-container {
+    background: #fff;
+    padding: 30px;
+    margin: 25px 0;
+}
+
+.location-container h3 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 22px;
+    margin: 0 0 20px 0;
+    color: var(--template-primary, #1a1a1a);
+}
+
+.location-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+}
+
+.map-placeholder {
+    background: #e8e8e8;
+    min-height: 200px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #999;
+    border-radius: 8px;
+}
+
+.transport-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.transport-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 0;
+    border-bottom: 1px solid #eee;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+}
+
+.transport-item .transport-name {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.transport-item .transport-icon {
+    font-size: 18px;
+}
+
+.transport-item .transport-distance {
+    color: var(--template-primary, #C20430);
+    font-weight: 600;
+}
+
+/* ===========================================
+   EPC RATING DISPLAY
+   =========================================== */
+
+.epc-rating {
+    display: inline-flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px 25px;
+    background: #f9f9f9;
+    border-radius: 8px;
+}
+
+.epc-rating .rating-letter {
+    width: 50px;
+    height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Inter', sans-serif;
+    font-size: 24px;
+    font-weight: 700;
+    color: white;
+    border-radius: 4px;
+}
+
+.epc-rating .rating-letter.a { background: #008054; }
+.epc-rating .rating-letter.b { background: #19b459; }
+.epc-rating .rating-letter.c { background: #8dce46; }
+.epc-rating .rating-letter.d { background: #ffd500; }
+.epc-rating .rating-letter.e { background: #fcaa65; }
+.epc-rating .rating-letter.f { background: #ef8023; }
+.epc-rating .rating-letter.g { background: #e9153b; }
+
+.epc-rating .rating-info {
+    font-family: 'Inter', sans-serif;
+}
+
+.epc-rating .rating-label {
+    font-size: 11px;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.epc-rating .rating-score {
+    font-size: 16px;
+    font-weight: 600;
+    color: #333;
+}
+
+/* ===========================================
+   MAGAZINE STYLE TEXT WRAP
+   =========================================== */
+
+.magazine-layout {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    align-items: start;
+}
+
+.magazine-layout .text-column {
+    font-family: 'Cormorant Garamond', Georgia, serif;
+    font-size: 15px;
+    line-height: 1.8;
+    color: #333;
+    column-count: 1;
+}
+
+.magazine-layout .image-column img {
+    width: 100%;
+    height: auto;
+}
+
+.magazine-layout.text-wrap-right .image-column {
+    float: left;
+    width: 45%;
+    margin-right: 25px;
+    margin-bottom: 15px;
+}
+
+.magazine-layout.text-wrap-left .image-column {
+    float: right;
+    width: 45%;
+    margin-left: 25px;
+    margin-bottom: 15px;
+}
+
+/* Drop Cap */
+.drop-cap::first-letter {
+    float: left;
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 72px;
+    line-height: 0.8;
+    padding-right: 12px;
+    color: var(--template-primary, #C20430);
+}
+
+/* ===========================================
+   COUNCIL TAX BAND
+   =========================================== */
+
+.council-tax-band {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 20px;
+    background: #f5f5f5;
+    border-radius: 4px;
+    font-family: 'Inter', sans-serif;
+}
+
+.council-tax-band .band-letter {
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--template-primary, #333);
+    color: white;
+    font-size: 16px;
+    font-weight: 700;
+    border-radius: 4px;
+}
+
+.council-tax-band .band-label {
+    font-size: 12px;
+    color: #666;
+}
+
+/* ===========================================
+   VIRTUAL TOUR CTA
+   =========================================== */
+
+.virtual-tour-cta {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    padding: 25px;
+    background: linear-gradient(135deg, #1a1a1a, #333);
+    color: white;
+    border-radius: 8px;
+    margin: 25px 0;
+}
+
+.virtual-tour-cta .tour-icon {
+    font-size: 40px;
+}
+
+.virtual-tour-cta .tour-text h4 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: 18px;
+    margin: 0 0 5px 0;
+}
+
+.virtual-tour-cta .tour-text p {
+    font-size: 13px;
+    color: #aaa;
+    margin: 0;
+}
+
+.virtual-tour-cta .tour-button {
+    margin-left: auto;
+    padding: 12px 24px;
+    background: var(--template-primary, #C20430);
+    color: white;
+    font-family: 'Inter', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+/* ============================================================================
+   PAGE LAYOUTS - PROFESSIONAL BROCHURE LAYOUTS
+   Real estate agent style layouts with photo placeholders
+   ============================================================================ */
+
+/* Layout Applied State */
+.brochure-page.layout-applied {
+    position: relative;
+    overflow: hidden;
+}
+
+/* Image Placeholder Styling */
+.image-placeholder {
+    position: relative;
+    background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%);
+    border: 2px dashed #ccc;
+    overflow: hidden;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.image-placeholder:hover {
+    border-color: var(--template-accent, #C9A961);
+    background: linear-gradient(135deg, #f5f5f5 0%, #e8e8e8 100%);
+}
+
+.image-placeholder.drag-over {
+    border-color: var(--primary-color, #C20430);
+    border-width: 3px;
+    background: rgba(194, 4, 48, 0.05);
+}
+
+.image-placeholder img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* Placeholder Content (when no image) */
+.placeholder-content {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    text-align: center;
+    color: #888;
+    pointer-events: auto;
+}
+
+.placeholder-icon {
+    font-size: 48px;
+    margin-bottom: 15px;
+    opacity: 0.5;
+}
+
+.placeholder-label {
+    font-family: var(--font-sans);
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 8px;
+    color: #666;
+}
+
+.placeholder-hint {
+    font-size: 12px;
+    color: #999;
+}
+
+/* Layout Text Blocks */
+.layout-text-block {
+    outline: none;
+    cursor: text;
+    transition: background 0.2s ease;
+}
+
+.layout-text-block:focus {
+    background: rgba(255, 255, 255, 0.5);
+}
+
+.layout-text-block.is-placeholder {
+    color: #999;
+    font-style: italic;
+}
+
+/* Layout Dividers */
+.layout-divider {
+    background: var(--template-accent, #C9A961);
+}
+
+/* Layout Feature Lists */
+.layout-feature-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.layout-feature-list li {
+    position: relative;
+    padding-left: 20px;
+    margin-bottom: 8px;
+}
+
+.layout-feature-list li::before {
+    content: '•';
+    position: absolute;
+    left: 0;
+    color: var(--template-accent, #C9A961);
+    font-weight: bold;
+}
+
+/* Layout Overlay */
+.layout-overlay {
+    pointer-events: none;
+}
+
+/* ============================================================================
+   LAYOUT PICKER PANEL
+   ============================================================================ */
+
+.layouts-panel {
+    padding: 15px;
+}
+
+.layouts-panel h3 {
+    font-family: var(--font-sans);
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-primary);
+    margin-bottom: 15px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.layout-category {
+    margin-bottom: 20px;
+}
+
+.layout-category-title {
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-secondary);
+    margin-bottom: 10px;
+}
+
+.layout-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+}
+
+.layout-card {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    text-align: center;
+}
+
+.layout-card:hover {
+    border-color: var(--primary-color);
+    background: var(--bg-primary);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.layout-card.active {
+    border-color: var(--primary-color);
+    background: rgba(194, 4, 48, 0.05);
+}
+
+.layout-card-preview {
+    font-size: 32px;
+    margin-bottom: 8px;
+    line-height: 1;
+}
+
+.layout-card-name {
+    font-size: 11px;
+    font-weight: 500;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* ============================================================================
+   COVER PAGE LAYOUTS
+   ============================================================================ */
+
+/* Full Hero Cover */
+.layout-cover_hero_full .image-placeholder {
+    border: none;
+}
+
+.layout-cover_hero_full .layout-text-block {
+    text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+/* Split Cover */
+.layout-cover_split_left .layout-container {
+    background: var(--template-bg, #FDFCFA);
+}
+
+/* ============================================================================
+   GALLERY LAYOUTS
+   ============================================================================ */
+
+.layout-gallery .image-placeholder {
+    border-radius: 4px;
+}
+
+/* Grid container for galleries */
+.layout-grid-container {
+    height: 100%;
+}
+
+.layout-grid-container .image-placeholder {
+    min-height: 100px;
+    height: 100%;
+}
+
+/* ============================================================================
+   CONTENT LAYOUTS
+   ============================================================================ */
+
+.layout-content .layout-container {
+    height: 100%;
+}
+
+/* ============================================================================
+   SPECIAL LAYOUTS - Floor Plan
+   ============================================================================ */
+
+.layout-floorplan_page .image-placeholder {
+    border-radius: 0;
+    background: #f9f9f9;
+}
+
+/* ============================================================================
+   RESPONSIVE LAYOUT ADJUSTMENTS
+   ============================================================================ */
+
+@media print {
+    .image-placeholder .placeholder-content {
+        display: none;
+    }
+
+    .image-placeholder {
+        border: none;
+        background: #f5f5f5;
+    }
+}
+
+/* ============================================================================
+   LAYOUT TAB IN ELEMENTS PANEL
+   ============================================================================ */
+
+.elements-tabs [data-tab="layouts"] {
+    position: relative;
+}
+
+.elements-tabs [data-tab="layouts"]::after {
+    content: 'NEW';
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    font-size: 8px;
+    font-weight: 700;
+    background: #10b981;
+    color: white;
+    padding: 2px 4px;
+    border-radius: 3px;
+}
+
+/* Layout Preview Thumbnails */
+.layout-preview-thumb {
+    width: 100%;
+    aspect-ratio: 297/210;
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 4px;
+    margin-bottom: 8px;
+    position: relative;
+    overflow: hidden;
+}
+
+.layout-preview-thumb::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    opacity: 0.5;
+}
+
+/* Cover layouts preview */
+.layout-preview-thumb.cover-hero::before {
+    background: linear-gradient(to top, #333 30%, #666 70%);
+}
+
+.layout-preview-thumb.cover-split::before {
+    background: linear-gradient(to right, #666 60%, #f0f0f0 60%);
+}
+
+/* Gallery layouts preview */
+.layout-preview-thumb.gallery-grid::before {
+    background:
+        linear-gradient(to right, transparent 49%, #ccc 49%, #ccc 51%, transparent 51%),
+        linear-gradient(to bottom, transparent 49%, #ccc 49%, #ccc 51%, transparent 51%),
+        #888;
+}
+
+.layout-preview-thumb.gallery-hero::before {
+    background:
+        linear-gradient(to bottom, #666 55%, #888 55%);
+}
+
+/* Content layouts preview */
+.layout-preview-thumb.content-split::before {
+    background: linear-gradient(to right, #f0f0f0 45%, #888 45%);
 }

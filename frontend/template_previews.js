@@ -7,9 +7,9 @@
 const TemplatePreviews = (function() {
     'use strict';
 
-    // Preview dimensions (scaled down)
-    const PREVIEW_WIDTH = 200;
-    const PREVIEW_HEIGHT = 150;
+    // Preview dimensions (LARGE for easy viewing)
+    const PREVIEW_WIDTH = 400;
+    const PREVIEW_HEIGHT = 300;
 
     // Color mappings for previews
     const PREVIEW_COLORS = {

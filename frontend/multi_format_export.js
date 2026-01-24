@@ -36,6 +36,52 @@ function loadJSZip() {
     });
 }
 
+/**
+ * Get brand colors from current template or brand kit
+ */
+function getBrandColors() {
+    // Try to get from Brand Kit first
+    if (typeof BrandKitV2 !== 'undefined') {
+        const kit = BrandKitV2.getKit();
+        if (kit && kit.colors) {
+            return {
+                primary: kit.colors.primary || '#722F37',
+                secondary: kit.colors.secondary || '#F8F4E8',
+                accent: kit.colors.accent || '#722F37',
+                text: kit.colors.text || '#2d2d2d',
+                textLight: '#666666',
+                background: kit.colors.background || '#ffffff'
+            };
+        }
+    }
+
+    // Try to get from current template
+    const templateId = window.EditorState?.activeTemplate;
+    if (templateId && typeof window.getTemplateById === 'function') {
+        const template = window.getTemplateById(templateId);
+        if (template?.styles) {
+            return {
+                primary: template.styles.accentColor || '#722F37',
+                secondary: template.styles.accentSecondary || '#F8F4E8',
+                accent: template.styles.accentColor || '#722F37',
+                text: template.styles.textPrimary || '#2d2d2d',
+                textLight: template.styles.textSecondary || '#666666',
+                background: template.styles.pageBackground || '#ffffff'
+            };
+        }
+    }
+
+    // Default Doorstep colors
+    return {
+        primary: '#722F37',
+        secondary: '#F8F4E8',
+        accent: '#722F37',
+        text: '#2d2d2d',
+        textLight: '#666666',
+        background: '#ffffff'
+    };
+}
+
 // ============================================
 // MULTI-FORMAT EXPORT
 // ============================================
@@ -324,11 +370,36 @@ function wrapText(ctx, text, maxWidth) {
 
 /**
  * Generates professional UK estate agent quality HTML brochure
- * Uses selected template colors, includes photos, follows estate agent format
+ * Uses Knight Frank style 9-page template as default
  */
 function generateHTMLPreview(pages) {
+    // Get session data
+    const sessionData = window.EditorState?.sessionData || {};
+    const propertyData = sessionData.property || window.brochureData?.property || {};
+    const photos = sessionData.photos || window.uploadedPhotos || window.UnifiedBrochureState?.photos || [];
+    const agent = sessionData.agent || window.brochureData?.agent || {};
+    const locationData = sessionData.location || window.locationIntelligence || {};
+
+    // Use Knight Frank template if available (default)
+    if (typeof KnightFrankTemplate !== 'undefined') {
+        console.log('[generateHTMLPreview] Using Knight Frank template');
+        return KnightFrankTemplate.generate({
+            property: propertyData,
+            photos: photos,
+            location: locationData,
+            agent: agent,
+            floorPlan: sessionData.floorPlan || null,
+            siteMap: sessionData.siteMap || null
+        }, {
+            brand: getBrandColors()
+        });
+    }
+
+    // Fallback to legacy template if KnightFrankTemplate not loaded
+    console.log('[generateHTMLPreview] Knight Frank template not available, using legacy');
+
     // Get selected template and its styles
-    const templateId = window.EditorState?.activeTemplate || 'savills_classic';
+    const templateId = window.EditorState?.activeTemplate || 'knight_frank_prestige';
     const template = window.getTemplateById ? window.getTemplateById(templateId) : null;
     const styles = template?.styles || {
         pageBackground: '#FAF9F6',
@@ -338,12 +409,10 @@ function generateHTMLPreview(pages) {
         textSecondary: '#6b7280'
     };
 
-    // Get property data from EditorState (primary) or brochureData (fallback)
-    const sessionData = window.EditorState?.sessionData || {};
-    const propertyData = sessionData.property || window.brochureData?.property || {};
-
     const address = propertyData.address || 'Beautiful Property';
-    const price = propertyData.askingPrice || propertyData.price || 'Price on Application';
+    const rawPrice = propertyData.askingPrice || propertyData.price || '';
+    // Format price with £ symbol and commas
+    const price = rawPrice ? `£${Number(rawPrice).toLocaleString('en-GB')}` : 'Price on Application';
     const location = propertyData.location || '';
     const bedrooms = propertyData.bedrooms || '';
     const bathrooms = propertyData.bathrooms || '';
@@ -353,8 +422,7 @@ function generateHTMLPreview(pages) {
     const tenure = propertyData.tenure || 'Freehold';
     const keyFeatures = propertyData.keyFeatures || '';
 
-    // Get photos from EditorState (primary) or global (fallback)
-    const photos = sessionData.photos || window.uploadedPhotos || window.UnifiedBrochureState?.photos || [];
+    // photos already declared at top of function
 
     console.log('[generateHTMLPreview] Property:', propertyData);
     console.log('[generateHTMLPreview] Photos:', photos.length);

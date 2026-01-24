@@ -200,6 +200,21 @@
         // Account for canvas zoom
         const zoom = getCanvasZoom();
 
+        // Convert element to absolute positioning if it's relative or static
+        const computedStyle = window.getComputedStyle(element);
+        if (computedStyle.position !== 'absolute') {
+            // Calculate absolute position
+            const absX = (elementRect.left - pageRect.left) / zoom;
+            const absY = (elementRect.top - pageRect.top) / zoom;
+
+            // Convert to absolute
+            element.style.position = 'absolute';
+            element.style.left = absX + 'px';
+            element.style.top = absY + 'px';
+            element.style.width = elementRect.width / zoom + 'px';
+            element.style.margin = '0';  // Clear any margins that would affect position
+        }
+
         DragState.active = true;
         DragState.element = element;
         DragState.pageElement = page;
@@ -1394,6 +1409,149 @@
     // EXPOSE TO GLOBAL SCOPE
     // ========================================================================
 
+    // ========================================================================
+    // MAKE EXISTING CONTENT DRAGGABLE
+    // Converts static page content into draggable design elements
+    // ========================================================================
+
+    function makeContentDraggable() {
+        console.log('🎯 Making existing content draggable...');
+
+        document.querySelectorAll('.brochure-page').forEach(page => {
+            const pageId = page.dataset.pageId;
+            if (!pageId) return;
+
+            // Initialize elements array for this page
+            if (!EditorState.elements[pageId]) {
+                EditorState.elements[pageId] = [];
+            }
+
+            // Key content blocks to make draggable (high-level containers)
+            const contentBlocks = [
+                { selector: '.cover-content', type: 'content-block' },
+                { selector: '.property-details', type: 'content-block' },
+                { selector: '.details-section', type: 'content-block' },
+                { selector: '.photo-element', type: 'image' },
+                { selector: '.gallery-grid', type: 'gallery' },
+                { selector: '.location-section', type: 'content-block' },
+                { selector: '.floorplan-section', type: 'content-block' }
+            ];
+
+            contentBlocks.forEach(({ selector, type }) => {
+                page.querySelectorAll(selector).forEach(el => {
+                    // Skip if already a design element
+                    if (el.classList.contains('design-element')) return;
+                    if (el.closest('.design-element')) return;
+
+                    const elementId = createElementId();
+
+                    // Add design-element class
+                    el.classList.add('design-element', `${type}-element`);
+                    el.dataset.elementId = elementId;
+                    el.dataset.elementType = type;
+
+                    // Make sure it has position relative or absolute
+                    const computedStyle = window.getComputedStyle(el);
+                    if (computedStyle.position === 'static') {
+                        el.style.position = 'relative';
+                    }
+
+                    // Store element data
+                    const rect = el.getBoundingClientRect();
+                    const pageRect = page.getBoundingClientRect();
+                    const elementData = {
+                        id: elementId,
+                        type: type,
+                        position: {
+                            x: parseInt(el.style.left) || 0,
+                            y: parseInt(el.style.top) || 0
+                        },
+                        size: {
+                            width: el.offsetWidth,
+                            height: el.offsetHeight
+                        },
+                        zIndex: parseInt(computedStyle.zIndex) || 10,
+                        visible: true,
+                        locked: false
+                    };
+
+                    EditorState.elements[pageId].push(elementData);
+                });
+            });
+
+            // Also make all elements with position:absolute draggable
+            page.querySelectorAll('[style*="position: absolute"], [style*="position:absolute"]').forEach(el => {
+                if (el.classList.contains('design-element')) return;
+                if (el.classList.contains('resize-handle')) return;
+                if (el.classList.contains('rotation-handle')) return;
+
+                const elementId = createElementId();
+                el.classList.add('design-element');
+                el.dataset.elementId = elementId;
+                el.dataset.elementType = 'positioned';
+
+                const elementData = {
+                    id: elementId,
+                    type: 'positioned',
+                    position: {
+                        x: parseInt(el.style.left) || 0,
+                        y: parseInt(el.style.top) || 0
+                    },
+                    size: {
+                        width: el.offsetWidth,
+                        height: el.offsetHeight
+                    },
+                    zIndex: parseInt(window.getComputedStyle(el).zIndex) || 10,
+                    visible: true,
+                    locked: false
+                };
+
+                EditorState.elements[pageId].push(elementData);
+            });
+
+            console.log(`  Page ${pageId}: ${EditorState.elements[pageId].length} elements made draggable`);
+        });
+
+        // Add CSS for draggable cursor
+        if (!document.getElementById('drag-styles')) {
+            const style = document.createElement('style');
+            style.id = 'drag-styles';
+            style.textContent = `
+                .brochure-page .design-element {
+                    cursor: move;
+                }
+                .brochure-page .design-element:hover {
+                    outline: 2px dashed rgba(194, 4, 48, 0.5);
+                    outline-offset: 2px;
+                }
+                .brochure-page .design-element.selected {
+                    outline: 2px solid #C20430;
+                    outline-offset: 2px;
+                }
+                .brochure-page .design-element.dragging {
+                    opacity: 0.8;
+                    z-index: 9999 !important;
+                }
+            `;
+            document.head.appendChild(style);
+        }
+
+        // Update layer panel if available
+        if (typeof renderLayerPanel === 'function') {
+            renderLayerPanel();
+        }
+
+        console.log('✅ Content made draggable');
+    }
+
+    /**
+     * Re-initialize drag system for dynamically added content
+     */
+    function refreshDraggables() {
+        makeContentDraggable();
+        initSidebarDraggables();
+    }
+
     window.ElementDrag = {
         init: initDragSystem,
         selectElement,
@@ -1407,6 +1565,8 @@
         removeResizeHandles,
         makeElementDraggable,
         initSidebarDraggables,
+        makeContentDraggable,
+        refreshDraggables,
         DragState,
         ResizeState,
         SidebarDragState,
@@ -1415,10 +1575,16 @@
 
     // Auto-initialize when DOM is ready
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', initDragSystem);
+        document.addEventListener('DOMContentLoaded', () => {
+            initDragSystem();
+            setTimeout(makeContentDraggable, 1000);
+        });
     } else {
         // DOM already loaded, wait for editor to be ready
-        setTimeout(initDragSystem, 500);
+        setTimeout(() => {
+            initDragSystem();
+            setTimeout(makeContentDraggable, 1000);
+        }, 500);
     }
 
 })();

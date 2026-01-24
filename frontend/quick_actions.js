@@ -143,7 +143,7 @@ const QuickActions = (function() {
     // State
     let toolbarElement = null;
     let isExpanded = true;
-    let position = { x: 20, y: 100 };
+    let position = { x: null, y: null };  // Will be set dynamically to bottom-right
 
     /**
      * Create the toolbar
@@ -239,6 +239,12 @@ const QuickActions = (function() {
             }
         } catch (e) {
             console.warn('Failed to load quick actions position');
+        }
+
+        // Default position: bottom-right corner (avoiding sidebar overlap)
+        if (position.x === null || position.y === null) {
+            position.x = window.innerWidth - 200;  // Right side
+            position.y = window.innerHeight - 450; // Above bottom
         }
     }
 

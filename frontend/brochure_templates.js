@@ -299,6 +299,106 @@ const BrochureTemplates = {
             }
         },
 
+        // ============================================================================
+        // DOORSTEP PROFESSIONAL TEMPLATES
+        // ============================================================================
+
+        doorstep_classic: {
+            id: 'doorstep_classic',
+            name: 'Doorstep Classic',
+            tier: 'free',
+            description: 'Professional burgundy & cream estate agent styling',
+            preview: '🏠',
+            styles: {
+                pageBackground: '#FAF9F6',
+                accentColor: '#722F37', // Doorstep burgundy
+                accentSecondary: '#F8F4E8', // Doorstep cream
+                textPrimary: '#2d2d2d',
+                textSecondary: '#6b7280',
+                borderStyle: 'solid',
+                borderWidth: '0',
+                borderColor: '#722F37',
+                cornerAccent: 'doorstep',
+                headerStyle: 'elegant',
+                footerStyle: 'branded',
+                gradient: 'doorstep-subtle',
+                fontHeading: 'Playfair Display',
+                fontBody: 'Inter'
+            }
+        },
+
+        doorstep_modern: {
+            id: 'doorstep_modern',
+            name: 'Doorstep Modern',
+            tier: 'free',
+            description: 'Clean modern Doorstep styling with white background',
+            preview: '✨',
+            styles: {
+                pageBackground: '#ffffff',
+                accentColor: '#722F37',
+                accentSecondary: '#8B4049',
+                textPrimary: '#333333',
+                textSecondary: '#666666',
+                borderStyle: 'none',
+                borderWidth: '0',
+                borderColor: 'transparent',
+                cornerAccent: 'minimal',
+                headerStyle: 'modern',
+                footerStyle: 'minimal',
+                gradient: 'none',
+                fontHeading: 'Playfair Display',
+                fontBody: 'Inter'
+            }
+        },
+
+        doorstep_luxury: {
+            id: 'doorstep_luxury',
+            name: 'Doorstep Luxury',
+            tier: 'free',
+            description: 'Premium dark theme with gold accents',
+            preview: '👑',
+            styles: {
+                pageBackground: '#1a1a1a',
+                accentColor: '#D4AF37', // Gold
+                accentSecondary: '#722F37',
+                textPrimary: '#F8F4E8',
+                textSecondary: '#a0a0a0',
+                borderStyle: 'solid',
+                borderWidth: '1px',
+                borderColor: '#D4AF37',
+                cornerAccent: 'gold-corners',
+                headerStyle: 'luxury',
+                footerStyle: 'gold',
+                gradient: 'dark-luxury',
+                fontHeading: 'Playfair Display',
+                fontBody: 'Inter'
+            }
+        },
+
+        doorstep_heritage: {
+            id: 'doorstep_heritage',
+            name: 'Doorstep Heritage',
+            tier: 'free',
+            description: 'Traditional British heritage styling',
+            preview: '🏰',
+            styles: {
+                pageBackground: '#F5F1EB',
+                accentColor: '#4A1F24', // Deep burgundy
+                accentSecondary: '#8B7355', // Tan
+                textPrimary: '#2d2420',
+                textSecondary: '#5a5048',
+                borderStyle: 'double',
+                borderWidth: '4px',
+                borderColor: '#4A1F24',
+                cornerAccent: 'classic',
+                headerStyle: 'heritage',
+                footerStyle: 'traditional',
+                gradient: 'heritage-warm',
+                fontHeading: 'Playfair Display',
+                fontBody: 'Georgia'
+            }
+        },
+
         manhattan_platinum: {
             id: 'manhattan_platinum',
             name: 'Manhattan Platinum',
@@ -846,6 +946,146 @@ const BrochureTemplates = {
         }
     },
 
+    // ============================================================================
+    // PROFESSIONAL ESTATE AGENT TEMPLATES (NEW!)
+    // These templates apply CSS classes for complete visual transformation
+    // ============================================================================
+
+    professional: {
+
+        premium_classic: {
+            id: 'premium_classic',
+            name: 'Premium Classic',
+            tier: 'free',
+            description: 'Elegant Savills/Knight Frank style with gold accents',
+            preview: '🏛️',
+            category: 'professional',
+            cssClass: 'template-premium-classic',
+            styles: {
+                pageBackground: '#FDFCFA',
+                accentColor: '#1a1a1a',
+                accentSecondary: '#C9A961',
+                textPrimary: '#1a1a1a',
+                textSecondary: '#666666',
+                borderStyle: 'solid',
+                borderWidth: '1px',
+                borderColor: '#e5e5e5',
+                cornerAccent: 'none',
+                gradient: 'none'
+            }
+        },
+
+        modern_minimal: {
+            id: 'modern_minimal',
+            name: 'Modern Minimal',
+            tier: 'free',
+            description: 'Contemporary bold sans-serif with black accents',
+            preview: '⬛',
+            category: 'professional',
+            cssClass: 'template-modern-minimal',
+            styles: {
+                pageBackground: '#FFFFFF',
+                accentColor: '#000000',
+                accentSecondary: '#f5f5f5',
+                textPrimary: '#000000',
+                textSecondary: '#333333',
+                borderStyle: 'none',
+                borderWidth: '0',
+                borderColor: 'transparent',
+                cornerAccent: 'none',
+                gradient: 'none'
+            }
+        },
+
+        country_estate: {
+            id: 'country_estate',
+            name: 'Country Estate',
+            tier: 'free',
+            description: 'Strutt & Parker style with earthy green tones',
+            preview: '🌳',
+            category: 'professional',
+            cssClass: 'template-country-estate',
+            styles: {
+                pageBackground: '#F9F8F3',
+                accentColor: '#2B5940',
+                accentSecondary: '#B8A888',
+                textPrimary: '#2B5940',
+                textSecondary: '#3d4a3e',
+                borderStyle: 'none',
+                borderWidth: '0',
+                borderColor: 'transparent',
+                cornerAccent: 'none',
+                gradient: 'none'
+            }
+        },
+
+        luxury_noir: {
+            id: 'luxury_noir',
+            name: 'Luxury Noir',
+            tier: 'free',
+            description: 'Ultra-premium dark theme with gold corners',
+            preview: '🖤',
+            category: 'professional',
+            cssClass: 'template-luxury-noir',
+            styles: {
+                pageBackground: '#0a0a0a',
+                accentColor: '#D4AF37',
+                accentSecondary: '#1a1a1a',
+                textPrimary: '#FFFFFF',
+                textSecondary: '#e0e0e0',
+                borderStyle: 'none',
+                borderWidth: '0',
+                borderColor: 'transparent',
+                cornerAccent: 'none',
+                gradient: 'none'
+            }
+        },
+
+        coastal_contemporary: {
+            id: 'coastal_contemporary',
+            name: 'Coastal Contemporary',
+            tier: 'free',
+            description: 'Light airy blues for seaside properties',
+            preview: '🌊',
+            category: 'professional',
+            cssClass: 'template-coastal',
+            styles: {
+                pageBackground: '#F8FBFD',
+                accentColor: '#0077BE',
+                accentSecondary: '#E8D5B7',
+                textPrimary: '#1a3647',
+                textSecondary: '#4a6273',
+                borderStyle: 'none',
+                borderWidth: '0',
+                borderColor: 'transparent',
+                cornerAccent: 'none',
+                gradient: 'none'
+            }
+        },
+
+        heritage_burgundy: {
+            id: 'heritage_burgundy',
+            name: 'Heritage Burgundy',
+            tier: 'free',
+            description: 'Period property style with double border',
+            preview: '🏰',
+            category: 'professional',
+            cssClass: 'template-heritage',
+            styles: {
+                pageBackground: '#FFFEF9',
+                accentColor: '#6B1F3A',
+                accentSecondary: '#BF9B30',
+                textPrimary: '#3d2a2e',
+                textSecondary: '#6b495a',
+                borderStyle: 'none',
+                borderWidth: '0',
+                borderColor: 'transparent',
+                cornerAccent: 'none',
+                gradient: 'none'
+            }
+        }
+    },
+
     // PREMIUM TEMPLATES - Empty (all templates unlocked in free tier for testing)
     premium: {}
 };
@@ -865,9 +1105,31 @@ function applyTemplate(templateId, pageElement) {
 
     const styles = template.styles;
 
+    // Remove any existing professional template CSS classes
+    const templateClasses = [
+        'template-premium-classic',
+        'template-modern-minimal',
+        'template-country-estate',
+        'template-luxury-noir',
+        'template-coastal',
+        'template-heritage'
+    ];
+    templateClasses.forEach(cls => pageElement.classList.remove(cls));
+
+    // Apply CSS class for professional templates (NEW!)
+    if (template.cssClass) {
+        pageElement.classList.add(template.cssClass);
+        console.log(`🎨 Applied professional CSS class: ${template.cssClass}`);
+    }
+
     // Apply base page styles
     pageElement.style.backgroundColor = styles.pageBackground;
     pageElement.style.color = styles.textPrimary;
+
+    // Apply CSS custom properties for template colors
+    pageElement.style.setProperty('--template-primary', styles.accentColor);
+    pageElement.style.setProperty('--template-accent', styles.accentSecondary);
+    pageElement.style.setProperty('--template-bg', styles.pageBackground);
 
     // Apply gradient background if specified
     if (styles.gradient && styles.gradient !== 'none') {
@@ -924,7 +1186,11 @@ function applyGradientBackground(pageElement, styles) {
         'rose-garden': `radial-gradient(circle at bottom right, ${styles.accentColor}06 0%, ${styles.pageBackground} 60%)`,
         'alpine-crisp': `linear-gradient(to bottom, ${styles.accentSecondary}20 0%, ${styles.pageBackground} 30%)`,
         'tuscan-warmth': `radial-gradient(ellipse at center, ${styles.accentColor}08 0%, ${styles.accentSecondary}12 50%, ${styles.pageBackground} 100%)`,
-        'emerald-luxury': `linear-gradient(135deg, ${styles.accentColor}06 0%, ${styles.pageBackground} 50%, ${styles.accentSecondary}10 100%)`
+        'emerald-luxury': `linear-gradient(135deg, ${styles.accentColor}06 0%, ${styles.pageBackground} 50%, ${styles.accentSecondary}10 100%)`,
+        // Doorstep branded gradients
+        'doorstep-subtle': `linear-gradient(to bottom, ${styles.accentSecondary} 0%, ${styles.pageBackground} 15%, ${styles.pageBackground} 100%)`,
+        'dark-luxury': `linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%)`,
+        'heritage-warm': `linear-gradient(to bottom, ${styles.accentSecondary}20 0%, ${styles.pageBackground} 30%, ${styles.pageBackground} 85%, ${styles.accentColor}08 100%)`
     };
 
     if (gradients[styles.gradient]) {
@@ -953,6 +1219,10 @@ function getTemplateById(templateId) {
     if (BrochureTemplates.free[templateId]) {
         return BrochureTemplates.free[templateId];
     }
+    // Check professional templates (NEW!)
+    if (BrochureTemplates.professional && BrochureTemplates.professional[templateId]) {
+        return BrochureTemplates.professional[templateId];
+    }
     // Check premium templates
     if (BrochureTemplates.premium[templateId]) {
         return BrochureTemplates.premium[templateId];
@@ -965,6 +1235,11 @@ function getTemplateById(templateId) {
  */
 function getAvailableTemplates(hasPremium = false) {
     const templates = [...Object.values(BrochureTemplates.free)];
+
+    // Always include professional templates (they're the best ones!)
+    if (BrochureTemplates.professional) {
+        templates.push(...Object.values(BrochureTemplates.professional));
+    }
 
     if (hasPremium) {
         templates.push(...Object.values(BrochureTemplates.premium));
@@ -1140,8 +1415,9 @@ window.applyTemplateToAll = applyTemplateToAll;
 window.getAvailableTemplates = getAvailableTemplates;
 window.getTemplateById = getTemplateById;
 
-console.log('🎨 CANVA-LEVEL TEMPLATES LOADED');
-console.log(`   ✅ All ${Object.keys(BrochureTemplates.free).length} templates unlocked!`);
+console.log('🎨 PROFESSIONAL ESTATE AGENT TEMPLATES LOADED');
+console.log(`   ✅ ${Object.keys(BrochureTemplates.free).length} color schemes + ${Object.keys(BrochureTemplates.professional).length} professional layouts!`);
+console.log('   ⭐ NEW PROFESSIONAL: Premium Classic, Modern Minimal, Country Estate, Luxury Noir, Coastal, Heritage');
 console.log('   🏢 UK Estate Agencies: Savills, Rightmove, Zoopla, Foxtons, Knight Frank, Hamptons');
 console.log('   ⬜ Minimalist: Pure White, Monochrome, Soft Gray, Sand Stone, Charcoal');
 console.log('   🌅 Bold: Coral Burst, Electric Blue, Sunset Flame, Neon Nights, Lime Fresh');

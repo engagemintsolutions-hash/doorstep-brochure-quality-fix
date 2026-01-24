@@ -226,19 +226,18 @@ class VisionAdapter:
                 )
             )
         
-        # Validate caption length (8-20 words)
-        caption = analysis.get("suggested_caption", "Well presented space")
-        word_count = len(caption.split())
-        
-        if word_count < 8 or word_count > 20:
-            logger.warning(
-                f"Caption word count {word_count} outside range 8-20, adjusting"
-            )
-            words = caption.split()
-            if word_count < 8:
-                caption += " with quality finishes throughout"
-            elif word_count > 20:
-                caption = " ".join(words[:20])
+        # Get caption - keep it short and factual
+        caption = analysis.get("suggested_caption", "")
+
+        # If no caption, use room type
+        if not caption or len(caption.strip()) < 3:
+            room = analysis.get("room_type", "room")
+            caption = room.replace("_", " ").title()
+
+        # Trim if too long (max 20 words)
+        words = caption.split()
+        if len(words) > 20:
+            caption = " ".join(words[:20])
         
         return ImageAnalysisResponse(
             filename=analysis["filename"],

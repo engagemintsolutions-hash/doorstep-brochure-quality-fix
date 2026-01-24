@@ -60,7 +60,13 @@
         rightmoveStyle: { name: 'Rightmove', primary: '#00deb6', secondary: '#2c2c2c', accent: '#ff5a00', background: '#ffffff', text: '#2c2c2c' },
         zooplaStyle: { name: 'Zoopla', primary: '#6d2077', secondary: '#e95420', accent: '#8a3e91', background: '#ffffff', text: '#333333' },
         hamptonsStyle: { name: 'Hamptons', primary: '#003057', secondary: '#c5a572', accent: '#666666', background: '#f9f9f9', text: '#1a1a1a' },
-        dextersStyle: { name: 'Dexters', primary: '#000000', secondary: '#e31837', accent: '#ffffff', background: '#f5f5f5', text: '#1a1a1a' }
+        dextersStyle: { name: 'Dexters', primary: '#000000', secondary: '#e31837', accent: '#ffffff', background: '#f5f5f5', text: '#1a1a1a' },
+
+        // Doorstep Branded
+        doorstepClassic: { name: 'Doorstep Classic', primary: '#722F37', secondary: '#F8F4E8', accent: '#CE171E', background: '#FAF9F6', text: '#2d2d2d' },
+        doorstepModern: { name: 'Doorstep Modern', primary: '#722F37', secondary: '#ffffff', accent: '#8B4049', background: '#ffffff', text: '#333333' },
+        doorstepLuxury: { name: 'Doorstep Luxury', primary: '#4A1F24', secondary: '#D4AF37', accent: '#722F37', background: '#1a1a1a', text: '#F8F4E8' },
+        doorstepFresh: { name: 'Doorstep Fresh', primary: '#8B4049', secondary: '#F0E6D8', accent: '#CE171E', background: '#FFFEF9', text: '#2d2d2d' }
     };
 
     // Current active scheme
@@ -81,6 +87,7 @@
             { name: 'Bold', schemes: ['sunsetCoral', 'oceanBreeze', 'forestFresh', 'berryBliss'] },
             { name: 'Natural', schemes: ['warmSand', 'stoneNatural', 'woodlandBrown', 'terracotta'] },
             { name: 'British Cosy', schemes: ['britishCottage', 'cosyHearth', 'sageAndStone', 'dustyRose', 'warmTaupe', 'heritageGreen', 'countryManor', 'coastalCalm'] },
+            { name: 'Doorstep', schemes: ['doorstepClassic', 'doorstepModern', 'doorstepLuxury', 'doorstepFresh'] },
             { name: 'UK Agencies', schemes: ['savillsStyle', 'knightFrankStyle', 'foxtonsStyle', 'purpleBricksStyle', 'rightmoveStyle', 'zooplaStyle', 'hamptonsStyle', 'dextersStyle'] }
         ];
 

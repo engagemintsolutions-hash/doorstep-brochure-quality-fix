@@ -22,7 +22,7 @@ const EditorState = {
     currentPage: null,
     selectedElement: null,
     isDirty: false,
-    zoomLevel: 0.65,  // Default 65% for better overview
+    zoomLevel: 0.50,  // Default 50% for wider overview of full page
     showGuides: false,
     autoSaveInterval: null,
     pageDescriptions: {},  // Store page-specific AI descriptions by page ID
@@ -33,7 +33,7 @@ const EditorState = {
     selectedPhoto: null,  // Currently selected photo for adjusting
     photoSizes: {},  // Store photo sizes per page: {pageId: {photoIndex: 'small'|'medium'|'large'|'full'}}
     photoStacking: {},  // Store photo stacking per page: {pageId: 'horizontal'|'vertical'|'grid'}
-    activeTemplate: 'savills_classic',  // Currently active template
+    activeTemplate: 'knight_frank_prestige',  // Currently active template - Knight Frank inspired default
     loadedFromWindowOpener: false,  // Track if session was loaded from window.opener (no backend save needed)
     // Undo/Redo history
     history: [],
@@ -307,13 +307,8 @@ function isElementLocked(element) {
 window.toggleElementLock = toggleElementLock;
 window.isElementLocked = isElementLocked;
 
-// Make undo/redo globally available (called from HTML onclick)
-window.undo = function() {
-    if (typeof undo === 'function') undo();
-};
-window.redo = function() {
-    if (typeof redo === 'function') redo();
-};
+// Note: undo/redo are defined as local functions later in this file
+// They will be assigned to window after definition (see line ~610)
 
 // Make page functions globally available
 window.duplicateCurrentPage = function() {
@@ -610,6 +605,10 @@ function redo() {
     console.log(`↪️ Redo: ${snapshot.action} (${EditorState.historyIndex + 1}/${EditorState.history.length})`);
 }
 
+// Make undo/redo globally available
+window.undo = undo;
+window.redo = redo;
+
 function updateUndoRedoButtons() {
     const undoBtn = document.getElementById('undoBtn');
     const redoBtn = document.getElementById('redoBtn');
@@ -770,10 +769,10 @@ function loadDemoMode() {
     document.getElementById('exportBtn').disabled = false;
     document.getElementById('repurposeBtn').disabled = false;
 
-    // Apply default template (savills_classic is always available)
+    // Apply default template (knight_frank_prestige - professional estate agent style)
     setTimeout(() => {
         if (typeof applyTemplateToAll === 'function') {
-            applyTemplateToAll('savills_classic');
+            applyTemplateToAll('knight_frank_prestige');
         }
     }, 500);
 
@@ -1192,8 +1191,8 @@ async function loadSession() {
                     // Apply default template styling after a brief delay
                     setTimeout(() => {
                         if (typeof applyTemplateToAll === 'function') {
-                            console.log('🎨 Applying default template (savills_classic)...');
-                            applyTemplateToAll('savills_classic');
+                            console.log('🎨 Applying default template (knight_frank_prestige)...');
+                            applyTemplateToAll('knight_frank_prestige');
                         }
                         // Save session with generated pages
                         if (typeof saveSession === 'function') {
@@ -1220,7 +1219,18 @@ async function loadSession() {
 
         // Rendering phase
         updateLoadingProgress('rendering', false);
-        renderPages();
+
+        // Use Knight Frank template for autoGenerate mode (professional 9-page layout)
+        if (shouldAutoGenerate && typeof renderKnightFrankBrochure === 'function') {
+            console.log('🏢 Using Knight Frank professional template...');
+            const kfSuccess = renderKnightFrankBrochure();
+            if (!kfSuccess) {
+                console.warn('⚠️ Knight Frank template failed, falling back to standard rendering');
+                renderPages();
+            }
+        } else {
+            renderPages();
+        }
         populatePhotoGallerySidebar();
 
         // Wait for DOM to fully render before attaching handlers
@@ -1492,7 +1502,278 @@ function renderPages() {
             console.log(`🔍 Applied default zoom: ${Math.round(EditorState.zoomLevel * 100)}%`);
         }
     }, 100);
+
+    // Make existing content draggable after rendering
+    setTimeout(() => {
+        if (window.ElementDrag && window.ElementDrag.makeContentDraggable) {
+            window.ElementDrag.makeContentDraggable();
+            console.log('🎯 Content elements made draggable');
+        }
+    }, 500);
 }
+
+/**
+ * Render Knight Frank template directly into the editor canvas
+ * Uses KnightFrankTemplate.generate() for professional 9-page brochure layout
+ */
+function renderKnightFrankBrochure() {
+    console.log('🏢 Rendering Knight Frank professional brochure...');
+
+    const canvas = document.getElementById('brochureCanvas');
+    const pageList = document.getElementById('pageList');
+
+    if (!canvas) {
+        console.error('❌ Canvas element not found');
+        return false;
+    }
+
+    // Check if KnightFrankTemplate is available
+    if (typeof KnightFrankTemplate === 'undefined') {
+        console.warn('⚠️ KnightFrankTemplate not loaded, falling back to standard rendering');
+        return false;
+    }
+
+    // Gather session data
+    const sessionData = EditorState.sessionData || {};
+    const property = sessionData.property || {};
+    const photos = sessionData.photos || window.uploadedPhotos || [];
+    const agent = sessionData.agent || {};
+    const location = sessionData.location || {};
+
+    console.log('📊 Knight Frank template data:', {
+        address: property.address,
+        photos: photos.length,
+        hasAgent: !!agent.name
+    });
+
+    // Generate the Knight Frank brochure HTML
+    const brochureHTML = KnightFrankTemplate.generate({
+        property: property,
+        photos: photos,
+        location: location,
+        agent: agent
+    }, {
+        brand: {
+            primary: '#003366',
+            secondary: '#d4af37',
+            accent: '#003366',
+            text: '#2d2d2d',
+            textLight: '#666666',
+            background: '#ffffff'
+        }
+    });
+
+    if (!brochureHTML) {
+        console.error('❌ KnightFrankTemplate.generate() returned empty');
+        return false;
+    }
+
+    // Clear canvas and page list
+    canvas.innerHTML = '';
+    pageList.innerHTML = '';
+
+    // Create a temporary container to parse the HTML
+    const tempContainer = document.createElement('div');
+    tempContainer.innerHTML = brochureHTML;
+
+    // Extract and inject styles from the template
+    const styleEl = tempContainer.querySelector('style');
+    if (styleEl) {
+        // Remove any existing Knight Frank styles
+        const existingStyle = document.getElementById('knight-frank-styles');
+        if (existingStyle) {
+            existingStyle.remove();
+        }
+
+        // Create new style element with scoped styles
+        const newStyle = document.createElement('style');
+        newStyle.id = 'knight-frank-styles';
+        newStyle.textContent = styleEl.textContent;
+        document.head.appendChild(newStyle);
+        console.log('🎨 Knight Frank styles injected');
+    }
+
+    // Create a container for the brochure
+    const brochureContainer = document.createElement('div');
+    brochureContainer.id = 'knight-frank-brochure';
+    brochureContainer.innerHTML = tempContainer.querySelector('body')?.innerHTML || brochureHTML;
+
+    // Extract individual pages from the generated HTML
+    const generatedPages = brochureContainer.querySelectorAll('.brochure-page');
+    console.log(`📄 Knight Frank template generated ${generatedPages.length} pages`);
+
+    // Page type mapping for Knight Frank template
+    const pageTypes = ['cover', 'summary', 'location', 'property', 'bedrooms', 'floorplan', 'gardens', 'details', 'back'];
+    const pageTitles = ['Cover', 'Summary', 'Location', 'Property', 'Bedrooms', 'Floor Plan', 'Gardens', 'Details', 'Contact'];
+
+    // Create session pages array and render each page
+    EditorState.sessionData.pages = [];
+
+    generatedPages.forEach((pageEl, index) => {
+        const pageId = `kf_page_${index + 1}`;
+        const pageType = pageTypes[index] || 'generic';
+        const pageTitle = pageTitles[index] || `Page ${index + 1}`;
+
+        // Add to session pages
+        EditorState.sessionData.pages.push({
+            id: pageId,
+            type: pageType,
+            title: pageTitle,
+            photos: []
+        });
+
+        // Create canvas page wrapper
+        const canvasPage = document.createElement('div');
+        canvasPage.className = 'brochure-page';
+        canvasPage.dataset.pageId = pageId;
+        canvasPage.dataset.pageIndex = index;
+        canvasPage.dataset.templateType = 'knight_frank';
+
+        // Move the page content into the canvas wrapper
+        canvasPage.innerHTML = pageEl.innerHTML;
+
+        // Apply A4 landscape sizing
+        canvasPage.style.width = '297mm';
+        canvasPage.style.height = '210mm';
+        canvasPage.style.position = 'relative';
+        canvasPage.style.overflow = 'hidden';
+        canvasPage.style.marginBottom = '20px';
+        canvasPage.style.boxShadow = '0 4px 20px rgba(0,0,0,0.15)';
+
+        canvas.appendChild(canvasPage);
+
+        // Create page list item
+        const listItem = document.createElement('div');
+        listItem.className = 'page-item';
+        listItem.dataset.pageId = pageId;
+        listItem.innerHTML = `
+            <div class="page-thumbnail">
+                <span class="page-number">${index + 1}</span>
+            </div>
+            <div class="page-info">
+                <span class="page-title">${pageTitle}</span>
+                <span class="page-type">${pageType}</span>
+            </div>
+        `;
+        listItem.addEventListener('click', () => selectPage(pageId));
+        pageList.appendChild(listItem);
+    });
+
+    // Update page count
+    const pageCount = document.getElementById('pageCount');
+    if (pageCount) {
+        pageCount.textContent = `${generatedPages.length} pages`;
+    }
+
+    // Select first page
+    if (EditorState.sessionData.pages.length > 0) {
+        selectPage(EditorState.sessionData.pages[0].id);
+    }
+
+    // Make all text elements editable
+    setTimeout(() => {
+        makeKnightFrankEditable();
+    }, 100);
+
+    // Apply zoom
+    setTimeout(() => {
+        if (typeof setZoom === 'function') {
+            setZoom(EditorState.zoomLevel);
+        }
+    }, 200);
+
+    // Make content draggable
+    setTimeout(() => {
+        if (window.ElementDrag && window.ElementDrag.makeContentDraggable) {
+            window.ElementDrag.makeContentDraggable();
+            console.log('🎯 Knight Frank elements made draggable');
+        }
+    }, 500);
+
+    console.log('✅ Knight Frank brochure rendered successfully');
+    return true;
+}
+
+/**
+ * Make Knight Frank template elements editable
+ */
+function makeKnightFrankEditable() {
+    console.log('✏️ Making Knight Frank elements editable...');
+
+    // Make all text elements editable
+    const editableSelectors = [
+        'h1', 'h2', 'h3', 'h4', 'p',
+        '.property-name', '.cover-title', '.cover-price',
+        '.section-title', '.text-content',
+        '.stat-value', '.stat-label',
+        '.detail-value', '.detail-label'
+    ];
+
+    editableSelectors.forEach(selector => {
+        document.querySelectorAll(`#brochureCanvas .brochure-page ${selector}`).forEach(el => {
+            if (!el.querySelector('img') && el.textContent.trim()) {
+                el.setAttribute('contenteditable', 'true');
+                el.classList.add('editable-text');
+                el.style.cursor = 'text';
+
+                // Add edit indicator on hover
+                el.addEventListener('mouseenter', function() {
+                    if (!this.classList.contains('editing')) {
+                        this.style.outline = '2px dashed rgba(0,51,102,0.3)';
+                    }
+                });
+                el.addEventListener('mouseleave', function() {
+                    if (!this.classList.contains('editing')) {
+                        this.style.outline = '';
+                    }
+                });
+                el.addEventListener('focus', function() {
+                    this.classList.add('editing');
+                    this.style.outline = '2px solid #003366';
+                    EditorState.isDirty = true;
+                });
+                el.addEventListener('blur', function() {
+                    this.classList.remove('editing');
+                    this.style.outline = '';
+                });
+            }
+        });
+    });
+
+    // Make images selectable for swapping
+    document.querySelectorAll('#brochureCanvas .brochure-page img').forEach(img => {
+        img.classList.add('photo-element');
+        img.style.cursor = 'pointer';
+
+        img.addEventListener('click', function(e) {
+            e.stopPropagation();
+            // Highlight selected image
+            document.querySelectorAll('.photo-element.selected').forEach(el => {
+                el.classList.remove('selected');
+                el.style.outline = '';
+            });
+            this.classList.add('selected');
+            this.style.outline = '3px solid #f59e0b';
+            EditorState.selectedPhoto = this;
+        });
+
+        img.addEventListener('mouseenter', function() {
+            if (!this.classList.contains('selected')) {
+                this.style.boxShadow = 'inset 0 0 0 4px #f59e0b, 0 4px 12px rgba(245, 158, 11, 0.4)';
+            }
+        });
+        img.addEventListener('mouseleave', function() {
+            if (!this.classList.contains('selected')) {
+                this.style.boxShadow = '';
+            }
+        });
+    });
+
+    console.log('✅ Knight Frank elements made editable');
+}
+
+// Expose globally
+window.renderKnightFrankBrochure = renderKnightFrankBrochure;
 
 function attachPhotoHoverEffects() {
     console.log('🎨 Attaching orange hover effects to photo elements...');
@@ -1745,11 +2026,14 @@ function renderCoverPage(container, page) {
     const currentLayout = page.layout || 'photos-only';
     let layoutHTML = '';
 
-    // Get first exterior photo for cover
+    // Get first exterior photo for cover - prioritize exterior/front photos
     const exteriorPhotos = (EditorState.sessionData.photos || []).filter(p =>
-        p.category === 'exterior' || p.category === 'front'
+        p.category === 'exterior' || p.category === 'front' || p.roomType === 'exterior'
     );
     const coverPhoto = exteriorPhotos[0] || (EditorState.sessionData.photos || [])[0];
+
+    // Use page.photos if available, otherwise use the auto-found cover photo
+    const photosForCover = (page.photos && page.photos.length > 0) ? page.photos : (coverPhoto ? [coverPhoto] : []);
 
     // Render based on selected layout
     switch (currentLayout) {
@@ -1761,7 +2045,7 @@ function renderCoverPage(container, page) {
 
                     <!-- Hero Background Image -->
                     <div class="cover-hero">
-                        ${renderPhotoSection(page.photos, '100%', '100%', 'photos-only', page.id)}
+                        ${renderPhotoSection(photosForCover, '100%', '100%', 'photos-only', page.id)}
                     </div>
 
                     <!-- Dark Gradient Overlay -->
@@ -1789,7 +2073,7 @@ function renderCoverPage(container, page) {
                 <div style="width: 100%; height: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; padding: 20px; box-sizing: border-box; align-items: center; position: relative;">
                     <div style="position: relative; height: 100%;">
                         ${renderLayoutControls(page.id)}
-                        ${renderPhotoSection(page.photos, '100%', '100%', 'photo-left', page.id)}
+                        ${renderPhotoSection(photosForCover, '100%', '100%', 'photo-left', page.id)}
                     </div>
                     <div style="text-align: center; padding: 40px;">
                         ${titleText}
@@ -1809,7 +2093,7 @@ function renderCoverPage(container, page) {
                     </div>
                     <div style="position: relative; height: 100%;">
                         ${renderLayoutControls(page.id)}
-                        ${renderPhotoSection(page.photos, '100%', '100%', 'photo-right', page.id)}
+                        ${renderPhotoSection(photosForCover, '100%', '100%', 'photo-right', page.id)}
                     </div>
                     ${logoHTML}
                 </div>
@@ -1825,7 +2109,7 @@ function renderCoverPage(container, page) {
                     </div>
                     <div style="position: relative; flex: 1;">
                         ${renderLayoutControls(page.id)}
-                        ${renderPhotoSection(page.photos, '100%', '100%', 'text-top', page.id)}
+                        ${renderPhotoSection(photosForCover, '100%', '100%', 'text-top', page.id)}
                     </div>
                     ${logoHTML}
                 </div>
@@ -1837,7 +2121,7 @@ function renderCoverPage(container, page) {
                 <div style="width: 100%; height: 100%; display: flex; flex-direction: column; gap: 20px; padding: 20px; box-sizing: border-box; position: relative;">
                     <div style="position: relative; flex: 1;">
                         ${renderLayoutControls(page.id)}
-                        ${renderPhotoSection(page.photos, '100%', '100%', 'text-bottom', page.id)}
+                        ${renderPhotoSection(photosForCover, '100%', '100%', 'text-bottom', page.id)}
                     </div>
                     <div style="text-align: center; padding: 20px 40px 40px 40px;">
                         ${titleText}
@@ -1853,7 +2137,7 @@ function renderCoverPage(container, page) {
             layoutHTML = `
                 <div style="width: 100%; height: 100%; position: relative;">
                     ${renderLayoutControls(page.id)}
-                    ${renderPhotoSection(page.photos, '100%', '100%', 'photos-only', page.id)}
+                    ${renderPhotoSection(photosForCover, '100%', '100%', 'photos-only', page.id)}
 
                     <!-- Property Name Overlay (centered bottom) -->
                     <div style="position: absolute; bottom: 50px; left: 50%; transform: translateX(-50%); text-align: center; z-index: 10;">
@@ -3957,9 +4241,19 @@ function setZoom(level) {
     EditorState.zoomLevel = Math.max(0.25, Math.min(2.0, level));
 
     const canvas = document.getElementById('brochureCanvas');
-    canvas.style.transform = `scale(${EditorState.zoomLevel})`;
+    if (canvas) {
+        canvas.style.transform = `scale(${EditorState.zoomLevel})`;
+    }
 
-    document.getElementById('zoomLevel').textContent = `${Math.round(EditorState.zoomLevel * 100)}%`;
+    // Update zoom display - try both possible element IDs
+    const zoomLabel = document.getElementById('zoomLevel') || document.getElementById('zoomLevelSelect');
+    if (zoomLabel) {
+        if (zoomLabel.tagName === 'SELECT') {
+            zoomLabel.value = EditorState.zoomLevel;
+        } else {
+            zoomLabel.textContent = `${Math.round(EditorState.zoomLevel * 100)}%`;
+        }
+    }
 }
 
 function zoomIn() {

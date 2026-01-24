@@ -91,6 +91,9 @@ from services.claude_client import ClaudeClient
 from services.enrichment_service import EnrichmentService
 from services.cache_manager import CacheManager
 from services.epc_service import EPCService
+from services.schools_service import SchoolsService, get_schools_service
+from services.transport_service import TransportService, get_transport_service
+from services.gp_service import GPService, get_gp_service
 from services.compliance_checker import ComplianceChecker
 from services.keyword_coverage import KeywordCoverage
 from services.length_policy import LengthPolicy
@@ -110,6 +113,7 @@ from services.photo_scorer import get_photo_scorer
 from services.post_scheduler import start_scheduler, stop_scheduler
 from services.background_remover import get_background_remover
 from services.hashtag_service import get_hashtag_service, HashtagService
+from services.uk_brochure_generator import UKBrochureGenerator, get_brochure_generator
 from providers import VisionProvider, make_vision_client
 from providers.geocoding_client import GeocodingClient
 from providers.places_client import PlacesClient
@@ -160,6 +164,8 @@ class BasicAuthASGIMiddleware:
             "/health",
             "/static/",
             "/api/brochure/session/",
+            "/analyze-images",
+            "/generate",
         ]
 
         for skip_path in skip_auth_paths:
@@ -352,6 +358,45 @@ except Exception as e:
     logger.warning(f"Failed to initialize EPC service: {e}")
     epc_service = None
 
+# Initialize Schools service (with Ofsted ratings)
+try:
+    schools_service = get_schools_service()
+    if schools_service.available:
+        logger.info("Schools service initialized successfully")
+    else:
+        logger.warning("Schools service initialized but database not found")
+        logger.info("Run 'python scripts/download_schools_data.py' to download school data")
+        schools_service = None
+except Exception as e:
+    logger.warning(f"Failed to initialize schools service: {e}")
+    schools_service = None
+
+# Initialize Transport service (NaPTAN data from DfT)
+try:
+    transport_service = get_transport_service()
+    if transport_service.available:
+        logger.info("Transport service initialized (NaPTAN - DfT)")
+    else:
+        logger.warning("Transport service initialized but database not found")
+        logger.info("Run 'python scripts/download_naptan_data.py' to download transport data")
+        transport_service = None
+except Exception as e:
+    logger.warning(f"Failed to initialize transport service: {e}")
+    transport_service = None
+
+# Initialize GP service (NHS Digital data)
+try:
+    gp_service = get_gp_service()
+    if gp_service.available:
+        logger.info("GP service initialized (NHS Digital)")
+    else:
+        logger.warning("GP service initialized but database not found")
+        logger.info("Run 'python scripts/download_gp_data.py' to download GP data")
+        gp_service = None
+except Exception as e:
+    logger.warning(f"Failed to initialize GP service: {e}")
+    gp_service = None
+
 # Initialize address lookup client (Ideal Postcodes)
 address_lookup_client = None
 if settings.ideal_postcodes_api_key:
@@ -405,6 +450,14 @@ try:
 except Exception as e:
     logger.warning(f"Failed to initialize marketing generator: {e}")
     marketing_generator = None
+
+# Initialize UK brochure generator
+try:
+    uk_brochure_generator = get_brochure_generator(claude_client=claude_client)
+    logger.info("UK brochure generator initialized")
+except Exception as e:
+    logger.warning(f"Failed to initialize UK brochure generator: {e}")
+    uk_brochure_generator = None
 
 # Initialize user profile service
 try:
@@ -766,6 +819,102 @@ async def generate_listing_fast(request: GenerateRequest):
     except Exception as e:
         logger.error(f"Fast generation failed: {str(e)}")
         raise HTTPException(status_code=500, detail=f"Fast generation failed: {str(e)}")
+
+
+@fastapi_app.post("/generate/uk-brochure")
+async def generate_uk_brochure(request: dict):
+    """
+    Generate a UK-style property brochure with proper sections.
+
+    Follows the standard UK estate agent format used by Savills, Knight Frank, etc:
+    - Opening Summary
+    - The Situation (location, transport, schools, amenities)
+    - The Accommodation (room-by-room narrative with flow)
+    - Outside (gardens, parking, external features)
+    - Services (EPC, council tax, tenure)
+
+    Request body:
+    {
+        "property_data": {
+            "bedrooms": 4,
+            "bathrooms": 2,
+            "property_type": "detached house",
+            "features": ["garden", "garage", "period features"],
+            "epc_rating": "C",
+            "size_sqft": 2500,
+            "price": "850000"
+        },
+        "location_data": {
+            "address": "123 Example Road, London",
+            "postcode": "SW1A 1AA",
+            "setting": "suburban"
+        },
+        "photo_analysis": [...],  // Optional: vision analysis results
+        "enrichment_data": {...},  // Optional: location enrichment
+        "tone": "premium"  // basic, premium, or boutique
+    }
+
+    Returns:
+    {
+        "property_name": "4 Bedroom Detached House",
+        "address": "123 Example Road, London",
+        "price": "850000",
+        "sections": {
+            "opening_summary": "...",
+            "situation": "...",
+            "accommodation": "...",
+            "outside": "...",
+            "services": "..."
+        },
+        "in_brief": ["...", "..."],
+        "full_text": "Complete brochure narrative",
+        "word_count": 650
+    }
+    """
+    print("=== UK BROCHURE REQUEST RECEIVED ===", flush=True)
+    logger.info("UK brochure generation request received")
+
+    if not uk_brochure_generator:
+        raise HTTPException(
+            status_code=503,
+            detail="UK brochure generator not available"
+        )
+
+    try:
+        property_data = request.get("property_data", {})
+        location_data = request.get("location_data", {})
+        photo_analysis = request.get("photo_analysis", [])
+        enrichment_data = request.get("enrichment_data", {})
+        tone = request.get("tone", "premium")
+
+        # Validate required fields
+        if not property_data:
+            raise HTTPException(
+                status_code=400,
+                detail="property_data is required"
+            )
+
+        # Generate the brochure
+        brochure = await uk_brochure_generator.generate_brochure(
+            property_data=property_data,
+            location_data=location_data,
+            photo_analysis=photo_analysis,
+            enrichment_data=enrichment_data,
+            tone=tone
+        )
+
+        logger.info(f"UK brochure generated: {brochure.property_name}, {len(brochure.get_full_narrative().split())} words")
+
+        return brochure.to_dict()
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"UK brochure generation failed: {str(e)}")
+        raise HTTPException(
+            status_code=500,
+            detail=f"UK brochure generation failed: {str(e)}"
+        )
 
 
 @fastapi_app.post("/enrich", response_model=EnrichmentResponse)
@@ -3325,6 +3474,135 @@ async def get_epc_statistics():
 
 
 # =============================================================================
+# SCHOOLS WITH OFSTED RATINGS ENDPOINTS
+# =============================================================================
+
+@fastapi_app.get("/schools/nearby")
+async def get_nearby_schools(
+    latitude: float,
+    longitude: float,
+    radius_km: float = 1.6,
+    school_type: str = None,
+    min_rating: str = None,
+    limit: int = 10
+):
+    """
+    Find schools near a location with Ofsted ratings.
+
+    Args:
+        latitude: Center point latitude
+        longitude: Center point longitude
+        radius_km: Search radius in km (default 1.6 = ~1 mile)
+        school_type: Filter by 'primary' or 'secondary'
+        min_rating: Minimum Ofsted rating ('Outstanding', 'Good', etc.)
+        limit: Maximum results (default 10)
+
+    Returns:
+        List of schools with name, type, Ofsted rating, and distance
+    """
+    if not schools_service or not schools_service.available:
+        raise HTTPException(
+            status_code=503,
+            detail="Schools service not available. Run 'python scripts/download_schools_data.py' to download data."
+        )
+
+    try:
+        schools = schools_service.find_nearby_schools(
+            latitude=latitude,
+            longitude=longitude,
+            radius_km=radius_km,
+            school_type=school_type,
+            min_rating=min_rating,
+            limit=limit
+        )
+        return {"schools": schools, "count": len(schools)}
+    except Exception as e:
+        logger.error(f"Schools search failed: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+@fastapi_app.get("/schools/summary")
+async def get_schools_summary(latitude: float, longitude: float, radius_km: float = 1.6):
+    """
+    Get a summary of schools near a location for brochure text.
+
+    Returns categorized schools (Outstanding/Good by Primary/Secondary)
+    and pre-written highlights for use in property descriptions.
+    """
+    if not schools_service or not schools_service.available:
+        raise HTTPException(
+            status_code=503,
+            detail="Schools service not available"
+        )
+
+    try:
+        summary = schools_service.get_school_summary(
+            latitude=latitude,
+            longitude=longitude,
+            radius_km=radius_km
+        )
+        return summary
+    except Exception as e:
+        logger.error(f"Schools summary failed: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# =============================================================================
+# LOCATION INTELLIGENCE ENDPOINT
+# =============================================================================
+
+# Initialize location intelligence service (uses OFFICIAL UK GOVERNMENT DATA)
+try:
+    from services.location_intelligence import get_location_intelligence_service
+    location_intelligence = get_location_intelligence_service(
+        schools_service=schools_service,       # Ofsted (gov.uk) - VERIFIED
+        transport_service=transport_service,   # NaPTAN (DfT) - VERIFIED
+        gp_service=gp_service,                 # NHS Digital - VERIFIED
+        places_client=places_client            # OpenStreetMap (crowdsourced)
+    )
+    logger.info("Location intelligence service initialized with official UK government data")
+except Exception as e:
+    logger.warning(f"Failed to initialize location intelligence service: {e}")
+    location_intelligence = None
+
+
+@fastapi_app.get("/location/intelligence")
+async def get_location_intelligence(
+    latitude: float,
+    longitude: float,
+    radius_km: float = 1.6
+):
+    """
+    Get comprehensive location intelligence for a property.
+
+    Combines data from multiple sources:
+    - Schools with Ofsted ratings
+    - Branded supermarkets (Waitrose, M&S, etc.)
+    - Transport links (stations)
+    - Medical facilities (GP surgeries)
+    - Leisure amenities (parks, pubs, restaurants)
+
+    Returns verified positive data only, suitable for property marketing.
+    """
+    if not location_intelligence:
+        raise HTTPException(
+            status_code=503,
+            detail="Location intelligence service not available"
+        )
+
+    try:
+        report = await location_intelligence.get_full_location_report(
+            latitude=latitude,
+            longitude=longitude,
+            radius_km=radius_km
+        )
+        return report
+    except Exception as e:
+        logger.error(f"Location intelligence failed: {str(e)}")
+        raise HTTPException(status_code=500, detail=str(e))
+
+
+# =============================================================================
 # BROCHURE EDITING SESSION ENDPOINTS
 # =============================================================================
 
@@ -4374,6 +4652,119 @@ async def get_epc_info(rating: str):
         raise HTTPException(status_code=400, detail="Invalid EPC rating. Must be A-G")
 
     return property_autofill_service.get_epc_rating_info(rating)
+
+
+# ============================================================================
+# CUSTOM TEMPLATES API
+# ============================================================================
+
+from services.custom_template_service import get_custom_template_service
+
+custom_template_service = get_custom_template_service()
+
+
+@fastapi_app.get("/api/templates/custom")
+async def list_custom_templates(user_id: str = "default"):
+    """List all custom templates for a user"""
+    templates = custom_template_service.list_templates(user_id)
+    return {"templates": templates, "count": len(templates)}
+
+
+@fastapi_app.post("/api/templates/custom")
+async def save_custom_template(request: Request):
+    """Save a new custom template
+
+    Request body:
+    {
+        "user_id": "default",
+        "name": "My Template",
+        "description": "Optional description",
+        "template_data": {
+            "styles": {
+                "accentColor": "#C20430",
+                "pageBackground": "#ffffff",
+                "textPrimary": "#333333"
+            },
+            "layout": "hero",
+            "elements": []
+        }
+    }
+    """
+    data = await request.json()
+
+    user_id = data.get("user_id", "default")
+    name = data.get("name", "Untitled Template")
+    description = data.get("description", "")
+    template_data = data.get("template_data", {})
+    category = data.get("category", "custom")
+
+    if not template_data:
+        raise HTTPException(status_code=400, detail="template_data is required")
+
+    template = custom_template_service.save_template(
+        user_id=user_id,
+        name=name,
+        template_data=template_data,
+        description=description,
+        category=category
+    )
+
+    return {"success": True, "template": template}
+
+
+@fastapi_app.get("/api/templates/custom/{template_id}")
+async def get_custom_template(template_id: str, user_id: str = "default"):
+    """Get a specific custom template"""
+    template = custom_template_service.get_template(user_id, template_id)
+    if not template:
+        raise HTTPException(status_code=404, detail="Template not found")
+    return template
+
+
+@fastapi_app.put("/api/templates/custom/{template_id}")
+async def update_custom_template(template_id: str, request: Request):
+    """Update a custom template"""
+    data = await request.json()
+    user_id = data.get("user_id", "default")
+
+    updates = {}
+    if "name" in data:
+        updates["name"] = data["name"]
+    if "description" in data:
+        updates["description"] = data["description"]
+    if "template_data" in data:
+        updates["template_data"] = data["template_data"]
+    if "category" in data:
+        updates["category"] = data["category"]
+
+    template = custom_template_service.update_template(user_id, template_id, updates)
+    if not template:
+        raise HTTPException(status_code=404, detail="Template not found")
+
+    return {"success": True, "template": template}
+
+
+@fastapi_app.delete("/api/templates/custom/{template_id}")
+async def delete_custom_template(template_id: str, user_id: str = "default"):
+    """Delete a custom template"""
+    success = custom_template_service.delete_template(user_id, template_id)
+    if not success:
+        raise HTTPException(status_code=404, detail="Template not found")
+    return {"success": True, "message": "Template deleted"}
+
+
+@fastapi_app.post("/api/templates/custom/{template_id}/duplicate")
+async def duplicate_custom_template(template_id: str, request: Request):
+    """Duplicate a custom template"""
+    data = await request.json()
+    user_id = data.get("user_id", "default")
+    new_name = data.get("name")
+
+    template = custom_template_service.duplicate_template(user_id, template_id, new_name)
+    if not template:
+        raise HTTPException(status_code=404, detail="Template not found")
+
+    return {"success": True, "template": template}
 
 
 # ============================================================================

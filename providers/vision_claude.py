@@ -41,9 +41,9 @@ class VisionClaudeClient:
         self.client = anthropic.Anthropic(api_key=self.api_key)
         self.rate_limiter = rate_limiter
 
-        # Get model from parameter, env var, or default to sonnet
-        model_key = model or os.getenv('VISION_MODEL', 'sonnet').lower()
-        self.model = VISION_MODELS.get(model_key, VISION_MODELS['sonnet'])
+        # Get model from parameter, env var, or default to haiku (cheapest)
+        model_key = model or os.getenv('VISION_MODEL', 'haiku').lower()
+        self.model = VISION_MODELS.get(model_key, VISION_MODELS['haiku'])
 
         logger.info(f"Initialized Claude vision client with model: {self.model}")
 
@@ -131,7 +131,7 @@ class VisionClaudeClient:
 
     def _build_analysis_prompt(self) -> str:
         """Build the prompt for Claude to analyze the property image with JSON output."""
-        return """You are a professional UK estate agent writing copy for a property brochure. Analyze this photograph and create compelling marketing descriptions.
+        return """Analyze this property photograph. Describe ONLY what you can actually see.
 
 You MUST respond with ONLY valid JSON in this exact format:
 {
@@ -141,43 +141,44 @@ You MUST respond with ONLY valid JSON in this exact format:
   "light_level": "bright|moderate|dim",
   "view_hint": "garden_view|street_view|park_view|null",
   "interior": true|false,
-  "orientation_hint": "north_facing|south_facing|east_facing|west_facing|front_aspect|rear_aspect|null",
-  "caption": "Compelling 15-25 word estate agent description",
-  "headline": "Punchy 3-6 word headline for this space",
-  "selling_points": ["key selling point 1", "key selling point 2", "key selling point 3"]
+  "orientation_hint": "front_aspect|rear_aspect|side_aspect|null",
+  "caption": "Simple factual 8-12 word description of what is visible",
+  "headline": "Room type in 2-4 words",
+  "selling_points": ["visible feature 1", "visible feature 2"]
 }
 
-VALID FEATURES (only list if ACTUALLY VISIBLE):
-- Structural: fireplace, bay_window, sash_windows, french_doors, bifold_doors, skylights, exposed_beams, conservatory, vaulted_ceiling, double_height_ceiling
-- Outdoor: garden, driveway, garage, parking, patio, balcony, terrace, decking, swimming_pool, hot_tub, landscaped_gardens
-- Kitchen: kitchen_island, breakfast_bar, range_cooker, integrated_appliances, utility_room, pantry
-- Bedroom: ensuite, walk_in_wardrobe, fitted_wardrobes, dressing_room
-- Bathroom: freestanding_bath, walk_in_shower, double_vanity, heated_towel_rail
+VALID FEATURES (ONLY list if clearly visible):
+- Structural: fireplace, bay_window, sash_windows, french_doors, bifold_doors, skylights, exposed_beams
+- Outdoor: garden, driveway, garage, parking, patio, decking
+- Kitchen: kitchen_island, breakfast_bar, range_cooker, integrated_appliances
+- Bedroom: ensuite, fitted_wardrobes
+- Bathroom: freestanding_bath, walk_in_shower
 
-VALID FINISHES (only list if ACTUALLY VISIBLE):
-- Floors: hardwood_floors, engineered_oak, marble_flooring, porcelain_tiles, natural_stone, underfloor_heating
-- Surfaces: granite_countertops, quartz_worktops, marble_worktops, solid_wood_worktops
-- Appliances: stainless_steel_appliances, integrated_appliances, wine_fridge, american_fridge_freezer
-- Lighting: recessed_lighting, pendant_lighting, chandeliers, feature_lighting, smart_lighting
+VALID FINISHES (ONLY list if clearly visible):
+- Floors: hardwood_floors, tiles, carpet, laminate
+- Surfaces: granite_countertops, wooden_worktops
+- Appliances: stainless_steel_appliances, integrated_appliances
 
-ESTATE AGENT WRITING STYLE:
-- Use aspirational language: "stunning", "exceptional", "beautifully appointed", "thoughtfully designed"
-- Highlight lifestyle benefits: "perfect for entertaining", "ideal for family living", "peaceful retreat"
-- Mention light and space: "flooded with natural light", "generous proportions", "seamless flow"
-- Reference quality: "high specification", "premium finishes", "attention to detail"
-- For exteriors: mention kerb appeal, outdoor entertaining, landscaping
+CAPTION RULES - BE FACTUAL:
+- ONLY describe what you can actually see in the photo
+- DO NOT invent features, finishes, or qualities not visible
+- DO NOT use marketing fluff like "stunning", "exceptional", "beautifully appointed"
+- DO NOT claim "quality finishes" unless you can specifically identify them
+- Simple descriptions like "Kitchen with cream units and tiled floor" are preferred
+- For exteriors: describe the building style and visible features only
 
-CAPTION EXAMPLES:
-- Kitchen: "Stunning chef's kitchen featuring a central island with breakfast bar, premium integrated appliances, and elegant pendant lighting throughout"
-- Bedroom: "Luxurious principal suite offering a serene retreat with bespoke fitted wardrobes, engineered oak flooring, and views over the landscaped gardens"
-- Exterior: "Impressive double-fronted family home with manicured gardens, sweeping driveway, and exceptional kerb appeal"
+GOOD CAPTION EXAMPLES:
+- "Kitchen with cream cabinets, built-in oven, and dining area"
+- "Double bedroom with fitted wardrobes and carpet flooring"
+- "Semi-detached house with front garden and driveway"
+- "Living room with fireplace and bay window"
 
-CRITICAL RULES:
-1. Only reference features you can ACTUALLY SEE - do not invent rooms or features
-2. Make descriptions compelling but truthful to what's visible
-3. Headlines should be punchy and memorable
-4. Selling points should be specific to this image
-5. Respond with ONLY the JSON object, no other text"""
+BAD CAPTIONS (DO NOT USE):
+- "Stunning chef's kitchen with premium finishes" (marketing fluff)
+- "Property photograph with quality finishes throughout" (generic, not descriptive)
+- "Luxurious principal suite" (aspirational, not factual)
+
+Respond with ONLY the JSON object."""
 
     def _parse_claude_response(self, response_text: str, filename: str) -> Dict:
         """Parse Claude's JSON response into a dict."""
