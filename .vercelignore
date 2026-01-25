@@ -1,0 +1,57 @@
+# Large data files
+data/
+*.db
+*.sqlite
+
+# Test output
+test_output/
+exported_pdfs/
+custom_templates/
+layout_screenshots/
+template_screenshots/
+
+# Test files
+*_test.py
+test_*.py
+auto_test*.py
+debug_*.py
+export_*.py
+download_*.py
+check_*.js
+honest_*.js
+
+# Screenshots and test images
+*.png
+!frontend/*.png
+
+# Test JSON results
+brochure_result*.json
+test_*.json
+verify_*.json
+location_data.json
+full_brochure_request.json
+
+# Node modules
+node_modules/
+package-lock.json
+
+# Python cache
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# IDE
+.vscode/
+.idea/
+
+# Local config
+.claude/
+.env
+.env.local
+
+# Git
+.git/
+
+# Misc
+*.log
+exports_tmp/
