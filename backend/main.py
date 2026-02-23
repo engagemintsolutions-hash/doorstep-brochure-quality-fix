@@ -698,6 +698,34 @@ async def generate_room_description(request: dict):
 
         logger.info(f"Room description request: {prompt[:100]}...")
 
+        # Extract property context from session if available
+        property_context = ""
+        if session and hasattr(session, 'property') and session.property:
+            prop = session.property
+            context_parts = []
+            if prop.get('keyFeatures'):
+                features = prop['keyFeatures']
+                if isinstance(features, list):
+                    features = ', '.join(features)
+                context_parts.append(f"Key Features: {features}")
+            if prop.get('address'):
+                context_parts.append(f"Address: {prop['address']}")
+            if prop.get('askingPrice') or prop.get('price'):
+                context_parts.append(f"Price: {prop.get('askingPrice') or prop.get('price')}")
+            if prop.get('bedrooms'):
+                context_parts.append(f"Bedrooms: {prop['bedrooms']}")
+            if prop.get('bathrooms'):
+                context_parts.append(f"Bathrooms: {prop['bathrooms']}")
+            if prop.get('propertyType'):
+                context_parts.append(f"Property Type: {prop['propertyType']}")
+            if prop.get('style'):
+                context_parts.append(f"Style: {prop['style']}")
+            if prop.get('listed'):
+                context_parts.append(f"Listed Status: {prop['listed']}")
+            if context_parts:
+                property_context = "\n\nPROPERTY CONTEXT:\n" + "\n".join(context_parts) + "\n\nYou MUST reference the key features listed above in your description. Do not write generic text — make it specific to THIS property."
+                logger.info(f"Injected property context: {property_context[:200]}...")
+
         # Import shared guardrails
         from services.guardrails import get_base_guardrails, get_room_specific_additions
 
@@ -710,6 +738,7 @@ async def generate_room_description(request: dict):
 {base_guardrails}
 
 {room_additions}
+{property_context}
 
 TASK:
 {prompt}

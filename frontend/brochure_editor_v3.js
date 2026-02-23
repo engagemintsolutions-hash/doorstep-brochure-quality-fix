@@ -865,19 +865,29 @@ async function generatePageSpecificDescription(page) {
             ? `\n\nThe photos show these specific features: ${photoDetails.join('; ')}. Reference these exact details in your description.`
             : '';
 
+        // Extract property context for richer prompts
+        const keyFeatures = property.keyFeatures || property.key_features || [];
+        const featuresList = Array.isArray(keyFeatures) ? keyFeatures.join(', ') : (keyFeatures || '');
+        const propertyAddress = property.address || '';
+        const propertyContext = featuresList
+            ? `\n\nThis property is at ${propertyAddress}. Key features include: ${featuresList}. You MUST mention relevant key features in your description.`
+            : (propertyAddress ? `\n\nThis property is at ${propertyAddress}.` : '');
+
         // Create professional, fact-focused prompts - NO FLOWERY LANGUAGE
         const roomPrompts = {
-            kitchen: `Describe the KITCHEN factually and specifically.${photoContext} Focus ONLY on: appliances (brands/models if visible), worktop material, cabinetry style, storage features, lighting type, flooring, dining space. State facts. NO metaphors, NO lifestyle descriptions, NO conjecture. 120-150 words maximum. Be direct and informative.`,
+            kitchen: `Describe the KITCHEN factually and specifically.${photoContext}${propertyContext} Focus ONLY on: appliances (brands/models if visible), worktop material, cabinetry style, storage features, lighting type, flooring, dining space. State facts. NO metaphors, NO lifestyle descriptions, NO conjecture. 200-250 words. Be direct and informative.`,
 
-            living: `Describe the LIVING SPACES factually and specifically.${photoContext} Focus ONLY on: room dimensions/proportions, flooring type, window features, architectural details (fireplaces, moldings), built-in features, lighting. State what IS visible. NO storytelling, NO lifestyle descriptions. 120-150 words maximum.`,
+            living: `Describe the LIVING SPACES factually and specifically.${photoContext}${propertyContext} Focus ONLY on: room dimensions/proportions, flooring type, window features, architectural details (fireplaces, moldings), built-in features, lighting. State what IS visible. NO storytelling, NO lifestyle descriptions. 200-250 words.`,
 
-            bedrooms: `Describe the BEDROOMS factually and specifically.${photoContext} Focus ONLY on: number of bedrooms, sizes, built-in storage, ensuite details, flooring, windows/light. State facts about each room. NO aspirational language, NO concepts like "sanctuary" or "retreat". 120-150 words maximum.`,
+            bedrooms: `Describe the BEDROOMS factually and specifically.${photoContext}${propertyContext} Focus ONLY on: number of bedrooms, sizes, built-in storage, ensuite details, flooring, windows/light. State facts about each room. NO aspirational language, NO concepts like "sanctuary" or "retreat". 200-250 words.`,
 
-            bathrooms: `Describe the BATHROOMS factually and specifically.${photoContext} Focus ONLY on: fixtures (shower/bath/toilet/sink), tiling details, flooring, fittings quality (if visible), lighting, heating features. State what exists. NO luxury descriptors unless objectively true. 100-120 words maximum.`,
+            bathrooms: `Describe the BATHROOMS factually and specifically.${photoContext}${propertyContext} Focus ONLY on: fixtures (shower/bath/toilet/sink), tiling details, flooring, fittings quality (if visible), lighting, heating features. State what exists. NO luxury descriptors unless objectively true. 150-200 words.`,
 
-            garden: `Describe the OUTDOOR SPACES factually and specifically.${photoContext} Focus ONLY on: garden size/layout, paved areas, lawn, planting (mature trees/hedges), fencing, orientation, outdoor structures (shed/summerhouse). State what IS there. NO poetic descriptions of nature or seasons. 120-150 words maximum.`,
+            garden: `Describe the OUTDOOR SPACES factually and specifically.${photoContext}${propertyContext} Focus ONLY on: garden size/layout, paved areas, lawn, planting (mature trees/hedges), fencing, orientation, outdoor structures (shed/summerhouse). State what IS there. NO poetic descriptions of nature or seasons. 200-250 words.`,
 
-            location: `Describe the LOCATION factually and specifically. Focus ONLY on: specific nearby amenities (name schools, shops, stations with distances), transport links (walking times), area character (residential/commercial mix). State verifiable facts. NO subjective claims about "desirability". 120-150 words maximum.`,
+            exterior: `Describe the EXTERIOR and GROUNDS factually and specifically.${photoContext}${propertyContext} Focus ONLY on: building facade, driveway, parking, outbuildings, boundary walls/fencing, exterior materials. State what IS visible. NO poetic descriptions. 200-250 words.`,
+
+            location: `Describe the LOCATION of ${propertyAddress || 'this property'} factually and specifically.${propertyContext} Focus ONLY on: specific nearby amenities (name schools, shops, stations with distances), transport links (walking times to stations, road connections), area character. State verifiable facts about THIS specific location. NO subjective claims about "desirability". 200-250 words.`,
 
             contact: `Write a direct invitation to arrange a viewing. Include agent contact method. NO excessive praise, NO hype. 30-40 words maximum. Be professional and straightforward.`
         };
@@ -894,7 +904,7 @@ async function generatePageSpecificDescription(page) {
             },
             body: JSON.stringify({
                 prompt: systemPrompt,
-                target_words: 180,
+                target_words: 280,
                 session_id: EditorState.sessionId  // Include session_id for usage tracking
             })
         }, 30000);
@@ -1223,6 +1233,17 @@ async function loadSession() {
         // Use Knight Frank template for autoGenerate mode (professional 9-page layout)
         if (shouldAutoGenerate && typeof renderKnightFrankBrochure === 'function') {
             console.log('🏢 Using Knight Frank professional template...');
+
+            // Save type→description mapping BEFORE KF replaces the pages array
+            EditorState._descriptionsByType = {};
+            const oldPages = EditorState.sessionData?.pages || [];
+            for (const p of oldPages) {
+                const desc = EditorState.pageDescriptions[p.id];
+                if (desc && desc.length > 50 && p.type) {
+                    EditorState._descriptionsByType[p.type] = desc;
+                    console.log(`📝 Saved AI description for type '${p.type}' (${desc.length} chars)`);
+                }
+            }
             const kfSuccess = renderKnightFrankBrochure();
             if (!kfSuccess) {
                 console.warn('⚠️ Knight Frank template failed, falling back to standard rendering');
@@ -1670,6 +1691,15 @@ function renderKnightFrankBrochure() {
         selectPage(EditorState.sessionData.pages[0].id);
     }
 
+    // === Post-render: Replace generic KF text with AI-generated descriptions ===
+    // Build type→description lookup from the OLD pages before they were replaced
+    // The descriptions were generated with old page IDs, so we need this bridge
+    if (!EditorState._descriptionsByType) {
+        EditorState._descriptionsByType = {};
+    }
+    // This is populated in the calling code before renderKnightFrankBrochure runs
+    injectAIDescriptionsIntoKnightFrank();
+
     // Make all text elements editable
     setTimeout(() => {
         makeKnightFrankEditable();
@@ -1692,6 +1722,154 @@ function renderKnightFrankBrochure() {
 
     console.log('✅ Knight Frank brochure rendered successfully');
     return true;
+}
+
+/**
+ * Inject AI-generated descriptions into Knight Frank template pages,
+ * replacing the generic locally-generated text.
+ *
+ * Note: AI descriptions were generated BEFORE renderKnightFrankBrochure()
+ * replaced the pages array, so descriptions are keyed by OLD page IDs.
+ * We build a type-based lookup to bridge the gap.
+ */
+function injectAIDescriptionsIntoKnightFrank() {
+    const descriptions = EditorState.pageDescriptions || {};
+    const pages = EditorState.sessionData?.pages || [];
+
+    if (Object.keys(descriptions).length === 0) {
+        console.log('⚠️ No AI descriptions available to inject');
+        return;
+    }
+
+    console.log('🔄 Injecting AI descriptions into Knight Frank template...');
+    console.log('📋 Available descriptions:', Object.keys(descriptions).map(id => `${id} (${descriptions[id]?.length || 0} chars)`));
+
+    // Build a lookup of descriptions by page TYPE from the original descriptions
+    // The old page IDs may no longer match, so we extract type info from the descriptions
+    const descByType = {};
+    for (const [pageId, desc] of Object.entries(descriptions)) {
+        if (!desc || desc.length < 50) continue;
+        // Try to determine the type from the page ID pattern (e.g. "page_kitchen_1" or just use stored type)
+        // The old pages stored type info - check if any pages still reference it
+        const typeMatch = pageId.match(/^page_(\w+)_/) || pageId.match(/^(\w+)_page_/);
+        if (typeMatch) {
+            descByType[typeMatch[1]] = desc;
+        }
+        // Also store by raw ID for direct lookup
+        descByType[pageId] = desc;
+    }
+
+    // Also try to find types from the description content/keys directly
+    // The generateAllPageDescriptions stored results with old page objects that had .type
+    // We can reconstruct by checking EditorState._originalPages if we saved them
+    // Fallback: just use all descriptions in order they map to KF pages
+
+    // Map KF page types to the AI description page types
+    const kfToAiTypeMap = {
+        'location': ['location'],
+        'property': ['kitchen', 'living'],
+        'bedrooms': ['bedrooms'],
+        'gardens': ['garden', 'exterior']
+    };
+
+    // Map KF page types to their editable content selectors in the DOM
+    const kfEditableSelectors = {
+        'location': '[data-editable="location"]',
+        'property': '[data-editable="property-description"]',
+        'bedrooms': '[data-editable="bedroom-description"]',
+        'gardens': '[data-editable="garden-description"]'
+    };
+
+    let injected = 0;
+
+    pages.forEach(page => {
+        const aiTypes = kfToAiTypeMap[page.type];
+        if (!aiTypes) return;
+
+        // Strategy 1: Direct lookup by page ID
+        let aiText = descriptions[page.id];
+
+        // Strategy 2: Use the pre-saved type→description map (most reliable)
+        const savedByType = EditorState._descriptionsByType || {};
+        if (!aiText || aiText.length < 50) {
+            for (const aiType of aiTypes) {
+                if (savedByType[aiType] && savedByType[aiType].length > 50) {
+                    aiText = savedByType[aiType];
+                    console.log(`  Found description for ${page.type} via saved type '${aiType}'`);
+                    break;
+                }
+            }
+        }
+
+        // Strategy 3: Lookup by type name in the descByType map (parsed from IDs)
+        if (!aiText || aiText.length < 50) {
+            for (const aiType of aiTypes) {
+                if (descByType[aiType] && descByType[aiType].length > 50) {
+                    aiText = descByType[aiType];
+                    break;
+                }
+            }
+        }
+
+        // Strategy 4: Search all descriptions for ones whose IDs contain the target type
+        if (!aiText || aiText.length < 50) {
+            for (const aiType of aiTypes) {
+                for (const [descId, desc] of Object.entries(descriptions)) {
+                    if (desc && desc.length > 50 && descId.toLowerCase().includes(aiType)) {
+                        aiText = desc;
+                        break;
+                    }
+                }
+                if (aiText && aiText.length > 50) break;
+            }
+        }
+
+        if (!aiText || aiText.length < 50) return;
+
+        // Find the DOM element for this page
+        const selector = kfEditableSelectors[page.type];
+        if (!selector) return;
+
+        const pageEl = document.querySelector(`[data-page-id="${page.id}"] ${selector}`);
+        if (!pageEl) {
+            // Fallback: try to find by page class
+            const classMap = {
+                'location': '.location-page',
+                'property': '.property-page',
+                'bedrooms': '.bedrooms-page-v2',
+                'gardens': '.gardens-page'
+            };
+            const classSelector = classMap[page.type];
+            if (!classSelector) return;
+            const fallbackEl = document.querySelector(`#brochureCanvas ${classSelector} ${selector}`);
+            if (!fallbackEl) {
+                console.warn(`⚠️ Could not find DOM element for ${page.type} page`);
+                return;
+            }
+            // Use fallback element
+            const formattedText = aiText.includes('<p>')
+                ? aiText
+                : aiText.split(/\n\n+/).map(p => `<p>${p.trim()}</p>`).join('\n');
+            fallbackEl.innerHTML = formattedText;
+            injected++;
+            console.log(`✅ Injected AI description into ${page.type} page via class fallback (${aiText.length} chars)`);
+            return;
+        }
+
+        // Convert plain text to paragraphs if needed
+        const formattedText = aiText.includes('<p>')
+            ? aiText
+            : aiText.split(/\n\n+/).map(p => `<p>${p.trim()}</p>`).join('\n');
+
+        pageEl.innerHTML = formattedText;
+        injected++;
+        console.log(`✅ Injected AI description into ${page.type} page (${aiText.length} chars)`);
+
+        // Also update EditorState.pageDescriptions with the new KF page ID
+        EditorState.pageDescriptions[page.id] = aiText;
+    });
+
+    console.log(`🔄 Injected ${injected} AI descriptions into Knight Frank template`);
 }
 
 /**

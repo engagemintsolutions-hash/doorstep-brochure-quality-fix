@@ -327,7 +327,7 @@ const KnightFrankTemplate = (function() {
         }
         .summary-page .room-list {
             font-size: 13px;
-            line-height: 1.9;
+            line-height: 1.6;
             color: ${brand.textLight};
             margin-bottom: 20px;
         }
@@ -391,6 +391,9 @@ const KnightFrankTemplate = (function() {
         .location-page .text-section {
             padding: 50px 40px;
             background: ${brand.background};
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
         .location-page h2 {
             font-family: ${FONTS.heading};
@@ -403,12 +406,12 @@ const KnightFrankTemplate = (function() {
         }
         .location-page .text-content {
             font-size: 14px;
-            line-height: 1.9;
+            line-height: 1.6;
             color: ${brand.textLight};
             text-align: justify;
         }
         .location-page .text-content p {
-            margin-bottom: 18px;
+            margin-bottom: 12px;
         }
         .location-page .photo-grid {
             display: grid;
@@ -450,13 +453,13 @@ const KnightFrankTemplate = (function() {
             color: ${brand.text};
         }
         .property-page .description {
-            font-size: 12px;
-            line-height: 1.8;
+            font-size: 13px;
+            line-height: 1.6;
             color: ${brand.textLight};
             text-align: justify;
         }
         .property-page .description p {
-            margin-bottom: 15px;
+            margin-bottom: 12px;
         }
         .property-page .side-photos {
             display: grid;
@@ -492,6 +495,7 @@ const KnightFrankTemplate = (function() {
             background: ${brand.background};
             display: flex;
             flex-direction: column;
+            justify-content: center;
         }
         .bedrooms-page-v2 .bedroom-text h2 {
             font-family: ${FONTS.heading};
@@ -504,11 +508,11 @@ const KnightFrankTemplate = (function() {
         }
         .bedrooms-page-v2 .text-content {
             font-size: 14px;
-            line-height: 1.9;
+            line-height: 1.6;
             color: ${brand.textLight};
         }
         .bedrooms-page-v2 .text-content p {
-            margin-bottom: 18px;
+            margin-bottom: 12px;
         }
 
         /* Floor plans page */
@@ -586,11 +590,11 @@ const KnightFrankTemplate = (function() {
             color: ${brand.text};
         }
         .gardens-page .description {
-            font-size: 12px;
-            line-height: 1.8;
+            font-size: 13px;
+            line-height: 1.6;
             color: ${brand.textLight};
             text-align: justify;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
         }
         .gardens-page .outbuilding-info {
             font-size: 11px;
