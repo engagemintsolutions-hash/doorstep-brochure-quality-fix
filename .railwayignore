@@ -1,0 +1,10 @@
+test_images/
+test_screenshots/
+test_screenshots/**/*.png
+*.pyc
+__pycache__/
+.git/
+.pytest_cache/
+exports_tmp/
+brochure_sessions/
+node_modules/
