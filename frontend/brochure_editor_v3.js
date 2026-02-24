@@ -1663,9 +1663,11 @@ function renderKnightFrankBrochure() {
             photos: []
         });
 
-        // Create canvas page wrapper
+        // Create canvas page wrapper — preserve the KF page-type CSS class
+        // (e.g. "summary-page", "property-page", "bedrooms-page-v2")
+        // so the template's grid/flex layouts apply correctly
         const canvasPage = document.createElement('div');
-        canvasPage.className = 'brochure-page';
+        canvasPage.className = pageEl.className || 'brochure-page';
         canvasPage.dataset.pageId = pageId;
         canvasPage.dataset.pageIndex = index;
         canvasPage.dataset.templateType = 'knight_frank';
@@ -1742,6 +1744,34 @@ function renderKnightFrankBrochure() {
 
     console.log('✅ Knight Frank brochure rendered successfully');
     return true;
+}
+
+/**
+ * Convert AI-generated text (which may contain markdown) into clean HTML paragraphs.
+ * Strips markdown headers, bold markers, and splits into <p> tags.
+ */
+function formatAITextAsHTML(text) {
+    if (!text) return '';
+    if (text.includes('<p>')) return text; // Already HTML
+
+    // Strip markdown headers (# Header, ## Header, etc.)
+    let cleaned = text.replace(/^#{1,4}\s+.*$/gm, '');
+    // Strip bold markdown (**text** or __text__)
+    cleaned = cleaned.replace(/\*\*(.*?)\*\*/g, '$1');
+    cleaned = cleaned.replace(/__(.*?)__/g, '$1');
+    // Strip italic markdown (*text* or _text_)
+    cleaned = cleaned.replace(/(?<!\*)\*(?!\*)(.*?)(?<!\*)\*(?!\*)/g, '$1');
+    // Strip bullet points (- item or * item)
+    cleaned = cleaned.replace(/^[\-\*]\s+/gm, '');
+    // Trim excess whitespace
+    cleaned = cleaned.trim();
+
+    // Split on double newlines into paragraphs
+    return cleaned.split(/\n\n+/)
+        .map(p => p.trim())
+        .filter(p => p.length > 0)
+        .map(p => `<p>${p}</p>`)
+        .join('\n');
 }
 
 /**
@@ -1867,19 +1897,15 @@ function injectAIDescriptionsIntoKnightFrank() {
                 return;
             }
             // Use fallback element
-            const formattedText = aiText.includes('<p>')
-                ? aiText
-                : aiText.split(/\n\n+/).map(p => `<p>${p.trim()}</p>`).join('\n');
+            const formattedText = formatAITextAsHTML(aiText);
             fallbackEl.innerHTML = formattedText;
             injected++;
             console.log(`✅ Injected AI description into ${page.type} page via class fallback (${aiText.length} chars)`);
             return;
         }
 
-        // Convert plain text to paragraphs if needed
-        const formattedText = aiText.includes('<p>')
-            ? aiText
-            : aiText.split(/\n\n+/).map(p => `<p>${p.trim()}</p>`).join('\n');
+        // Convert plain text to paragraphs if needed, stripping markdown headers
+        const formattedText = formatAITextAsHTML(aiText);
 
         pageEl.innerHTML = formattedText;
         injected++;
