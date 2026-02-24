@@ -804,6 +804,7 @@ function getDefaultDescription(pageType) {
         bedrooms: 'Well-proportioned bedrooms offering restful accommodation. Each room has been designed with comfort and practicality in mind.',
         bathrooms: 'Contemporary bathroom facilities with quality fixtures and fittings. The space combines practicality with style.',
         garden: 'Private outdoor space perfect for relaxation and entertaining. The garden offers a pleasant setting with established planting.',
+        exterior: 'The property presents an attractive facade with well-maintained grounds and ample parking. The exterior reflects the character and quality of the accommodation within.',
         location: 'A desirable location with excellent local amenities and transport connections. The area offers a balanced combination of convenience and character.',
         contact: 'For more information or to arrange a viewing, please contact our team.'
     };

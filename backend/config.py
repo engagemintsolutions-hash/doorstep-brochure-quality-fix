@@ -40,8 +40,8 @@ class Settings(BaseSettings):
     ideal_postcodes_api_key: Optional[str] = None
 
     # Claude model configuration
-    claude_model: str = "claude-3-5-haiku-20241022"  # Default to Haiku for cost savings
-    claude_vision_model: str = "claude-3-5-haiku-20241022"  # Haiku for vision analysis
+    claude_model: str = "claude-haiku-4-5-20251001"  # Default to Haiku for cost savings
+    claude_vision_model: str = "claude-haiku-4-5-20251001"  # Haiku for vision analysis
 
     # Mock mode for testing without API key
     mock_generation: bool = False  # Set to True to use mock responses instead of Claude API

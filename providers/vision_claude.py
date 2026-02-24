@@ -11,7 +11,7 @@ logger = logging.getLogger(__name__)
 
 # Vision model options - Sonnet is best balance of quality/cost for property photos
 VISION_MODELS = {
-    "haiku": "claude-3-5-haiku-20241022",      # Cheapest, may hallucinate
+    "haiku": "claude-haiku-4-5-20251001",       # Cheapest, may hallucinate
     "sonnet": "claude-sonnet-4-20250514",       # Best value - recommended
     "opus": "claude-opus-4-20250514",           # Best quality, expensive
 }
