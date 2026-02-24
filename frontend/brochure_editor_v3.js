@@ -1627,11 +1627,38 @@ function renderKnightFrankBrochure() {
         }
 
         // Create new style element with scoped styles
+        // Add overrides to reset editor's default .brochure-page styles
+        // (display:flex, padding, flex-direction) which conflict with KF grid layouts
+        const overrides = `
+            /* Reset editor defaults for KF pages — editor CSS sets display:flex on .brochure-page */
+            .brochure-page.cover-page,
+            .brochure-page.summary-page,
+            .brochure-page.location-page,
+            .brochure-page.property-page,
+            .brochure-page.bedrooms-page-v2,
+            .brochure-page.floorplans-page,
+            .brochure-page.gardens-page,
+            .brochure-page.details-page,
+            .brochure-page.back-cover {
+                padding: 0 !important;
+                flex-direction: unset !important;
+            }
+            /* Explicit grid/flex overrides per page type */
+            .brochure-page.cover-page { display: block !important; }
+            .brochure-page.summary-page { display: grid !important; grid-template-columns: 1fr 1fr !important; }
+            .brochure-page.location-page { display: grid !important; grid-template-columns: 1fr 1fr !important; }
+            .brochure-page.property-page { display: grid !important; grid-template-columns: 1fr 1fr 1fr !important; }
+            .brochure-page.bedrooms-page-v2 { display: grid !important; grid-template-columns: 1.2fr 1fr !important; }
+            .brochure-page.floorplans-page { display: grid !important; grid-template-columns: 1fr 1fr !important; }
+            .brochure-page.gardens-page { display: grid !important; grid-template-columns: 1fr 1fr !important; }
+            .brochure-page.details-page { display: block !important; }
+            .brochure-page.back-cover { display: block !important; }
+        `;
         const newStyle = document.createElement('style');
         newStyle.id = 'knight-frank-styles';
-        newStyle.textContent = styleEl.textContent;
+        newStyle.textContent = styleEl.textContent + overrides;
         document.head.appendChild(newStyle);
-        console.log('🎨 Knight Frank styles injected');
+        console.log('🎨 Knight Frank styles injected with editor overrides');
     }
 
     // Create a container for the brochure
@@ -1676,12 +1703,14 @@ function renderKnightFrankBrochure() {
         canvasPage.innerHTML = pageEl.innerHTML;
 
         // Apply A4 landscape sizing
-        canvasPage.style.width = '297mm';
-        canvasPage.style.height = '210mm';
-        canvasPage.style.position = 'relative';
-        canvasPage.style.overflow = 'hidden';
-        canvasPage.style.marginBottom = '20px';
-        canvasPage.style.boxShadow = '0 4px 20px rgba(0,0,0,0.15)';
+        // Reset editor's default .brochure-page styles (display:flex, padding)
+        // which conflict with KF template's grid layouts
+        canvasPage.style.cssText = `
+            width: 297mm; height: 210mm; position: relative;
+            overflow: hidden; margin-bottom: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            padding: 0; box-sizing: border-box;
+        `;
 
         canvas.appendChild(canvasPage);
 
