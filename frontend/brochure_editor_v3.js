@@ -1562,9 +1562,24 @@ function renderKnightFrankBrochure() {
     // Gather session data
     const sessionData = EditorState.sessionData || {};
     const property = sessionData.property || {};
-    const photos = sessionData.photos || window.uploadedPhotos || [];
+    const rawPhotos = sessionData.photos || window.uploadedPhotos || [];
     const agent = sessionData.agent || {};
     const location = sessionData.location || {};
+
+    // Resolve photo URLs from EditorState.photoUrls so KF template can display them
+    // The session stores dataUrl as "FILE_STORED_photo_1" placeholders after upload,
+    // but the real serving URLs are in EditorState.photoUrls (e.g. /api/brochure/session/{id}/photo/{id})
+    const photos = rawPhotos.map(photo => {
+        const resolved = { ...photo };
+        const realUrl = EditorState.photoUrls?.[photo.id];
+        if (realUrl) {
+            resolved.url = realUrl;
+        } else if (photo.dataUrl && !photo.dataUrl.startsWith('FILE_STORED')) {
+            resolved.url = photo.dataUrl;
+        }
+        return resolved;
+    });
+    console.log('[KF] Resolved photo URLs:', photos.map(p => ({ id: p.id, url: p.url?.substring(0, 60) })));
 
     console.log('📊 Knight Frank template data:', {
         address: property.address,
