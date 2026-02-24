@@ -205,10 +205,15 @@ const KnightFrankTemplate = (function() {
         }
         .cover-page .logo {
             position: absolute;
-            top: 30px;
-            right: 40px;
-            background: transparent;
-            padding: 0;
+            top: 25px;
+            right: 30px;
+            background: rgba(255,255,255,0.9);
+            padding: 8px 14px;
+            border-radius: 4px;
+        }
+        .cover-page .logo img {
+            display: block;
+            filter: none;
         }
 
         /* Summary page - split layout */
@@ -908,7 +913,7 @@ const KnightFrankTemplate = (function() {
                     </div>
                 </div>
             </div>
-            <div class="logo"><img src="${brand.logoUrl || '/static/images/doorstep-logo.png'}" alt="Doorstep" style="height: 40px; filter: brightness(0) invert(1);"></div>
+            <div class="logo"><img src="${brand.logoUrl || '/static/images/doorstep-logo.png'}" alt="Doorstep" style="height: 36px;"></div>
         </div>`;
     }
 
