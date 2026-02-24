@@ -1595,12 +1595,13 @@ function renderKnightFrankBrochure() {
         agent: agent
     }, {
         brand: {
-            primary: '#003366',
-            secondary: '#d4af37',
-            accent: '#003366',
-            text: '#2d2d2d',
-            textLight: '#666666',
-            background: '#ffffff'
+            primary: '#4A1420',
+            secondary: '#C4975A',
+            accent: '#4A1420',
+            text: '#3d3d3d',
+            textLight: '#595959',
+            background: '#ffffff',
+            logoUrl: '/static/images/doorstep-logo.png'
         }
     });
 

@@ -6,7 +6,7 @@
     <title>Property Brochure Builder - Doorstep</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Lora:wght@400;500;600&family=Playfair+Display:wght@400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="brochure_editor_v3.css?v=20251231">
     <style>
         /* Builder-specific overrides */
@@ -212,7 +212,7 @@
         .form-textarea:focus {
             outline: none;
             border-color: var(--doorstep-red);
-            box-shadow: 0 0 0 3px rgba(194, 4, 48, 0.1);
+            box-shadow: 0 0 0 3px rgba(74, 20, 32, 0.1);
         }
 
         .form-textarea {
@@ -241,13 +241,13 @@
             align-items: center;
             justify-content: center;
             gap: 0.75rem;
-            box-shadow: 0 4px 12px rgba(194, 4, 48, 0.3);
+            box-shadow: 0 4px 12px rgba(74, 20, 32, 0.3);
             transition: all 0.2s;
         }
 
         .btn-generate:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(194, 4, 48, 0.4);
+            box-shadow: 0 6px 16px rgba(74, 20, 32, 0.4);
         }
 
         .btn-generate:disabled {
@@ -284,7 +284,7 @@
         }
 
         .template-card.selected {
-            border-color: #B8232E;
+            border-color: #4A1420;
             background: #fef2f2;
             box-shadow: 0 0 0 3px rgba(184, 35, 46, 0.1);
         }
@@ -350,7 +350,7 @@
     <!-- Header -->
     <header class="editor-header">
         <div class="header-left">
-            <span style="font-size: 1.5rem; font-weight: 700; color: #C20430; margin-right: 1rem;">Doorstep</span>
+            <span style="font-size: 1.5rem; font-weight: 700; color: #4A1420; margin-right: 1rem;">Doorstep</span>
             <h1 class="editor-title">Property Brochure Builder</h1>
         </div>
         <div class="header-right">
@@ -525,15 +525,15 @@
                             <div class="form-group">
                                 <label>Primary Color</label>
                                 <div class="color-picker-wrapper">
-                                    <input type="color" id="primaryColor" value="#CE171E">
-                                    <input type="text" class="form-input color-hex" id="primaryColorHex" value="#CE171E" maxlength="7">
+                                    <input type="color" id="primaryColor" value="#4A1420">
+                                    <input type="text" class="form-input color-hex" id="primaryColorHex" value="#4A1420" maxlength="7">
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label>Secondary Color</label>
                                 <div class="color-picker-wrapper">
-                                    <input type="color" id="secondaryColor" value="#FFE850">
-                                    <input type="text" class="form-input color-hex" id="secondaryColorHex" value="#FFE850" maxlength="7">
+                                    <input type="color" id="secondaryColor" value="#C4975A">
+                                    <input type="text" class="form-input color-hex" id="secondaryColorHex" value="#C4975A" maxlength="7">
                                 </div>
                             </div>
                         </div>
@@ -915,7 +915,7 @@
                 name: 'Crimson Classic',
                 category: 'Luxury',
                 desc: 'Bold crimson sidebar with cream',
-                primary: '#CE171E',
+                primary: '#4A1420',
                 secondary: '#F5E6D3',
                 text: '#2d2d2d',
                 bg: '#fffef8',

@@ -10,23 +10,19 @@ const KnightFrankTemplate = (function() {
 
     // Default brand colors (Doorstep - can be overridden)
     const DEFAULT_BRAND = {
-        primary: '#722F37',      // Doorstep burgundy
-        secondary: '#F8F4E8',    // Doorstep cream
-        accent: '#722F37',       // Accent for highlighted words
-        text: '#2d2d2d',
-        textLight: '#666666',
+        primary: '#4A1420',      // Doorstep burgundy
+        secondary: '#f9f7f3',    // Doorstep ivory
+        accent: '#4A1420',       // Accent for highlighted words
+        text: '#3d3d3d',
+        textLight: '#595959',
         background: '#ffffff',
-        logoSvg: `<svg viewBox="0 0 200 60" style="height: 40px; width: auto;">
-            <path d="M30 45 L30 28 L23 28 L40 12 L57 28 L50 28 L50 45 Z" fill="currentColor"/>
-            <rect x="35" y="32" width="10" height="13" fill="#F8F4E8"/>
-            <text x="65" y="38" font-family="Georgia, serif" font-size="18" fill="currentColor">doorstep</text>
-        </svg>`
+        logoUrl: '/static/images/doorstep-logo.png'
     };
 
     // Font stacks
     const FONTS = {
         heading: "'Playfair Display', Georgia, 'Times New Roman', serif",
-        body: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
+        body: "'Lora', Georgia, 'Times New Roman', serif"
     };
 
     /**
@@ -261,7 +257,7 @@ const KnightFrankTemplate = (function() {
 
         /* At a Glance Box */
         .summary-page .at-glance-box {
-            background: ${brand.secondary};
+            background: #f5f1e8;
             padding: 20px 25px;
             margin-bottom: 20px;
             border-left: 4px solid ${brand.primary};
@@ -818,7 +814,7 @@ const KnightFrankTemplate = (function() {
                     </div>
                 </div>
             </div>
-            <div class="logo">${brand.logoSvg}</div>
+            <div class="logo"><img src="${brand.logoUrl || '/static/images/doorstep-logo.png'}" alt="Doorstep" style="height: 40px; filter: brightness(0) invert(1);"></div>
         </div>`;
     }
 
@@ -867,7 +863,7 @@ const KnightFrankTemplate = (function() {
                 </div>
 
                 <div class="agent-section">
-                    <div class="logo">${brand.logoSvg}</div>
+                    <div class="logo"><img src="${brand.logoUrl || '/static/images/doorstep-logo.png'}" alt="Doorstep" style="height: 35px;"></div>
                     <div class="agent-office">
                         <h4>${agent.officeName || 'Doorstep'}</h4>
                         <p>${agent.address || ''}</p>
@@ -1161,7 +1157,7 @@ const KnightFrankTemplate = (function() {
         <div class="brochure-page back-cover">
             ${heroUrl ? `<img src="${heroUrl}" alt="Property grounds">` : ''}
             <div class="back-cover-content">
-                <div class="logo-large">${brand.logoSvg}</div>
+                <div class="logo-large"><img src="${brand.logoUrl || '/static/images/doorstep-logo.png'}" alt="Doorstep" style="height: 60px; filter: brightness(0) invert(1);"></div>
                 <div class="contact-info">
                     <p class="office">${agent?.officeName || 'Doorstep'}</p>
                     <p>${agent?.address || ''}</p>
