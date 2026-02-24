@@ -414,7 +414,7 @@ const KnightFrankTemplate = (function() {
         .location-page .text-content {
             font-size: 14px;
             line-height: 1.6;
-            color: ${brand.textLight};
+            color: #333333;
             text-align: justify;
         }
         .location-page .text-content p {
@@ -426,23 +426,23 @@ const KnightFrankTemplate = (function() {
             grid-template-rows: 1fr 1fr;
             gap: 3px;
         }
+        .location-page .photo-grid .photo-container,
         .location-page .photo-grid img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
-        .location-page .photo-grid img:first-child {
+        .location-page .photo-grid > :first-child {
             grid-row: span 2;
         }
 
         /* Property description page */
         .property-page {
             display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-columns: 1.2fr 1fr 0.8fr;
             gap: 0;
         }
         .property-page .main-image {
-            grid-row: span 2;
             overflow: hidden;
         }
         .property-page .main-image img {
@@ -463,7 +463,7 @@ const KnightFrankTemplate = (function() {
         .property-page .description {
             font-size: 13px;
             line-height: 1.6;
-            color: ${brand.textLight};
+            color: #333333;
             text-align: justify;
         }
         .property-page .description p {
@@ -474,6 +474,7 @@ const KnightFrankTemplate = (function() {
             grid-template-rows: 1fr 1fr;
             gap: 3px;
         }
+        .property-page .side-photos .photo-container,
         .property-page .side-photos img {
             width: 100%;
             height: 100%;
@@ -493,6 +494,7 @@ const KnightFrankTemplate = (function() {
             grid-template-rows: 1fr 1fr;
             gap: 3px;
         }
+        .bedrooms-page-v2 .bedroom-photos .photo-container,
         .bedrooms-page-v2 .bedroom-photos img {
             width: 100%;
             height: 100%;
@@ -517,7 +519,7 @@ const KnightFrankTemplate = (function() {
         .bedrooms-page-v2 .text-content {
             font-size: 14px;
             line-height: 1.6;
-            color: ${brand.textLight};
+            color: #333333;
         }
         .bedrooms-page-v2 .text-content p {
             margin-bottom: 12px;
@@ -600,7 +602,7 @@ const KnightFrankTemplate = (function() {
         .gardens-page .description {
             font-size: 13px;
             line-height: 1.6;
-            color: ${brand.textLight};
+            color: #333333;
             text-align: justify;
             margin-bottom: 20px;
         }
@@ -617,12 +619,13 @@ const KnightFrankTemplate = (function() {
             grid-template-rows: 1.2fr 0.8fr;
             gap: 3px;
         }
+        .gardens-page .photo-grid .photo-container,
         .gardens-page .photo-grid img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
-        .gardens-page .photo-grid img:first-child {
+        .gardens-page .photo-grid > :first-child {
             grid-column: span 2;
         }
 
@@ -711,36 +714,61 @@ const KnightFrankTemplate = (function() {
             bottom: 0;
             left: 0;
             right: 0;
-            padding: 60px;
-            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            padding: 40px 60px;
+            background: rgba(0, 51, 102, 0.92);
             color: white;
             display: flex;
             justify-content: space-between;
-            align-items: flex-end;
+            align-items: center;
         }
         .back-cover .logo-large {
             color: white;
         }
         .back-cover .logo-large svg {
-            height: 60px;
+            height: 70px;
             width: auto;
         }
         .back-cover .contact-info {
             text-align: right;
         }
         .back-cover .contact-info p {
-            font-size: 14px;
-            margin-bottom: 5px;
+            font-size: 18px;
+            margin-bottom: 8px;
             color: white;
         }
         .back-cover .contact-info .office {
-            font-size: 18px;
+            font-size: 24px;
             font-weight: 600;
-            margin-bottom: 10px;
+            margin-bottom: 12px;
         }
         .back-cover .contact-info a {
             color: white;
             text-decoration: none;
+        }
+
+        /* Photo containers with captions */
+        .photo-container {
+            position: relative;
+            overflow: hidden;
+        }
+        .photo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .photo-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 6px 12px;
+            background: rgba(0,0,0,0.5);
+            color: white;
+            font-size: 11px;
+            font-family: ${FONTS.body};
+        }
+        .photo-caption:empty {
+            display: none;
         }
 
         /* Print styles */
@@ -865,13 +893,15 @@ const KnightFrankTemplate = (function() {
             photos.garden?.[1] || photos.view?.[0]
         ].filter(Boolean).slice(0, 4);
 
-        // Pad with exterior/garden if needed
+        // Pad with exterior/garden only (never interior photos on location page)
         while (locationPhotos.length < 4) {
-            const fallback = photos.exterior?.[locationPhotos.length] ||
-                           photos.garden?.[locationPhotos.length] ||
-                           photos.all?.[locationPhotos.length];
-            if (fallback) locationPhotos.push(fallback);
-            else break;
+            const idx = locationPhotos.length;
+            const fallback = photos.exterior?.[idx] || photos.garden?.[idx];
+            if (fallback && !locationPhotos.includes(fallback)) {
+                locationPhotos.push(fallback);
+            } else {
+                break;
+            }
         }
 
         return `
@@ -884,7 +914,9 @@ const KnightFrankTemplate = (function() {
             </div>
             <div class="photo-grid">
                 ${locationPhotos.map((photo, i) => `
-                    <img src="${photo?.url || photo?.dataUrl || ''}" alt="Location ${i + 1}">
+                    <div class="photo-container">
+                        <img src="${photo?.url || photo?.dataUrl || ''}" alt="Location ${i + 1}">
+                    </div>
                 `).join('')}
             </div>
         </div>`;
@@ -917,8 +949,9 @@ const KnightFrankTemplate = (function() {
 
         return `
         <div class="brochure-page property-page">
-            <div class="main-image">
+            <div class="main-image photo-container">
                 <img src="${mainPhoto?.url || mainPhoto?.dataUrl || ''}" alt="Kitchen">
+                <span class="photo-caption">${escapeHtml(mainPhoto?.description || mainPhoto?.category || mainPhoto?.room || '')}</span>
             </div>
             <div class="text-section">
                 <h2 data-editable="property-name">${escapeHtml(propertyName)}</h2>
@@ -928,7 +961,10 @@ const KnightFrankTemplate = (function() {
             </div>
             <div class="side-photos">
                 ${sidePhotos.map((photo, i) => `
-                    <img src="${photo?.url || photo?.dataUrl || ''}" alt="Interior ${i + 1}">
+                    <div class="photo-container">
+                        <img src="${photo?.url || photo?.dataUrl || ''}" alt="Interior ${i + 1}">
+                        <span class="photo-caption">${escapeHtml(photo?.description || photo?.category || photo?.room || '')}</span>
+                    </div>
                 `).join('')}
             </div>
         </div>`;
@@ -951,7 +987,10 @@ const KnightFrankTemplate = (function() {
         <div class="brochure-page bedrooms-page-v2">
             <div class="bedroom-photos">
                 ${bedroomPhotos.map((photo, i) => `
-                    <img src="${photo?.url || photo?.dataUrl || ''}" alt="${i < (photos.bedroom?.length || 0) ? 'Bedroom' : 'Bathroom'}">
+                    <div class="photo-container">
+                        <img src="${photo?.url || photo?.dataUrl || ''}" alt="${i < (photos.bedroom?.length || 0) ? 'Bedroom' : 'Bathroom'}">
+                        <span class="photo-caption">${escapeHtml(photo?.description || photo?.category || photo?.room || '')}</span>
+                    </div>
                 `).join('')}
             </div>
             <div class="bedroom-text">
@@ -970,6 +1009,19 @@ const KnightFrankTemplate = (function() {
         const sqft = property.sqft || '';
         const sqm = sqft ? Math.round(parseInt(sqft) * 0.0929) : '';
 
+        // When no floor plan, show a full photo spread instead of placeholder
+        if (!floorPlan) {
+            const allExterior = [
+                ...(photos.exterior || []),
+                ...(photos.garden || []),
+                ...(photos.pool || [])
+            ].slice(0, 4);
+            return `
+            <div class="brochure-page floorplans-page" style="display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 3px;">
+                ${allExterior.map(p => `<div class="photo-container"><img src="${p?.url || p?.dataUrl || ''}" style="width:100%;height:100%;object-fit:cover;" alt="Property"><span class="photo-caption">${escapeHtml(p?.description || p?.category || p?.room || '')}</span></div>`).join('')}
+            </div>`;
+        }
+
         const exteriorPhotos = [
             photos.exterior?.[1] || photos.pool?.[0],
             photos.exterior?.[2] || photos.garden?.[0]
@@ -983,11 +1035,7 @@ const KnightFrankTemplate = (function() {
 
                 <p class="disclaimer">This plan is for guidance only and must not be relied upon as a statement of fact. Attention is drawn to the Important Notice on the last page of the text of the Particulars.</p>
 
-                ${floorPlan ? `<img src="${floorPlan}" alt="Floor Plan" class="plan-image">` : `
-                    <div style="background: #f5f5f5; padding: 60px; text-align: center; color: #999; margin-bottom: 20px;">
-                        <p>Floor plan to be provided</p>
-                    </div>
-                `}
+                <img src="${floorPlan}" alt="Floor Plan" class="plan-image">
 
                 <div class="legend">
                     <div class="legend-item"><span class="legend-color" style="background: #f5d6d6;"></span> Reception</div>
@@ -1032,7 +1080,10 @@ const KnightFrankTemplate = (function() {
             </div>
             <div class="photo-grid">
                 ${gardenPhotos.map((photo, i) => `
-                    <img src="${photo?.url || photo?.dataUrl || ''}" alt="Garden ${i + 1}">
+                    <div class="photo-container">
+                        <img src="${photo?.url || photo?.dataUrl || ''}" alt="Garden ${i + 1}">
+                        <span class="photo-caption">${escapeHtml(photo?.description || photo?.category || photo?.room || '')}</span>
+                    </div>
                 `).join('')}
             </div>
         </div>`;

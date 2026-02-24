@@ -1420,6 +1420,8 @@
         document.querySelectorAll('.brochure-page').forEach(page => {
             const pageId = page.dataset.pageId;
             if (!pageId) return;
+            // Skip Knight Frank template pages — they use fixed CSS layouts
+            if (page.dataset.templateType === 'knight_frank') return;
 
             // Initialize elements array for this page
             if (!EditorState.elements[pageId]) {

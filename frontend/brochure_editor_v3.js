@@ -876,21 +876,21 @@ async function generatePageSpecificDescription(page) {
 
         // Create professional, fact-focused prompts - NO FLOWERY LANGUAGE
         const roomPrompts = {
-            kitchen: `Describe the KITCHEN factually and specifically.${photoContext}${propertyContext} Focus ONLY on: appliances (brands/models if visible), worktop material, cabinetry style, storage features, lighting type, flooring, dining space. State facts. NO metaphors, NO lifestyle descriptions, NO conjecture. 200-250 words. Be direct and informative.`,
+            kitchen: `Describe the KITCHEN factually and specifically.${photoContext}${propertyContext} Focus ONLY on: appliances, worktop material, cabinetry style, storage features, lighting, flooring, dining space. State facts. NO metaphors, NO lifestyle descriptions. 100-150 words. Be direct and informative.`,
 
-            living: `Describe the LIVING SPACES factually and specifically.${photoContext}${propertyContext} Focus ONLY on: room dimensions/proportions, flooring type, window features, architectural details (fireplaces, moldings), built-in features, lighting. State what IS visible. NO storytelling, NO lifestyle descriptions. 200-250 words.`,
+            living: `Describe the LIVING SPACES factually and specifically.${photoContext}${propertyContext} Focus ONLY on: room proportions, flooring type, window features, architectural details (fireplaces, moldings), built-in features, lighting. State what IS visible. NO storytelling. 100-150 words.`,
 
-            bedrooms: `Describe the BEDROOMS factually and specifically.${photoContext}${propertyContext} Focus ONLY on: number of bedrooms, sizes, built-in storage, ensuite details, flooring, windows/light. State facts about each room. NO aspirational language, NO concepts like "sanctuary" or "retreat". 200-250 words.`,
+            bedrooms: `Describe the BEDROOMS factually and specifically.${photoContext}${propertyContext} Focus ONLY on: number of bedrooms, sizes, built-in storage, ensuite details, flooring, windows/light. State facts. NO aspirational language, NO "sanctuary" or "retreat". 100-150 words.`,
 
-            bathrooms: `Describe the BATHROOMS factually and specifically.${photoContext}${propertyContext} Focus ONLY on: fixtures (shower/bath/toilet/sink), tiling details, flooring, fittings quality (if visible), lighting, heating features. State what exists. NO luxury descriptors unless objectively true. 150-200 words.`,
+            bathrooms: `Describe the BATHROOMS factually and specifically.${photoContext}${propertyContext} Focus ONLY on: fixtures (shower/bath/toilet/sink), tiling, flooring, fittings quality, lighting. State what exists. 80-120 words.`,
 
-            garden: `Describe the OUTDOOR SPACES factually and specifically.${photoContext}${propertyContext} Focus ONLY on: garden size/layout, paved areas, lawn, planting (mature trees/hedges), fencing, orientation, outdoor structures (shed/summerhouse). State what IS there. NO poetic descriptions of nature or seasons. 200-250 words.`,
+            garden: `Describe the OUTDOOR SPACES factually and specifically.${photoContext}${propertyContext} Focus ONLY on: garden size/layout, paved areas, lawn, planting, fencing, orientation, outdoor structures. State what IS there. NO poetic descriptions. 100-150 words.`,
 
-            exterior: `Describe the EXTERIOR and GROUNDS factually and specifically.${photoContext}${propertyContext} Focus ONLY on: building facade, driveway, parking, outbuildings, boundary walls/fencing, exterior materials. State what IS visible. NO poetic descriptions. 200-250 words.`,
+            exterior: `Describe the EXTERIOR and GROUNDS factually and specifically.${photoContext}${propertyContext} Focus ONLY on: building facade, driveway, parking, outbuildings, boundary walls, exterior materials. State what IS visible. 100-150 words.`,
 
-            location: `Describe the LOCATION of ${propertyAddress || 'this property'} factually and specifically.${propertyContext} Focus ONLY on: specific nearby amenities (name schools, shops, stations with distances), transport links (walking times to stations, road connections), area character. State verifiable facts about THIS specific location. NO subjective claims about "desirability". 200-250 words.`,
+            location: `Describe the LOCATION of ${propertyAddress || 'this property'} factually and specifically.${propertyContext} Focus ONLY on: specific nearby amenities (name schools, shops, stations with distances), transport links, area character. State verifiable facts. 100-150 words.`,
 
-            contact: `Write a direct invitation to arrange a viewing. Include agent contact method. NO excessive praise, NO hype. 30-40 words maximum. Be professional and straightforward.`
+            contact: `Write a direct invitation to arrange a viewing. Include agent contact method. NO excessive praise. 30-40 words maximum. Be professional.`
         };
 
         const systemPrompt = roomPrompts[page.type] || `Write a comprehensive professional description of ${page.title}. 150-200 words in flowing paragraphs. Use sophisticated Savills tone.`;
@@ -908,7 +908,7 @@ async function generatePageSpecificDescription(page) {
             },
             body: JSON.stringify({
                 prompt: systemPrompt,
-                target_words: 280,
+                target_words: 150,
                 session_id: isInitialGeneration ? null : EditorState.sessionId
             })
         }, 60000);
@@ -1647,12 +1647,30 @@ function renderKnightFrankBrochure() {
             .brochure-page.cover-page { display: block !important; }
             .brochure-page.summary-page { display: grid !important; grid-template-columns: 1fr 1fr !important; }
             .brochure-page.location-page { display: grid !important; grid-template-columns: 1fr 1fr !important; }
-            .brochure-page.property-page { display: grid !important; grid-template-columns: 1fr 1fr 1fr !important; }
+            .brochure-page.property-page { display: grid !important; grid-template-columns: 1.2fr 1fr 0.8fr !important; }
             .brochure-page.bedrooms-page-v2 { display: grid !important; grid-template-columns: 1.2fr 1fr !important; }
             .brochure-page.floorplans-page { display: grid !important; grid-template-columns: 1fr 1fr !important; }
             .brochure-page.gardens-page { display: grid !important; grid-template-columns: 1fr 1fr !important; }
-            .brochure-page.details-page { display: block !important; }
+            .brochure-page.details-page { display: grid !important; grid-template-columns: 1fr 1fr 1fr !important; }
             .brochure-page.back-cover { display: block !important; }
+            /* Protect cover page overlay and content from editor interference */
+            .brochure-page.cover-page .overlay {
+                position: absolute !important;
+                bottom: 0 !important;
+                left: 0 !important;
+                right: 0 !important;
+                z-index: 10 !important;
+                display: block !important;
+            }
+            .brochure-page.cover-page .cover-content {
+                position: static !important;
+                cursor: default !important;
+            }
+            .brochure-page.cover-page .design-element {
+                position: static !important;
+                cursor: default !important;
+                transform: none !important;
+            }
         `;
         const newStyle = document.createElement('style');
         newStyle.id = 'knight-frank-styles';
