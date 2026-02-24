@@ -897,7 +897,10 @@ async function generatePageSpecificDescription(page) {
 
         console.log(`📝 Prompt for ${page.type}:`, systemPrompt.substring(0, 200) + '...');
 
-        // Use NEW /generate/room endpoint for room-specific descriptions (with 30s timeout)
+        // Use NEW /generate/room endpoint for room-specific descriptions
+        // NOTE: Omit session_id during initial batch generation to avoid heavy session I/O
+        // (each session load/save reads+writes full base64 photo data, causing timeouts with parallel calls)
+        const isInitialGeneration = !EditorState._initialGenerationComplete;
         const response = await fetchWithTimeout('/generate/room', {
             method: 'POST',
             headers: {
@@ -906,9 +909,9 @@ async function generatePageSpecificDescription(page) {
             body: JSON.stringify({
                 prompt: systemPrompt,
                 target_words: 280,
-                session_id: EditorState.sessionId  // Include session_id for usage tracking
+                session_id: isInitialGeneration ? null : EditorState.sessionId
             })
-        }, 30000);
+        }, 60000);
 
         if (!response.ok) {
             console.warn(`⚠️ Failed to generate ${page.type} description:`, response.statusText);
@@ -1227,6 +1230,7 @@ async function loadSession() {
 
         // Generate AI descriptions for all pages
         await generateAllPageDescriptions();
+        EditorState._initialGenerationComplete = true;
 
         // Rendering phase
         updateLoadingProgress('rendering', false);
