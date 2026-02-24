@@ -1,6 +1,8 @@
 test_images/
 test_screenshots/
-test_screenshots/**/*.png
+*.png
+!frontend/images/*.png
+!branding/*.png
 *.pyc
 __pycache__/
 .git/
