@@ -115,7 +115,7 @@ function updateCategoryDisplay(category) {
     if (!categoryPhotos || !categoryCount) return;
 
     // Get theme color
-    const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#C20430';
+    const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4A1420';
 
     // Clear existing photos
     categoryPhotos.innerHTML = '';
@@ -196,7 +196,7 @@ function setupPhotoSelection() {
 
         // Select new
         selectedPhoto = photoItem;
-        const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#C20430';
+        const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4A1420';
         selectedPhoto.style.border = `3px solid ${primaryColor}`;
         selectedPhoto.classList.add('selected');
 

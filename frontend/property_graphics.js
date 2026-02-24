@@ -15,27 +15,27 @@ const PropertyGraphics = (function() {
             styles: {
                 classic: {
                     html: '<div class="badge-for-sale classic">FOR SALE</div>',
-                    css: `background: #C20430; color: white; padding: 12px 24px; font-weight: bold; font-size: 14px; letter-spacing: 1px;`
+                    css: `background: #4A1420; color: white; padding: 12px 24px; font-weight: bold; font-size: 14px; letter-spacing: 1px;`
                 },
                 ribbon: {
                     html: '<div class="badge-ribbon for-sale"><span>FOR SALE</span></div>',
-                    css: `position: relative; background: #C20430; color: white; padding: 10px 30px; font-weight: bold; clip-path: polygon(10px 0, calc(100% - 10px) 0, 100% 50%, calc(100% - 10px) 100%, 10px 100%, 0 50%);`
+                    css: `position: relative; background: #4A1420; color: white; padding: 10px 30px; font-weight: bold; clip-path: polygon(10px 0, calc(100% - 10px) 0, 100% 50%, calc(100% - 10px) 100%, 10px 100%, 0 50%);`
                 },
                 circle: {
                     html: '<div class="badge-circle for-sale"><span>FOR</span><span>SALE</span></div>',
-                    css: `width: 80px; height: 80px; border-radius: 50%; background: #C20430; color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; font-weight: bold; font-size: 12px;`
+                    css: `width: 80px; height: 80px; border-radius: 50%; background: #4A1420; color: white; display: flex; flex-direction: column; justify-content: center; align-items: center; font-weight: bold; font-size: 12px;`
                 },
                 modern: {
                     html: '<div class="badge-modern for-sale">FOR SALE</div>',
-                    css: `background: linear-gradient(135deg, #C20430, #a00328); color: white; padding: 10px 20px; border-radius: 4px; font-weight: 600; font-size: 13px; box-shadow: 0 4px 15px rgba(194,4,48,0.3);`
+                    css: `background: linear-gradient(135deg, #4A1420, #a00328); color: white; padding: 10px 20px; border-radius: 4px; font-weight: 600; font-size: 13px; box-shadow: 0 4px 15px rgba(194,4,48,0.3);`
                 },
                 minimal: {
                     html: '<div class="badge-minimal for-sale">For Sale</div>',
-                    css: `border: 2px solid #C20430; color: #C20430; padding: 8px 16px; font-weight: 500; font-size: 13px;`
+                    css: `border: 2px solid #4A1420; color: #4A1420; padding: 8px 16px; font-weight: 500; font-size: 13px;`
                 },
                 tag: {
                     html: '<div class="badge-tag for-sale">FOR SALE</div>',
-                    css: `background: #C20430; color: white; padding: 8px 16px 8px 24px; font-weight: bold; font-size: 12px; clip-path: polygon(15px 0, 100% 0, 100% 100%, 15px 100%, 0 50%);`
+                    css: `background: #4A1420; color: white; padding: 8px 16px 8px 24px; font-weight: bold; font-size: 12px; clip-path: polygon(15px 0, 100% 0, 100% 100%, 15px 100%, 0 50%);`
                 }
             }
         },
@@ -521,8 +521,8 @@ const PropertyGraphics = (function() {
             }
 
             .graphics-tab.active {
-                color: #C20430;
-                border-bottom: 2px solid #C20430;
+                color: #4A1420;
+                border-bottom: 2px solid #4A1420;
             }
 
             .graphics-content {
@@ -572,7 +572,7 @@ const PropertyGraphics = (function() {
 
             .graphic-item:hover {
                 background: #f5f5f5;
-                border-color: #C20430;
+                border-color: #4A1420;
             }
 
             .graphic-preview {

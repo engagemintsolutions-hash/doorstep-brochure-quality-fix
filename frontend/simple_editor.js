@@ -65,7 +65,7 @@ function renderSimpleEditor() {
                         ">Close</button>
                         <button onclick="exportSimpleBrochure()" style="
                             padding: 0.75rem 2rem;
-                            background: #C20430;
+                            background: #4A1420;
                             color: white;
                             border: none;
                             border-radius: 8px;
@@ -232,7 +232,7 @@ function renderPageContent(page) {
                 <div style="font-weight: 700; color: #2c3e50; margin-bottom: 0.5rem;">
                     ${page.content.address}
                 </div>
-                ${page.content.price ? `<div style="color: #C20430; font-weight: 600; font-size: 1.1rem;">
+                ${page.content.price ? `<div style="color: #4A1420; font-weight: 600; font-size: 1.1rem;">
                     ${page.content.price}
                 </div>` : ''}
             </div>
@@ -259,7 +259,7 @@ function renderPageContent(page) {
 
 function getPageTypeColor(type) {
     const colors = {
-        'cover': '#C20430',
+        'cover': '#4A1420',
         'interior': '#667eea',
         'floorplan': '#f39c12',
         'contact': '#28a745'

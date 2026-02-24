@@ -231,7 +231,7 @@
                                     <span class="block-label">Agent Card</span>
                                 </button>
                                 <button class="pro-block-btn" data-block="cta-button" title="Call to Action Button">
-                                    <div style="background: var(--template-primary, #C20430); color: white; padding: 4px 10px; font-size: 8px; border-radius: 3px;">
+                                    <div style="background: var(--template-primary, #4A1420); color: white; padding: 4px 10px; font-size: 8px; border-radius: 3px;">
                                         Book Viewing
                                     </div>
                                     <span class="block-label">CTA Button</span>
@@ -266,7 +266,7 @@
                             <h5 class="category-title">Branding</h5>
                             <div class="elements-grid pro-grid" style="grid-template-columns: 1fr 1fr; gap: 8px;">
                                 <button class="pro-block-btn" data-block="price-badge" title="Price Badge">
-                                    <div style="background: var(--template-primary, #C20430); color: white; padding: 4px 8px; font-size: 9px; font-weight: bold;">
+                                    <div style="background: var(--template-primary, #4A1420); color: white; padding: 4px 8px; font-size: 9px; font-weight: bold;">
                                         £850,000
                                     </div>
                                     <span class="block-label">Price Badge</span>
@@ -285,7 +285,7 @@
                             <h5 class="category-title">Status Badges</h5>
                             <div class="elements-grid pro-grid" style="grid-template-columns: 1fr 1fr; gap: 8px;">
                                 <button class="pro-block-btn" data-block="badge-sold" title="Sold Badge">
-                                    <div style="background: #C20430; color: white; padding: 3px 8px; font-size: 8px; font-weight: bold;">SOLD</div>
+                                    <div style="background: #4A1420; color: white; padding: 3px 8px; font-size: 8px; font-weight: bold;">SOLD</div>
                                     <span class="block-label">Sold</span>
                                 </button>
                                 <button class="pro-block-btn" data-block="badge-under-offer" title="Under Offer Badge">
@@ -389,8 +389,8 @@
                                 </button>
                                 <button class="pro-block-btn" data-block="room-dimensions" title="Room Dimensions">
                                     <div style="font-size: 7px; text-align: left;">
-                                        <div style="border-left: 2px solid #C20430; padding-left: 4px; margin-bottom: 2px;">Living: 5.2 x 4.1m</div>
-                                        <div style="border-left: 2px solid #C20430; padding-left: 4px;">Kitchen: 4.8 x 3.6m</div>
+                                        <div style="border-left: 2px solid #4A1420; padding-left: 4px; margin-bottom: 2px;">Living: 5.2 x 4.1m</div>
+                                        <div style="border-left: 2px solid #4A1420; padding-left: 4px;">Kitchen: 4.8 x 3.6m</div>
                                     </div>
                                     <span class="block-label">Room Sizes</span>
                                 </button>
@@ -503,8 +503,8 @@
                     <div class="property-row">
                         <label>Fill Color</label>
                         <div class="color-input-group">
-                            <input type="color" id="elementFillColor" value="#C20430">
-                            <input type="text" id="elementFillColorHex" value="#C20430" maxlength="7">
+                            <input type="color" id="elementFillColor" value="#4A1420">
+                            <input type="text" id="elementFillColorHex" value="#4A1420" maxlength="7">
                         </div>
                     </div>
                     <div class="property-row">
@@ -872,7 +872,7 @@
             zIndex: options.zIndex || 10,
             locked: false,
             visible: true,
-            fill: options.fill || '#C20430',
+            fill: options.fill || '#4A1420',
             stroke: options.stroke || 'none',
             strokeWidth: options.strokeWidth || 0,
             opacity: options.opacity || 1,
@@ -1189,7 +1189,7 @@
                     <span class="feature-pill" style="background: #f0f0f0; padding: 6px 14px; border-radius: 16px; font-size: 12px;">Period Features</span>
                     <span class="feature-pill" style="background: #f0f0f0; padding: 6px 14px; border-radius: 16px; font-size: 12px;">South Facing Garden</span>
                     <span class="feature-pill" style="background: #f0f0f0; padding: 6px 14px; border-radius: 16px; font-size: 12px;">Off-Street Parking</span>
-                    <span class="feature-pill highlight" style="background: #C20430; color: white; padding: 6px 14px; border-radius: 16px; font-size: 12px;">Newly Renovated</span>
+                    <span class="feature-pill highlight" style="background: #4A1420; color: white; padding: 6px 14px; border-radius: 16px; font-size: 12px;">Newly Renovated</span>
                     <span class="feature-pill" style="background: #f0f0f0; padding: 6px 14px; border-radius: 16px; font-size: 12px;">Close to Schools</span>
                 </div>
             `,
@@ -1200,27 +1200,27 @@
             html: `
                 <div class="features-two-column" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px 30px;">
                     <div class="feature-item" style="display: flex; align-items: center; gap: 10px;">
-                        <span style="width: 18px; height: 18px; background: #C20430; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px;">✓</span>
+                        <span style="width: 18px; height: 18px; background: #4A1420; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px;">✓</span>
                         <span style="font-size: 13px;">Period features throughout</span>
                     </div>
                     <div class="feature-item" style="display: flex; align-items: center; gap: 10px;">
-                        <span style="width: 18px; height: 18px; background: #C20430; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px;">✓</span>
+                        <span style="width: 18px; height: 18px; background: #4A1420; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px;">✓</span>
                         <span style="font-size: 13px;">South facing garden</span>
                     </div>
                     <div class="feature-item" style="display: flex; align-items: center; gap: 10px;">
-                        <span style="width: 18px; height: 18px; background: #C20430; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px;">✓</span>
+                        <span style="width: 18px; height: 18px; background: #4A1420; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px;">✓</span>
                         <span style="font-size: 13px;">Off-street parking for 2 cars</span>
                     </div>
                     <div class="feature-item" style="display: flex; align-items: center; gap: 10px;">
-                        <span style="width: 18px; height: 18px; background: #C20430; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px;">✓</span>
+                        <span style="width: 18px; height: 18px; background: #4A1420; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px;">✓</span>
                         <span style="font-size: 13px;">Close to excellent schools</span>
                     </div>
                     <div class="feature-item" style="display: flex; align-items: center; gap: 10px;">
-                        <span style="width: 18px; height: 18px; background: #C20430; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px;">✓</span>
+                        <span style="width: 18px; height: 18px; background: #4A1420; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px;">✓</span>
                         <span style="font-size: 13px;">Recently renovated kitchen</span>
                     </div>
                     <div class="feature-item" style="display: flex; align-items: center; gap: 10px;">
-                        <span style="width: 18px; height: 18px; background: #C20430; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px;">✓</span>
+                        <span style="width: 18px; height: 18px; background: #4A1420; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; font-size: 10px;">✓</span>
                         <span style="font-size: 13px;">EPC Rating: C</span>
                     </div>
                 </div>
@@ -1230,7 +1230,7 @@
         },
         'agent-card': {
             html: `
-                <div class="agent-card-full" style="display: flex; gap: 20px; padding: 25px; background: #f8f8f8; border-left: 4px solid #C20430;">
+                <div class="agent-card-full" style="display: flex; gap: 20px; padding: 25px; background: #f8f8f8; border-left: 4px solid #4A1420;">
                     <div style="width: 80px; height: 80px; background: #ddd; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 30px;">👤</div>
                     <div style="flex: 1;">
                         <div class="agent-name" style="font-size: 18px; font-weight: 600; margin-bottom: 4px;">Sarah Thompson</div>
@@ -1247,7 +1247,7 @@
         },
         'cta-button': {
             html: `
-                <button class="contact-cta" style="display: inline-flex; align-items: center; gap: 10px; background: #C20430; color: white; padding: 14px 28px; font-size: 14px; font-weight: 600; border-radius: 4px; border: none; cursor: pointer;">
+                <button class="contact-cta" style="display: inline-flex; align-items: center; gap: 10px; background: #4A1420; color: white; padding: 14px 28px; font-size: 14px; font-weight: 600; border-radius: 4px; border: none; cursor: pointer;">
                     📅 Book a Viewing
                 </button>
             `,
@@ -1279,7 +1279,7 @@
         },
         'price-badge': {
             html: `
-                <div class="price-badge" style="display: inline-block; background: #C20430; color: white; padding: 12px 24px; font-weight: 700; font-size: 20px;">
+                <div class="price-badge" style="display: inline-block; background: #4A1420; color: white; padding: 12px 24px; font-weight: 700; font-size: 20px;">
                     £850,000
                 </div>
             `,
@@ -1302,7 +1302,7 @@
 
         // Status Badges
         'badge-sold': {
-            html: `<div class="status-badge sold" style="display: inline-block; background: #C20430; color: white; padding: 10px 25px; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px;">SOLD</div>`,
+            html: `<div class="status-badge sold" style="display: inline-block; background: #4A1420; color: white; padding: 10px 25px; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 2px;">SOLD</div>`,
             width: 120,
             height: 45
         },
@@ -1438,19 +1438,19 @@
                         📐 Drop floor plan image here
                     </div>
                     <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
-                        <div style="display: flex; justify-content: space-between; padding: 10px 15px; background: #f9f9f9; border-left: 3px solid #C20430; font-size: 13px;">
+                        <div style="display: flex; justify-content: space-between; padding: 10px 15px; background: #f9f9f9; border-left: 3px solid #4A1420; font-size: 13px;">
                             <span style="font-weight: 600;">Living Room</span>
                             <span style="color: #666;">5.2m x 4.1m</span>
                         </div>
-                        <div style="display: flex; justify-content: space-between; padding: 10px 15px; background: #f9f9f9; border-left: 3px solid #C20430; font-size: 13px;">
+                        <div style="display: flex; justify-content: space-between; padding: 10px 15px; background: #f9f9f9; border-left: 3px solid #4A1420; font-size: 13px;">
                             <span style="font-weight: 600;">Kitchen</span>
                             <span style="color: #666;">4.8m x 3.6m</span>
                         </div>
-                        <div style="display: flex; justify-content: space-between; padding: 10px 15px; background: #f9f9f9; border-left: 3px solid #C20430; font-size: 13px;">
+                        <div style="display: flex; justify-content: space-between; padding: 10px 15px; background: #f9f9f9; border-left: 3px solid #4A1420; font-size: 13px;">
                             <span style="font-weight: 600;">Master Bedroom</span>
                             <span style="color: #666;">4.5m x 3.8m</span>
                         </div>
-                        <div style="display: flex; justify-content: space-between; padding: 10px 15px; background: #f9f9f9; border-left: 3px solid #C20430; font-size: 13px;">
+                        <div style="display: flex; justify-content: space-between; padding: 10px 15px; background: #f9f9f9; border-left: 3px solid #4A1420; font-size: 13px;">
                             <span style="font-weight: 600;">Garden</span>
                             <span style="color: #666;">15m x 8m</span>
                         </div>
@@ -1471,19 +1471,19 @@
                         <div>
                             <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #eee; font-size: 13px;">
                                 <span>🚇 Hampstead Station</span>
-                                <span style="color: #C20430; font-weight: 600;">0.3 miles</span>
+                                <span style="color: #4A1420; font-weight: 600;">0.3 miles</span>
                             </div>
                             <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #eee; font-size: 13px;">
                                 <span>🚌 Bus Stop (24, 168)</span>
-                                <span style="color: #C20430; font-weight: 600;">0.1 miles</span>
+                                <span style="color: #4A1420; font-weight: 600;">0.1 miles</span>
                             </div>
                             <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #eee; font-size: 13px;">
                                 <span>🏫 Local Primary School</span>
-                                <span style="color: #C20430; font-weight: 600;">0.4 miles</span>
+                                <span style="color: #4A1420; font-weight: 600;">0.4 miles</span>
                             </div>
                             <div style="display: flex; align-items: center; justify-content: space-between; padding: 12px 0; font-size: 13px;">
                                 <span>🛒 Waitrose</span>
-                                <span style="color: #C20430; font-weight: 600;">0.2 miles</span>
+                                <span style="color: #4A1420; font-weight: 600;">0.2 miles</span>
                             </div>
                         </div>
                     </div>
@@ -1502,7 +1502,7 @@
                         <h4 style="font-family: 'Playfair Display', Georgia, serif; font-size: 18px; margin: 0 0 5px 0;">Take a Virtual Tour</h4>
                         <p style="font-size: 13px; color: #aaa; margin: 0;">Experience this property from the comfort of your home</p>
                     </div>
-                    <button style="padding: 12px 24px; background: #C20430; color: white; font-size: 13px; font-weight: 600; border: none; border-radius: 4px; cursor: pointer;">
+                    <button style="padding: 12px 24px; background: #4A1420; color: white; font-size: 13px; font-weight: 600; border: none; border-radius: 4px; cursor: pointer;">
                         View Tour
                     </button>
                 </div>
@@ -1513,19 +1513,19 @@
         'room-dimensions': {
             html: `
                 <div class="room-dimensions-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;">
-                    <div style="display: flex; justify-content: space-between; padding: 12px 15px; background: #f9f9f9; border-left: 3px solid #C20430; font-size: 13px;">
+                    <div style="display: flex; justify-content: space-between; padding: 12px 15px; background: #f9f9f9; border-left: 3px solid #4A1420; font-size: 13px;">
                         <span style="font-weight: 600;">Living Room</span>
                         <span style="color: #666;">5.2m x 4.1m (17'1" x 13'5")</span>
                     </div>
-                    <div style="display: flex; justify-content: space-between; padding: 12px 15px; background: #f9f9f9; border-left: 3px solid #C20430; font-size: 13px;">
+                    <div style="display: flex; justify-content: space-between; padding: 12px 15px; background: #f9f9f9; border-left: 3px solid #4A1420; font-size: 13px;">
                         <span style="font-weight: 600;">Kitchen/Dining</span>
                         <span style="color: #666;">4.8m x 3.6m (15'9" x 11'10")</span>
                     </div>
-                    <div style="display: flex; justify-content: space-between; padding: 12px 15px; background: #f9f9f9; border-left: 3px solid #C20430; font-size: 13px;">
+                    <div style="display: flex; justify-content: space-between; padding: 12px 15px; background: #f9f9f9; border-left: 3px solid #4A1420; font-size: 13px;">
                         <span style="font-weight: 600;">Master Bedroom</span>
                         <span style="color: #666;">4.5m x 3.8m (14'9" x 12'6")</span>
                     </div>
-                    <div style="display: flex; justify-content: space-between; padding: 12px 15px; background: #f9f9f9; border-left: 3px solid #C20430; font-size: 13px;">
+                    <div style="display: flex; justify-content: space-between; padding: 12px 15px; background: #f9f9f9; border-left: 3px solid #4A1420; font-size: 13px;">
                         <span style="font-weight: 600;">Bedroom 2</span>
                         <span style="color: #666;">3.8m x 3.2m (12'6" x 10'6")</span>
                     </div>

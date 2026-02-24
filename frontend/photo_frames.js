@@ -841,9 +841,9 @@ const PhotoFrames = (function() {
             }
 
             .frame-tab.active {
-                background: var(--primary-color, #C20430);
+                background: var(--primary-color, #4A1420);
                 color: white;
-                border-color: var(--primary-color, #C20430);
+                border-color: var(--primary-color, #4A1420);
             }
 
             .frame-tab-content { display: none; }
@@ -874,7 +874,7 @@ const PhotoFrames = (function() {
             }
 
             .frame-item:hover {
-                border-color: var(--primary-color, #C20430);
+                border-color: var(--primary-color, #4A1420);
                 transform: scale(1.05);
             }
 

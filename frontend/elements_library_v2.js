@@ -580,7 +580,7 @@ function createShapeElement(shapeId, options = {}) {
     const {
         width = 100,
         height = 100,
-        color = '#C20430',
+        color = '#4A1420',
         x = 50,
         y = 50
     } = options;
@@ -613,7 +613,7 @@ function createIconElement(iconId, options = {}) {
 
     const {
         size = 48,
-        color = '#C20430',
+        color = '#4A1420',
         x = 50,
         y = 50
     } = options;

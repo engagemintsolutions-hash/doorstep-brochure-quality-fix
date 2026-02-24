@@ -39,7 +39,7 @@
 
 .preview-header h3 {
     margin: 0 0 0.5rem 0;
-    color: #C20430;
+    color: #4A1420;
     font-size: 1.5rem;
 }
 
@@ -90,8 +90,8 @@
 .preview-stats {
     padding: 1.5rem;
     background: #e8f4f8;
-    border-top: 2px solid #C20430;
-    border-bottom: 2px solid #C20430;
+    border-top: 2px solid #4A1420;
+    border-bottom: 2px solid #4A1420;
     display: flex;
     justify-content: space-around;
 }
@@ -111,7 +111,7 @@
     display: block;
     font-size: 1.5rem;
     font-weight: bold;
-    color: #C20430;
+    color: #4A1420;
 }
 
 .preview-actions {
@@ -166,7 +166,7 @@
 .tooltip-content strong {
     display: block;
     margin-bottom: 0.5rem;
-    color: #C20430;
+    color: #4A1420;
 }
 
 .tooltip-content p {
@@ -202,12 +202,12 @@
 }
 
 .preset-option:hover {
-    border-color: #C20430;
+    border-color: #4A1420;
     box-shadow: 0 4px 12px rgba(23, 162, 184, 0.2);
 }
 
 .preset-option.selected {
-    border-color: #C20430;
+    border-color: #4A1420;
     background: #e8f4f8;
 }
 
@@ -226,7 +226,7 @@
 
 .preset-ideal {
     font-size: 0.85rem;
-    color: #C20430;
+    color: #4A1420;
     margin: 0.25rem 0;
 }
 
@@ -502,7 +502,7 @@
    ============================================ */
 
 .btn-primary {
-    background: #C20430;
+    background: #4A1420;
     color: white;
     border: none;
     padding: 0.75rem 1.5rem;
@@ -654,7 +654,7 @@
 }
 
 .btn-small.btn-primary {
-    background: #C20430;
+    background: #4A1420;
     color: white;
 }
 
@@ -697,7 +697,7 @@
 
 .template-library-header h3 {
     margin: 0;
-    color: #C20430;
+    color: #4A1420;
 }
 
 .template-library-content {
@@ -735,7 +735,7 @@
     display: flex;
     gap: 1rem;
     font-size: 0.85rem;
-    color: #C20430;
+    color: #4A1420;
     margin-bottom: 0.5rem;
 }
 
@@ -803,7 +803,7 @@
 .slider-preview-popup strong {
     display: block;
     margin-bottom: 0.25rem;
-    color: #C20430;
+    color: #4A1420;
 }
 
 .slider-preview-popup p {
@@ -826,8 +826,8 @@
     top: 0;
     height: 100%;
     background: rgba(23, 162, 184, 0.2);
-    border-left: 2px solid #C20430;
-    border-right: 2px solid #C20430;
+    border-left: 2px solid #4A1420;
+    border-right: 2px solid #4A1420;
 }
 
 .zone-label {
@@ -837,7 +837,7 @@
     transform: translateX(-50%);
     font-size: 0.75rem;
     font-weight: 600;
-    color: #C20430;
+    color: #4A1420;
     white-space: nowrap;
 }
 
@@ -869,7 +869,7 @@
 
 .preflight-checklist h4 {
     margin: 0 0 1.5rem 0;
-    color: #C20430;
+    color: #4A1420;
     font-size: 1.3rem;
 }
 
@@ -1013,7 +1013,7 @@
 }
 
 .conflict-option-btn {
-    background: #C20430;
+    background: #4A1420;
     color: white;
     border: none;
     padding: 0.75rem 1.25rem;

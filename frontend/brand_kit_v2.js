@@ -33,7 +33,7 @@ const BrandKitV2 = (function() {
         savills: {
             name: 'Savills Style',
             colors: {
-                primary: '#C20430',
+                primary: '#4A1420',
                 secondary: '#1A1A1A',
                 accent: '#D4AF37',
                 background: '#FFFFFF',

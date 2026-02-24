@@ -13,7 +13,7 @@ const TemplatePreviews = (function() {
 
     // Color mappings for previews
     const PREVIEW_COLORS = {
-        primary: '#C20430',
+        primary: '#4A1420',
         secondary: '#f5f5f5',
         accent: '#D4AF37',
         text: '#333333',

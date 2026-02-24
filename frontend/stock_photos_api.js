@@ -421,7 +421,7 @@ const StockPhotosAPI = (function() {
             width: 50px;
             height: 50px;
             border-radius: 50%;
-            background: var(--doorstep-red, #C20430);
+            background: var(--doorstep-red, #4A1420);
             color: white;
             border: none;
             cursor: pointer;
@@ -895,7 +895,7 @@ const StockPhotosAPI = (function() {
                         Cancel
                     </button>
                     <button onclick="StockPhotosAPI.saveSettings()"
-                            style="padding: 8px 16px; background: var(--doorstep-red, #C20430); color: white; border: none; border-radius: 4px; cursor: pointer;">
+                            style="padding: 8px 16px; background: var(--doorstep-red, #4A1420); color: white; border: none; border-radius: 4px; cursor: pointer;">
                         Save Settings
                     </button>
                 </div>

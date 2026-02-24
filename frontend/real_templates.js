@@ -2567,7 +2567,7 @@ const RealTemplates = (function() {
             colorScheme: {
                 primary: '#1a1a1a',
                 secondary: '#f5f5f5',
-                accent: '#C20430'
+                accent: '#4A1420'
             }
         },
 
@@ -2599,7 +2599,7 @@ const RealTemplates = (function() {
                 contact: 'split_contact'
             },
             colorScheme: {
-                primary: '#C20430',
+                primary: '#4A1420',
                 secondary: '#ffffff',
                 accent: '#D4AF37'
             }

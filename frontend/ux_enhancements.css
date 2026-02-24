@@ -82,7 +82,7 @@
     justify-content: center;
     width: 18px;
     height: 18px;
-    background: #C20430;
+    background: #4A1420;
     color: white;
     border-radius: 50%;
     font-size: 12px;
@@ -303,8 +303,8 @@
 }
 
 .device-btn.active {
-    background: #C20430;
-    border-color: #C20430;
+    background: #4A1420;
+    border-color: #4A1420;
 }
 
 .preview-close {
@@ -465,13 +465,13 @@
    ============================================ */
 
 .tooltip-icon:focus {
-    outline: 2px solid #C20430;
+    outline: 2px solid #4A1420;
     outline-offset: 2px;
 }
 
 .device-btn:focus,
 .preview-close:focus {
-    outline: 2px solid #C20430;
+    outline: 2px solid #4A1420;
     outline-offset: 2px;
 }
 
@@ -531,7 +531,7 @@
     left: 50%;
     width: 20px;
     height: 20px;
-    border: 3px solid #C20430;
+    border: 3px solid #4A1420;
     border-top-color: transparent;
     border-radius: 50%;
     animation: spin 0.8s linear infinite;

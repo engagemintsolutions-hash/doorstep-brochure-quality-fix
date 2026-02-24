@@ -15,7 +15,7 @@
         currentEffects: {
             shadow: { enabled: false, x: 2, y: 2, blur: 4, color: '#000000', opacity: 0.3 },
             outline: { enabled: false, width: 1, color: '#000000' },
-            gradient: { enabled: false, startColor: '#C20430', endColor: '#1e3a5f', angle: 135 },
+            gradient: { enabled: false, startColor: '#4A1420', endColor: '#1e3a5f', angle: 135 },
             letterSpacing: 0
         }
     };
@@ -131,7 +131,7 @@
                     <div class="effect-controls" id="gradientControls" style="display: none;">
                         <div class="text-effect-row">
                             <label>Start</label>
-                            <input type="color" id="gradientStart" value="#C20430"
+                            <input type="color" id="gradientStart" value="#4A1420"
                                    oninput="TextEffects.updateGradient()">
                         </div>
                         <div class="text-effect-row">
@@ -200,7 +200,7 @@
             .effect-toggle input[type="checkbox"] {
                 width: 16px;
                 height: 16px;
-                accent-color: var(--doorstep-red, #C20430);
+                accent-color: var(--doorstep-red, #4A1420);
             }
 
             .effect-controls {
@@ -313,7 +313,7 @@
 
     function updateGradient() {
         const gradient = TextEffectsState.currentEffects.gradient;
-        gradient.startColor = document.getElementById('gradientStart')?.value || '#C20430';
+        gradient.startColor = document.getElementById('gradientStart')?.value || '#4A1420';
         gradient.endColor = document.getElementById('gradientEnd')?.value || '#1e3a5f';
         gradient.angle = parseInt(document.getElementById('gradientAngle')?.value || 135);
 
@@ -496,7 +496,7 @@
         TextEffectsState.currentEffects = {
             shadow: { enabled: false, x: 2, y: 2, blur: 4, color: '#000000', opacity: 0.3 },
             outline: { enabled: false, width: 1, color: '#000000' },
-            gradient: { enabled: false, startColor: '#C20430', endColor: '#1e3a5f', angle: 135 },
+            gradient: { enabled: false, startColor: '#4A1420', endColor: '#1e3a5f', angle: 135 },
             letterSpacing: 0
         };
     }

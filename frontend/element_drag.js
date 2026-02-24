@@ -918,7 +918,7 @@
         }
 
         if (shapeEl) {
-            shapeEl.setAttribute('fill', data.fill || '#C20430');
+            shapeEl.setAttribute('fill', data.fill || '#4A1420');
             shapeEl.setAttribute('stroke', data.stroke || 'none');
             shapeEl.setAttribute('stroke-width', data.strokeWidth || 0);
             shape.appendChild(shapeEl);
@@ -1079,7 +1079,7 @@
             opacity: 0.85;
             transform: translate(-50%, -50%) scale(0.9);
             transition: transform 0.1s ease;
-            border: 2px dashed var(--primary-color, #C20430);
+            border: 2px dashed var(--primary-color, #4A1420);
             border-radius: 4px;
             background: white;
             box-shadow: 0 8px 32px rgba(0,0,0,0.2);
@@ -1148,7 +1148,7 @@
             case 'badge':
                 content = `
                     <div style="
-                        background: var(--primary-color, #C20430);
+                        background: var(--primary-color, #4A1420);
                         color: white;
                         padding: 4px 12px;
                         font-size: 11px;
@@ -1179,7 +1179,7 @@
             left: 50%;
             transform: translateX(-50%);
             font-size: 11px;
-            color: var(--primary-color, #C20430);
+            color: var(--primary-color, #4A1420);
             white-space: nowrap;
             font-weight: 500;
         `;
@@ -1193,7 +1193,7 @@
      * Create shape preview content
      */
     function createShapeGhostContent(data) {
-        const color = data.color || '#C20430';
+        const color = data.color || '#4A1420';
         const shapeType = data.subtype || 'rectangle';
 
         let svgContent = '';
@@ -1255,7 +1255,7 @@
             // Reset ghost scale
             if (SidebarDragState.ghost) {
                 SidebarDragState.ghost.style.transform = 'translate(-50%, -50%) scale(0.9)';
-                SidebarDragState.ghost.style.borderColor = 'var(--primary-color, #C20430)';
+                SidebarDragState.ghost.style.borderColor = 'var(--primary-color, #4A1420)';
             }
         }
     }
@@ -1523,11 +1523,11 @@
                     cursor: move;
                 }
                 .brochure-page .design-element:hover {
-                    outline: 2px dashed rgba(194, 4, 48, 0.5);
+                    outline: 2px dashed rgba(74, 20, 32, 0.5);
                     outline-offset: 2px;
                 }
                 .brochure-page .design-element.selected {
-                    outline: 2px solid #C20430;
+                    outline: 2px solid #4A1420;
                     outline-offset: 2px;
                 }
                 .brochure-page .design-element.dragging {

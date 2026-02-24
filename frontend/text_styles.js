@@ -225,7 +225,7 @@ const TextStyles = (function() {
         gradient_red: {
             name: 'Red Gradient',
             css: {
-                background: 'linear-gradient(135deg, #C20430 0%, #FF4D6D 100%)',
+                background: 'linear-gradient(135deg, #4A1420 0%, #FF4D6D 100%)',
                 webkitBackgroundClip: 'text',
                 webkitTextFillColor: 'transparent',
                 backgroundClip: 'text'
@@ -273,7 +273,7 @@ const TextStyles = (function() {
                     type: 'text',
                     content: '695,000',
                     prefix: '\u00A3',
-                    style: { ...TEXT_STYLES.price_large.css, color: '#C20430', marginBottom: '8px' }
+                    style: { ...TEXT_STYLES.price_large.css, color: '#4A1420', marginBottom: '8px' }
                 },
                 {
                     type: 'text',
@@ -289,7 +289,7 @@ const TextStyles = (function() {
                 {
                     type: 'container',
                     style: {
-                        background: '#C20430',
+                        background: '#4A1420',
                         color: 'white',
                         padding: '16px 28px',
                         borderRadius: '4px',
@@ -312,7 +312,7 @@ const TextStyles = (function() {
                 {
                     type: 'container',
                     style: {
-                        background: 'linear-gradient(90deg, #C20430, #E31C5F)',
+                        background: 'linear-gradient(90deg, #4A1420, #E31C5F)',
                         color: 'white',
                         padding: '12px 40px',
                         clipPath: 'polygon(10px 0, calc(100% - 10px) 0, 100% 50%, calc(100% - 10px) 100%, 10px 100%, 0 50%)'
@@ -356,7 +356,7 @@ const TextStyles = (function() {
                             type: 'container',
                             style: { background: '#f5f5f5', padding: '12px 20px', borderRadius: '4px', textAlign: 'center' },
                             children: [
-                                { type: 'text', content: '4', style: { fontSize: '24px', fontWeight: '700', color: '#C20430' } },
+                                { type: 'text', content: '4', style: { fontSize: '24px', fontWeight: '700', color: '#4A1420' } },
                                 { type: 'text', content: 'Beds', style: { fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px', color: '#666' } }
                             ]
                         },
@@ -364,7 +364,7 @@ const TextStyles = (function() {
                             type: 'container',
                             style: { background: '#f5f5f5', padding: '12px 20px', borderRadius: '4px', textAlign: 'center' },
                             children: [
-                                { type: 'text', content: '3', style: { fontSize: '24px', fontWeight: '700', color: '#C20430' } },
+                                { type: 'text', content: '3', style: { fontSize: '24px', fontWeight: '700', color: '#4A1420' } },
                                 { type: 'text', content: 'Baths', style: { fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px', color: '#666' } }
                             ]
                         }
@@ -392,7 +392,7 @@ const TextStyles = (function() {
                         width: '8px',
                         height: '8px',
                         borderRadius: '50%',
-                        background: '#C20430',
+                        background: '#4A1420',
                         flexShrink: 0
                     },
                     items: ['Period features throughout', 'South-facing garden', 'Recently renovated', 'Close to transport links']
@@ -440,7 +440,7 @@ const TextStyles = (function() {
                         },
                         {
                             type: 'divider',
-                            style: { width: '60px', height: '3px', background: '#C20430' }
+                            style: { width: '60px', height: '3px', background: '#4A1420' }
                         }
                     ]
                 }
@@ -461,7 +461,7 @@ const TextStyles = (function() {
                         },
                         {
                             type: 'divider',
-                            style: { width: '80px', height: '2px', background: '#C20430', margin: '0 auto' }
+                            style: { width: '80px', height: '2px', background: '#4A1420', margin: '0 auto' }
                         }
                     ]
                 }
@@ -492,7 +492,7 @@ const TextStyles = (function() {
             elements: [
                 {
                     type: 'container',
-                    style: { borderLeft: '4px solid #C20430', paddingLeft: '24px' },
+                    style: { borderLeft: '4px solid #4A1420', paddingLeft: '24px' },
                     children: [
                         {
                             type: 'text',
@@ -526,7 +526,7 @@ const TextStyles = (function() {
                         {
                             type: 'text',
                             content: '020 7123 4567',
-                            style: { fontSize: '32px', fontWeight: '700', color: '#C20430', marginBottom: '8px' }
+                            style: { fontSize: '32px', fontWeight: '700', color: '#4A1420', marginBottom: '8px' }
                         },
                         {
                             type: 'text',
@@ -675,7 +675,7 @@ const TextStyles = (function() {
                     domEl.className = 'spec-item';
                     domEl.style.cssText = 'display: flex; align-items: center; gap: 8px;';
                     domEl.innerHTML = `
-                        <span style="font-size: 24px; font-weight: 700; color: #C20430;">${el.value}</span>
+                        <span style="font-size: 24px; font-weight: 700; color: #4A1420;">${el.value}</span>
                         <span style="font-size: 13px; color: #666;">${el.label}</span>
                     `;
                     break;
@@ -904,8 +904,8 @@ const TextStyles = (function() {
             }
 
             .text-styles-panel .tab.active {
-                color: #C20430;
-                border-bottom: 2px solid #C20430;
+                color: #4A1420;
+                border-bottom: 2px solid #4A1420;
             }
 
             .text-styles-panel .panel-content {
@@ -946,7 +946,7 @@ const TextStyles = (function() {
             .text-styles-panel .combo-item:hover,
             .text-styles-panel .style-item:hover,
             .text-styles-panel .effect-item:hover {
-                border-color: #C20430;
+                border-color: #4A1420;
                 background: #fef5f7;
             }
 

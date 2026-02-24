@@ -460,7 +460,7 @@ function generatePreviewHTML(pages) {
             font-size: 1.8rem;
             color: #2c3e50;
             margin-bottom: 1rem;
-            border-bottom: 2px solid #C20430;
+            border-bottom: 2px solid #4A1420;
             padding-bottom: 0.5rem;
         }
         .content-block {

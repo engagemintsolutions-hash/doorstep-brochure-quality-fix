@@ -10,7 +10,7 @@ const ColorPicker = (function() {
     const COLOR_PALETTES = {
         brand: {
             name: 'Brand Colors',
-            colors: ['#C20430', '#000000', '#FFFFFF', '#D4AF37', '#1a1a1a', '#f5f5f5']
+            colors: ['#4A1420', '#000000', '#FFFFFF', '#D4AF37', '#1a1a1a', '#f5f5f5']
         },
         basic: {
             name: 'Basic',
@@ -30,7 +30,7 @@ const ColorPicker = (function() {
         },
         estate_agent: {
             name: 'Estate Agent',
-            colors: ['#C20430', '#003366', '#2E5090', '#4A4A4A', '#8B0000', '#006400', '#DAA520', '#1C1C1C']
+            colors: ['#4A1420', '#003366', '#2E5090', '#4A4A4A', '#8B0000', '#006400', '#DAA520', '#1C1C1C']
         },
         pastel: {
             name: 'Pastel',
@@ -46,7 +46,7 @@ const ColorPicker = (function() {
     let recentColors = JSON.parse(localStorage.getItem('colorPicker_recent') || '[]');
 
     // Current state
-    let currentColor = '#C20430';
+    let currentColor = '#4A1420';
     let currentOpacity = 100;
     let onChangeCallback = null;
 
@@ -186,7 +186,7 @@ const ColorPicker = (function() {
 
             .color-input-field input:focus {
                 outline: none;
-                border-color: var(--primary-color, #C20430);
+                border-color: var(--primary-color, #4A1420);
             }
 
             .color-spectrum {
@@ -315,7 +315,7 @@ const ColorPicker = (function() {
             }
 
             .color-picker-btn-primary {
-                background: var(--primary-color, #C20430);
+                background: var(--primary-color, #4A1420);
                 color: white;
                 border: none;
             }
@@ -357,7 +357,7 @@ const ColorPicker = (function() {
     /**
      * Show color picker
      */
-    function show(initialColor = '#C20430', callback = null) {
+    function show(initialColor = '#4A1420', callback = null) {
         // Remove existing
         const existing = document.getElementById('colorPickerModal');
         if (existing) existing.remove();

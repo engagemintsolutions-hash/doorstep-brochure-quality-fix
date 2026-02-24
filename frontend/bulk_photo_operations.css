@@ -37,7 +37,7 @@
 }
 
 .bulk-selected-count {
-    background: #C20430;
+    background: #4A1420;
     color: white;
     padding: 0.25rem 0.75rem;
     border-radius: 20px;
@@ -85,14 +85,14 @@
 }
 
 .bulk-btn-secondary:hover:not(:disabled) {
-    border-color: #C20430;
-    color: #C20430;
+    border-color: #4A1420;
+    color: #4A1420;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(23, 162, 184, 0.2);
 }
 
 .bulk-btn-primary {
-    background: linear-gradient(135deg, #C20430 0%, #138496 100%);
+    background: linear-gradient(135deg, #4A1420 0%, #138496 100%);
     color: white;
 }
 
@@ -141,7 +141,7 @@
 }
 
 .page-builder-photo-thumb.bulk-selected {
-    border: 3px solid #C20430 !important;
+    border: 3px solid #4A1420 !important;
     box-shadow: 0 0 0 3px rgba(23, 162, 184, 0.2);
     transform: scale(0.98);
 }
@@ -151,7 +151,7 @@
     position: absolute;
     top: 6px;
     right: 6px;
-    background: #C20430;
+    background: #4A1420;
     color: white;
     width: 24px;
     height: 24px;
@@ -214,7 +214,7 @@
 }
 
 .bulk-modal-header {
-    background: linear-gradient(135deg, #C20430 0%, #138496 100%);
+    background: linear-gradient(135deg, #4A1420 0%, #138496 100%);
     color: white;
     padding: 1.5rem;
     display: flex;
@@ -279,7 +279,7 @@
 }
 
 .bulk-page-option:hover {
-    border-color: #C20430;
+    border-color: #4A1420;
     background: white;
     transform: translateX(4px);
     box-shadow: 0 4px 12px rgba(23, 162, 184, 0.2);
@@ -303,7 +303,7 @@
 
 .bulk-page-option-arrow {
     font-size: 1.5rem;
-    color: #C20430;
+    color: #4A1420;
     transition: transform 0.2s;
 }
 
@@ -377,7 +377,7 @@
     }
 
     .bulk-btn-secondary:hover:not(:disabled) {
-        border-color: #C20430;
+        border-color: #4A1420;
         background: #374151;
     }
 
@@ -413,12 +413,12 @@
 
 .bulk-btn:focus,
 .bulk-page-option:focus {
-    outline: 3px solid #C20430;
+    outline: 3px solid #4A1420;
     outline-offset: 2px;
 }
 
 .bulk-photo-checkbox input[type="checkbox"]:focus {
-    outline: 2px solid #C20430;
+    outline: 2px solid #4A1420;
     outline-offset: 2px;
 }
 

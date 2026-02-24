@@ -432,7 +432,7 @@ const FontLoader = (function() {
 
             .font-picker-search input:focus {
                 outline: none;
-                border-color: var(--primary-color, #C20430);
+                border-color: var(--primary-color, #4A1420);
             }
 
             .font-picker-body {
@@ -475,8 +475,8 @@ const FontLoader = (function() {
             }
 
             .font-item.selected {
-                background: rgba(194, 4, 48, 0.1);
-                border: 1px solid var(--primary-color, #C20430);
+                background: rgba(74, 20, 32, 0.1);
+                border: 1px solid var(--primary-color, #4A1420);
             }
 
             .font-name {

@@ -16,7 +16,7 @@
         }
 
         .upload-zone {
-            border: 3px dashed var(--primary-color, #C20430);
+            border: 3px dashed var(--primary-color, #4A1420);
             border-radius: 12px;
             padding: 3rem;
             text-align: center;
@@ -32,7 +32,7 @@
 
         .upload-zone.dragover {
             background: rgba(23, 162, 184, 0.2);
-            border-color: var(--secondary-color, #9E0328);
+            border-color: var(--secondary-color, #3a0f18);
         }
 
         .photo-preview {
@@ -60,7 +60,7 @@
             position: absolute;
             top: 0.5rem;
             right: 0.5rem;
-            background: #9E0328;
+            background: #3a0f18;
             color: white;
             border: none;
             border-radius: 50%;
@@ -90,12 +90,12 @@
         }
 
         .agent-card:hover {
-            border-color: var(--primary-color, #C20430);
+            border-color: var(--primary-color, #4A1420);
             background: rgba(23, 162, 184, 0.05);
         }
 
         .agent-card.selected {
-            border-color: var(--primary-color, #C20430);
+            border-color: var(--primary-color, #4A1420);
             background: rgba(23, 162, 184, 0.1);
             box-shadow: 0 4px 12px rgba(23, 162, 184, 0.2);
         }
@@ -108,7 +108,7 @@
                 <!-- Logout button -->
                 <div id="photographerLogout" style="position: absolute; top: 1rem; right: 1rem;">
                     <button onclick="logout()" style="
-                        background: #9E0328;
+                        background: #3a0f18;
                         color: white;
                         border: none;
                         padding: 0.75rem 1.5rem;
@@ -120,7 +120,7 @@
 
                 <!-- Logo and Title -->
                 <div style="display: flex; align-items: center; justify-content: center; gap: 2rem;">
-                    <span style="font-size: 3rem; font-weight: 700; color: #C20430;">Doorstep</span>
+                    <span style="font-size: 3rem; font-weight: 700; color: #4A1420;">Doorstep</span>
                     <div style="text-align: left;">
                         <h1 style="font-size: 1.75rem; margin: 0; font-weight: 600; color: #2c3e50;">📸 Photographer Portal</h1>
                         <p style="color: #6c757d; font-size: 1rem; margin: 0.5rem 0 0 0;" id="photographerName">Welcome, Photographer</p>
@@ -131,13 +131,13 @@
 
         <!-- Upload Form -->
         <div class="upload-card">
-            <h2 style="margin: 0 0 1.5rem 0; color: var(--primary-color, #C20430);">📤 Upload Property Photos</h2>
+            <h2 style="margin: 0 0 1.5rem 0; color: var(--primary-color, #4A1420);">📤 Upload Property Photos</h2>
 
             <form id="uploadForm">
                 <!-- Property Name -->
                 <div style="margin-bottom: 1.5rem;">
                     <label style="display: block; font-weight: 600; margin-bottom: 0.5rem; color: #333;">
-                        Property Name <span style="color: #9E0328;">*</span>
+                        Property Name <span style="color: #3a0f18;">*</span>
                     </label>
                     <input type="text" id="propertyName" placeholder="e.g., Avenue Road" required style="
                         width: 100%;
@@ -152,7 +152,7 @@
                 <!-- Assign to Agent -->
                 <div style="margin-bottom: 1.5rem;">
                     <label style="display: block; font-weight: 600; margin-bottom: 0.75rem; color: #333;">
-                        Assign to Agent <span style="color: #9E0328;">*</span>
+                        Assign to Agent <span style="color: #3a0f18;">*</span>
                     </label>
                     <div class="agent-selector" id="agentSelector">
                         <!-- Will be populated by JavaScript -->
@@ -163,14 +163,14 @@
                 <!-- Photo Upload Zone -->
                 <div style="margin-bottom: 1.5rem;">
                     <label style="display: block; font-weight: 600; margin-bottom: 0.75rem; color: #333;">
-                        Property Photos <span style="color: #9E0328;">*</span>
+                        Property Photos <span style="color: #3a0f18;">*</span>
                     </label>
                     <div class="upload-zone" id="uploadZone">
                         <div style="font-size: 3rem; margin-bottom: 1rem;">📷</div>
                         <h3 style="margin: 0 0 0.5rem 0; color: #333;">Drag & Drop Photos Here</h3>
                         <p style="color: #666; margin: 0 0 1rem 0;">or click to browse</p>
                         <button type="button" onclick="document.getElementById('fileInput').click()" style="
-                            background: var(--primary-color, #C20430);
+                            background: var(--primary-color, #4A1420);
                             color: white;
                             border: none;
                             padding: 0.75rem 2rem;
@@ -188,7 +188,7 @@
                 <!-- Submit Button -->
                 <button type="submit" id="submitBtn" style="
                     width: 100%;
-                    background: linear-gradient(135deg, var(--primary-color, #C20430) 0%, var(--secondary-color, #9E0328) 100%);
+                    background: linear-gradient(135deg, var(--primary-color, #4A1420) 0%, var(--secondary-color, #3a0f18) 100%);
                     color: white;
                     border: none;
                     padding: 1rem;
@@ -205,7 +205,7 @@
 
         <!-- Upload History -->
         <div class="upload-card">
-            <h2 style="margin: 0 0 1.5rem 0; color: var(--primary-color, #C20430);">📋 Recent Uploads</h2>
+            <h2 style="margin: 0 0 1.5rem 0; color: var(--primary-color, #4A1420);">📋 Recent Uploads</h2>
             <div id="uploadHistory">
                 <p style="text-align: center; color: #999; padding: 2rem;">No uploads yet</p>
             </div>

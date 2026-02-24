@@ -81,7 +81,7 @@
      * Apply gradient fill to an element
      */
     function applyGradient(element, options = {}) {
-        const { type = 'linear', angle = 135, colors = ['#C20430', '#8b1a1a'] } = options;
+        const { type = 'linear', angle = 135, colors = ['#4A1420', '#8b1a1a'] } = options;
 
         let gradient;
         if (type === 'linear') {
@@ -242,7 +242,7 @@
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
                                 <defs>
                                     <linearGradient id="gradIcon" x1="0%" y1="0%" x2="100%" y2="100%">
-                                        <stop offset="0%" style="stop-color:#C20430"/>
+                                        <stop offset="0%" style="stop-color:#4A1420"/>
                                         <stop offset="100%" style="stop-color:#f5af19"/>
                                     </linearGradient>
                                 </defs>
@@ -282,7 +282,7 @@
                             </div>
                             <div class="color-row">
                                 <label>Color 1</label>
-                                <input type="color" id="gradientColor1" value="#C20430">
+                                <input type="color" id="gradientColor1" value="#4A1420">
                             </div>
                             <div class="color-row">
                                 <label>Color 2</label>

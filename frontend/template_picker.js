@@ -30,7 +30,7 @@
      */
     function generateVisualPreview(template) {
         const styles = template.styles || {};
-        const accent = styles.accentColor || '#C20430';
+        const accent = styles.accentColor || '#4A1420';
         const bg = styles.pageBackground || '#ffffff';
         const textPrimary = styles.textPrimary || '#333333';
         const textSecondary = styles.textSecondary || '#666666';
@@ -736,7 +736,7 @@
         const computedStyle = window.getComputedStyle(page);
 
         // Find accent color from any colored element
-        let accentColor = '#C20430';
+        let accentColor = '#4A1420';
         const accentElements = page.querySelectorAll('[style*="color"], [style*="background"]');
         for (const el of accentElements) {
             const style = el.getAttribute('style') || '';

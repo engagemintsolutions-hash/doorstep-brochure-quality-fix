@@ -144,7 +144,7 @@ function highlightOption(dropdown, index) {
     options.forEach((opt, i) => {
         if (i === index) {
             opt.style.backgroundColor = '#f8f9fa';
-            opt.style.borderLeftColor = '#C20430';
+            opt.style.borderLeftColor = '#4A1420';
             opt.style.borderLeftWidth = '3px';
             opt.style.borderLeftStyle = 'solid';
         } else {
@@ -243,7 +243,7 @@ function showLoadingNotification(message) {
         position: fixed;
         top: 20px;
         right: 20px;
-        background: linear-gradient(135deg, #C20430 0%, #138496 100%);
+        background: linear-gradient(135deg, #4A1420 0%, #138496 100%);
         color: white;
         padding: 1rem 1.5rem;
         border-radius: 8px;

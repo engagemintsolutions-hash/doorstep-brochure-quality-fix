@@ -769,21 +769,21 @@ function showReadinessSummary() {
 
     // Build summary HTML
     const summaryHTML = `
-        <div style="background: #f8f9fa; border: 2px solid #C20430; border-radius: 12px; padding: 1.5rem; margin: 1rem 0; max-width: 500px; margin-left: auto; margin-right: auto;">
-            <h3 style="color: #C20430; margin: 0 0 1rem 0; text-align: center; font-size: 1.1rem;">📋 Brochure Readiness Summary</h3>
+        <div style="background: #f8f9fa; border: 2px solid #4A1420; border-radius: 12px; padding: 1.5rem; margin: 1rem 0; max-width: 500px; margin-left: auto; margin-right: auto;">
+            <h3 style="color: #4A1420; margin: 0 0 1rem 0; text-align: center; font-size: 1.1rem;">📋 Brochure Readiness Summary</h3>
 
             <!-- Stats -->
             <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 1rem; margin-bottom: 1rem;">
                 <div style="text-align: center; background: white; padding: 0.75rem; border-radius: 8px;">
-                    <div style="font-size: 1.5rem; font-weight: bold; color: #C20430;">${totalPages}</div>
+                    <div style="font-size: 1.5rem; font-weight: bold; color: #4A1420;">${totalPages}</div>
                     <div style="font-size: 0.75rem; color: #6c757d;">Pages</div>
                 </div>
                 <div style="text-align: center; background: white; padding: 0.75rem; border-radius: 8px;">
-                    <div style="font-size: 1.5rem; font-weight: bold; color: #C20430;">${photosUsedCount}</div>
+                    <div style="font-size: 1.5rem; font-weight: bold; color: #4A1420;">${photosUsedCount}</div>
                     <div style="font-size: 0.75rem; color: #6c757d;">Photos</div>
                 </div>
                 <div style="text-align: center; background: white; padding: 0.75rem; border-radius: 8px;">
-                    <div style="font-size: 1.5rem; font-weight: bold; color: #C20430;">${desiredWordCount.toLocaleString()}</div>
+                    <div style="font-size: 1.5rem; font-weight: bold; color: #4A1420;">${desiredWordCount.toLocaleString()}</div>
                     <div style="font-size: 0.75rem; color: #6c757d;">Words</div>
                 </div>
             </div>
@@ -1716,7 +1716,7 @@ function updatePageBuilderPreview() {
                 card.style.cssText = 'background: #f8f9fa; padding: 0.75rem; border-radius: 6px; border: 1px solid #dee2e6;';
                 const photoCount = page.contentBlocks.filter(b => b.type === 'photo').length;
                 card.innerHTML = `
-                    <div style="font-weight: bold; color: #C20430; margin-bottom: 0.25rem;">Page ${page.id}: ${page.name}</div>
+                    <div style="font-weight: bold; color: #4A1420; margin-bottom: 0.25rem;">Page ${page.id}: ${page.name}</div>
                     <div style="color: #6c757d; font-size: 0.85rem;">${photoCount} photo${photoCount !== 1 ? 's' : ''}</div>
                 `;
                 inlineCardsContainer.appendChild(card);
