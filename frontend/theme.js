@@ -5,19 +5,19 @@ console.log('🎨 Theme system loaded');
 const THEMES = {
     doorstep: {
         name: 'Doorstep',
-        primary: '#C20430',      // Doorstep Red
-        primaryDark: '#9E0328',
-        primaryDarker: '#7A0220',
-        secondary: '#000000',    // Black accent
-        secondaryDark: '#1F2937',
-        secondaryDarker: '#374151',
-        primaryLight: 'rgba(194, 4, 48, 0.05)',
-        secondaryLight: 'rgba(0, 0, 0, 0.05)',
-        gradientStart: '#FEF2F2',
-        gradientEnd: '#F9FAFB',
-        radialPrimary: 'rgba(194, 4, 48, 0.15)',
-        radialSecondary: 'rgba(0, 0, 0, 0.08)',
-        logo: '/static/doorstep-logo.png'
+        primary: '#4A1420',      // Doorstep Burgundy
+        primaryDark: '#3a0f18',
+        primaryDarker: '#2a0b12',
+        secondary: '#C4975A',    // Gold accent
+        secondaryDark: '#a67d48',
+        secondaryDarker: '#8a6838',
+        primaryLight: 'rgba(74, 20, 32, 0.05)',
+        secondaryLight: 'rgba(196, 151, 90, 0.05)',
+        gradientStart: '#f9f7f3',
+        gradientEnd: '#f5f1e8',
+        radialPrimary: 'rgba(74, 20, 32, 0.15)',
+        radialSecondary: 'rgba(196, 151, 90, 0.08)',
+        logo: '/static/images/doorstep-logo.png'
     },
     savills: {
         name: 'Savills',

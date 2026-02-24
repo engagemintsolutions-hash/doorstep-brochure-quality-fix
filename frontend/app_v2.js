@@ -2154,7 +2154,7 @@ function displayPhotoPreviews() {
 
         // Display intelligent room name if available, otherwise show filename
         const displayName = photo.room_name || photo.name;
-        const roomBadge = photo.room_name ? `<span style="display: inline-block; background: #C20430; color: white; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.75rem; margin-right: 0.25rem;">🏠</span>` : '';
+        const roomBadge = photo.room_name ? `<span style="display: inline-block; background: #4A1420; color: white; padding: 0.15rem 0.4rem; border-radius: 4px; font-size: 0.75rem; margin-right: 0.25rem;">🏠</span>` : '';
 
         return `
             <div class="photo-preview image-preview-item ${window.selectedPhotoIndex === index ? 'selected' : ''}" data-index="${index}" onclick="selectPhoto(${index})">
@@ -4308,7 +4308,7 @@ function syncCategoriesToUI() {
         }
 
         // Get theme color
-        const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#C20430';
+        const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--primary-color') || '#4A1420';
 
         // Clear existing display
         categoryPhotos.innerHTML = '';
@@ -4355,7 +4355,7 @@ function showAIAnalysisIndicator() {
         position: fixed;
         top: 320px;
         right: 20px;
-        background: linear-gradient(135deg, #C20430, #9E0328);
+        background: linear-gradient(135deg, #4A1420, #3a0f18);
         color: white;
         padding: 0.75rem 1.25rem;
         border-radius: 50px;

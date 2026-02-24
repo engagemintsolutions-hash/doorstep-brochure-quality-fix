@@ -4199,7 +4199,7 @@ body {
 
 .element-item:hover {
     border-color: var(--doorstep-red);
-    box-shadow: 0 2px 8px rgba(194, 4, 48, 0.1);
+    box-shadow: 0 2px 8px rgba(74, 20, 32, 0.1);
     transform: translateY(-1px);
 }
 
@@ -4312,7 +4312,7 @@ body {
 }
 
 .layer-row.selected {
-    background: rgba(194, 4, 48, 0.08);
+    background: rgba(74, 20, 32, 0.08);
     border-left: 3px solid var(--doorstep-red);
     padding-left: 7px;
 }
@@ -4476,9 +4476,9 @@ body {
 }
 
 .toolbar-btn.active {
-    background: rgba(194, 4, 48, 0.1);
+    background: rgba(74, 20, 32, 0.1);
     color: var(--doorstep-red);
-    border-color: rgba(194, 4, 48, 0.3);
+    border-color: rgba(74, 20, 32, 0.3);
 }
 
 /* Design Elements */
@@ -4769,7 +4769,7 @@ body {
 }
 
 .design-element.resizing {
-    box-shadow: 0 4px 15px rgba(194, 4, 48, 0.2);
+    box-shadow: 0 4px 15px rgba(74, 20, 32, 0.2);
 }
 
 /* Enhanced resize handles */
@@ -5017,7 +5017,7 @@ body {
 
 .prebuilt-section-item:hover {
     border-color: var(--doorstep-red);
-    box-shadow: 0 2px 8px rgba(194, 4, 48, 0.1);
+    box-shadow: 0 2px 8px rgba(74, 20, 32, 0.1);
     transform: translateY(-2px);
 }
 
@@ -5368,7 +5368,7 @@ body {
 .brochure-page.drop-target {
     outline: 3px dashed var(--doorstep-red) !important;
     outline-offset: -3px;
-    background-color: rgba(194, 4, 48, 0.05) !important;
+    background-color: rgba(74, 20, 32, 0.05) !important;
 }
 
 /* Drag over state for sidebar drops */
@@ -6816,12 +6816,12 @@ body {
 
 .format-card:hover {
     border-color: var(--primary-color);
-    background: rgba(194, 4, 48, 0.02);
+    background: rgba(74, 20, 32, 0.02);
 }
 
 .format-card.selected {
     border-color: var(--primary-color);
-    background: rgba(194, 4, 48, 0.05);
+    background: rgba(74, 20, 32, 0.05);
 }
 
 .format-card-icon {
@@ -8654,7 +8654,7 @@ body {
 .image-placeholder.drag-over {
     border-color: var(--primary-color, #4A1420);
     border-width: 3px;
-    background: rgba(194, 4, 48, 0.05);
+    background: rgba(74, 20, 32, 0.05);
 }
 
 .image-placeholder img {
@@ -8797,7 +8797,7 @@ body {
 
 .layout-card.active {
     border-color: var(--primary-color);
-    background: rgba(194, 4, 48, 0.05);
+    background: rgba(74, 20, 32, 0.05);
 }
 
 .layout-card-preview {

@@ -57,7 +57,7 @@ function addLoginButton() {
             <button
                 onclick="window.location.href='/static/login.html'"
                 style="
-                    background: linear-gradient(135deg, var(--primary-color, #C20430) 0%, var(--primary-dark, #138496) 100%);
+                    background: linear-gradient(135deg, var(--primary-color, #4A1420) 0%, var(--primary-dark, #138496) 100%);
                     color: white;
                     border: none;
                     padding: 0.75rem 1.5rem;
@@ -88,7 +88,7 @@ function addLoginButton() {
 function addLogoutButton() {
     const username = localStorage.getItem('agentUsername') || 'Agent';
     const theme = window.getCurrentTheme ? window.getCurrentTheme() : null;
-    const primaryColor = theme ? theme.primary : '#C20430';
+    const primaryColor = theme ? theme.primary : '#4A1420';
 
     const header = document.querySelector('header');
     if (header) {
@@ -120,7 +120,7 @@ function addLogoutButton() {
             <button
                 onclick="logout()"
                 style="
-                    background: #9E0328;
+                    background: #3a0f18;
                     color: white;
                     border: none;
                     padding: 0.5rem 1rem;
@@ -131,7 +131,7 @@ function addLogoutButton() {
                     transition: all 0.2s ease;
                 "
                 onmouseover="this.style.background='#ee5a5a'"
-                onmouseout="this.style.background='#9E0328'"
+                onmouseout="this.style.background='#3a0f18'"
             >
                 Logout
             </button>

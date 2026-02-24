@@ -35,7 +35,7 @@ async function loadCreditsWidget() {
 
 // Display the credits widget in the UI
 function displayCreditsWidget(usageData) {
-    const theme = window.getCurrentTheme ? window.getCurrentTheme() : { primary: '#C20430', secondary: '#9E0328' };
+    const theme = window.getCurrentTheme ? window.getCurrentTheme() : { primary: '#4A1420', secondary: '#3a0f18' };
 
     // Remove existing widget if present
     const existing = document.getElementById('creditsWidget');
@@ -80,7 +80,7 @@ function displayCreditsWidget(usageData) {
             <div style="margin-bottom: 1rem;">
                 <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
                     <span style="font-size: 0.9rem; color: #333; font-weight: 600;">Brochures Remaining</span>
-                    <span style="font-size: 1.1rem; font-weight: 700; color: ${remaining > 0 ? theme.primary : '#9E0328'};">${remaining} / ${usageData.trial_limit}</span>
+                    <span style="font-size: 1.1rem; font-weight: 700; color: ${remaining > 0 ? theme.primary : '#3a0f18'};">${remaining} / ${usageData.trial_limit}</span>
                 </div>
 
                 <!-- Progress bar -->
@@ -196,7 +196,7 @@ function displayCreditsWidget(usageData) {
 
 // Show upgrade modal
 function showUpgradeModal() {
-    const theme = window.getCurrentTheme ? window.getCurrentTheme() : { primary: '#C20430', secondary: '#9E0328' };
+    const theme = window.getCurrentTheme ? window.getCurrentTheme() : { primary: '#4A1420', secondary: '#3a0f18' };
 
     const modal = document.createElement('div');
     modal.id = 'upgradeModal';

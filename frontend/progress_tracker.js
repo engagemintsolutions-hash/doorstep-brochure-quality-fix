@@ -8,7 +8,7 @@ function createProgressTracker() {
 
     tracker.innerHTML = `
         <div style="text-align: center; margin-bottom: 1.5rem;">
-            <div id="progressPercentage" style="font-size: 3rem; font-weight: bold; color: #9E0328;">0%</div>
+            <div id="progressPercentage" style="font-size: 3rem; font-weight: bold; color: #3a0f18;">0%</div>
         </div>
 
         <div style="position: relative; width: 200px; height: 200px; margin: 0 auto 1.5rem; overflow: hidden;">
@@ -131,7 +131,7 @@ function showPremiumPopup() {
         top: 50%;
         left: 50%;
         transform: translate(-50%, -50%) scale(0.8);
-        background: linear-gradient(135deg, #C20430 0%, #9E0328 100%);
+        background: linear-gradient(135deg, #4A1420 0%, #3a0f18 100%);
         color: white;
         padding: 2rem 3rem;
         border-radius: 16px;

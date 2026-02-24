@@ -11,7 +11,7 @@ const BrandKitV2 = (function() {
     const DEFAULT_KIT = {
         name: 'My Brand',
         colors: {
-            primary: '#C20430',
+            primary: '#4A1420',
             secondary: '#1a1a2e',
             accent: '#D4AF37',
             background: '#FFFFFF',
@@ -140,7 +140,7 @@ const BrandKitV2 = (function() {
             colors: {
                 primary: '#722F37',
                 secondary: '#F8F4E8',
-                accent: '#CE171E',
+                accent: '#4A1420',
                 background: '#FAF9F6',
                 text: '#2d2d2d'
             },

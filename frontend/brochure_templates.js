@@ -25,13 +25,13 @@ const BrochureTemplates = {
             preview: '🏛️',
             styles: {
                 pageBackground: '#FAF9F6', // Savills cream
-                accentColor: '#CE171E', // Savills red
+                accentColor: '#4A1420', // Savills red
                 accentSecondary: '#FFE850', // Savills yellow
                 textPrimary: '#2d2d2d',
                 textSecondary: '#6b7280',
                 borderStyle: 'solid',
                 borderWidth: '2px',
-                borderColor: '#CE171E',
+                borderColor: '#4A1420',
                 cornerAccent: 'none',
                 headerStyle: 'classic',
                 footerStyle: 'minimal',
@@ -107,13 +107,13 @@ const BrochureTemplates = {
             preview: '🏰',
             styles: {
                 pageBackground: '#FFFEFA',
-                accentColor: '#B8232E', // Knight Frank red
+                accentColor: '#4A1420', // Knight Frank red
                 accentSecondary: '#2D5832', // Heritage green
                 textPrimary: '#1a1411',
                 textSecondary: '#4a3f38',
                 borderStyle: 'solid',
                 borderWidth: '3px',
-                borderColor: '#B8232E',
+                borderColor: '#4A1420',
                 cornerAccent: 'none',
                 gradient: 'prestige-red'
             }

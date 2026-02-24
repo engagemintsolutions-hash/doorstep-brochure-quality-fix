@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
             imageUploadZone.addEventListener('dragover', (e) => {
                 e.preventDefault();
                 e.stopPropagation();
-                imageUploadZone.style.borderColor = '#C20430';
+                imageUploadZone.style.borderColor = '#4A1420';
                 imageUploadZone.style.background = 'rgba(23, 162, 184, 0.05)';
             });
 
@@ -133,7 +133,7 @@ async function handlePhotoUpload(event) {
             display: inline-block;
             margin: 0.5rem;
             padding: 0.5rem;
-            border: 2px solid #C20430;
+            border: 2px solid #4A1420;
             border-radius: 8px;
             background: white;
             position: relative;
@@ -172,7 +172,7 @@ async function handlePhotoUpload(event) {
             position: absolute;
             top: 5px;
             right: 5px;
-            background: #9E0328;
+            background: #3a0f18;
             color: white;
             border: none;
             border-radius: 50%;
@@ -231,9 +231,9 @@ function handleFloorPlanUpload(event) {
         previewContainer.innerHTML = `
             <div style="position: relative; display: inline-block;">
                 <img src="${e.target.result}"
-                     style="max-width: 300px; max-height: 200px; border-radius: 8px; border: 2px solid #C20430;">
+                     style="max-width: 300px; max-height: 200px; border-radius: 8px; border: 2px solid #4A1420;">
                 <button onclick="removeFloorPlan()"
-                        style="position: absolute; top: 5px; right: 5px; background: #9E0328; color: white; border: none; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; font-size: 16px;">×</button>
+                        style="position: absolute; top: 5px; right: 5px; background: #3a0f18; color: white; border: none; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; font-size: 16px;">×</button>
             </div>
         `;
         previewContainer.style.display = 'block';
@@ -294,9 +294,9 @@ function handleBrochureUpload(event) {
         previewContainer.innerHTML = `
             <div style="position: relative; display: inline-block;">
                 <img src="${e.target.result}"
-                     style="max-width: 300px; max-height: 200px; border-radius: 8px; border: 2px solid #C20430;">
+                     style="max-width: 300px; max-height: 200px; border-radius: 8px; border: 2px solid #4A1420;">
                 <button onclick="removeBrochure()"
-                        style="position: absolute; top: 5px; right: 5px; background: #9E0328; color: white; border: none; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; font-size: 16px;">×</button>
+                        style="position: absolute; top: 5px; right: 5px; background: #3a0f18; color: white; border: none; border-radius: 50%; width: 24px; height: 24px; cursor: pointer; font-size: 16px;">×</button>
             </div>
         `;
         previewContainer.style.display = 'block';

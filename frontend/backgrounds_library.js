@@ -312,7 +312,7 @@ const BackgroundsLibrary = (function() {
         estate_red: {
             name: 'Estate Red',
             category: 'professional',
-            css: 'linear-gradient(135deg, #C20430 0%, #8B0000 100%)'
+            css: 'linear-gradient(135deg, #4A1420 0%, #8B0000 100%)'
         },
         luxury_gold: {
             name: 'Luxury Gold',
@@ -380,7 +380,7 @@ const BackgroundsLibrary = (function() {
         slate: { name: 'Slate', hex: '#4A4A4A', category: 'neutral' },
 
         // Estate agent colors
-        doorstep_red: { name: 'Doorstep Red', hex: '#C20430', category: 'brand' },
+        doorstep_red: { name: 'Doorstep Red', hex: '#4A1420', category: 'brand' },
         navy_blue: { name: 'Navy Blue', hex: '#003366', category: 'professional' },
         forest_green: { name: 'Forest Green', hex: '#228B22', category: 'professional' },
         burgundy: { name: 'Burgundy', hex: '#800020', category: 'professional' },
@@ -678,13 +678,13 @@ const BackgroundsLibrary = (function() {
             }
 
             .backgrounds-tab:hover {
-                border-color: var(--primary-color, #C20430);
+                border-color: var(--primary-color, #4A1420);
             }
 
             .backgrounds-tab.active {
-                background: var(--primary-color, #C20430);
+                background: var(--primary-color, #4A1420);
                 color: white;
-                border-color: var(--primary-color, #C20430);
+                border-color: var(--primary-color, #4A1420);
             }
 
             .backgrounds-tab-content {
@@ -722,7 +722,7 @@ const BackgroundsLibrary = (function() {
 
             .background-item:hover {
                 transform: scale(1.1);
-                border-color: var(--primary-color, #C20430);
+                border-color: var(--primary-color, #4A1420);
                 box-shadow: 0 2px 8px rgba(0,0,0,0.2);
             }
 

@@ -13,7 +13,7 @@
     const CONFIG = {
         gridSize: 10,           // Grid cell size in pixels
         snapThreshold: 5,       // Distance to trigger snap in pixels
-        guideColor: '#C20430',  // Doorstep red
+        guideColor: '#4A1420',  // Doorstep red
         guideWidth: 1
     };
 

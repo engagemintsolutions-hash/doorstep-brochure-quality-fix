@@ -26,7 +26,7 @@ body::before {
 
 .container {
     background: #ffffff;
-    border: 3px solid #9E0328;
+    border: 3px solid #3a0f18;
     box-shadow:
         0 4px 6px rgba(0,0,0,0.05),
         0 1px 3px rgba(0,0,0,0.1);
@@ -37,7 +37,7 @@ body::before {
 header {
     background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
     border-bottom: 3px solid;
-    border-image: linear-gradient(90deg, #C20430 0%, #9E0328 100%) 1;
+    border-image: linear-gradient(90deg, #4A1420 0%, #3a0f18 100%) 1;
     box-shadow: 0 2px 8px rgba(255, 107, 107, 0.08);
     position: relative;
     padding: 1rem 1.5rem;
@@ -64,8 +64,8 @@ header {
 }
 
 .form-section h2 {
-    color: #C20430;
-    border-left: 4px solid #9E0328;
+    color: #4A1420;
+    border-left: 4px solid #3a0f18;
     padding-left: 1rem;
     background: linear-gradient(90deg, rgba(255, 107, 107, 0.05) 0%, transparent 100%);
     padding: 0.75rem 0 0.75rem 1rem;
@@ -78,7 +78,7 @@ select,
 textarea {
     background: linear-gradient(135deg, #ffffff 0%, #fafbfc 100%);
     color: #2c3e50;
-    border: 2px solid #9E0328;
+    border: 2px solid #3a0f18;
     transition: all 0.3s ease;
 }
 
@@ -94,7 +94,7 @@ input[type="text"]:focus,
 input[type="number"]:focus,
 select:focus,
 textarea:focus {
-    border-color: #9E0328;
+    border-color: #3a0f18;
     outline: none;
     box-shadow:
         0 0 0 3px rgba(255, 107, 107, 0.15),
@@ -106,7 +106,7 @@ textarea:focus {
 input[type="checkbox"] {
     width: 20px;
     height: 20px;
-    border: 2px solid #9E0328;
+    border: 2px solid #3a0f18;
     border-radius: 4px;
     appearance: none;
     cursor: pointer;
@@ -115,8 +115,8 @@ input[type="checkbox"] {
 }
 
 input[type="checkbox"]:checked {
-    background: #9E0328;
-    border-color: #9E0328;
+    background: #3a0f18;
+    border-color: #3a0f18;
 }
 
 input[type="checkbox"]:checked::after {
@@ -156,7 +156,7 @@ small.field-hint {
 }
 
 .btn-primary {
-    background: #C20430;
+    background: #4A1420;
 }
 
 .btn-primary:hover {
@@ -190,7 +190,7 @@ small.field-hint {
 }
 
 .feature-category summary {
-    color: #C20430;
+    color: #4A1420;
     font-weight: 600;
     cursor: pointer;
     list-style: none;
@@ -234,13 +234,13 @@ small.field-hint {
 
 .feature-options label:hover {
     background: #f0f7fc;
-    border-color: #C20430;
+    border-color: #4A1420;
     transform: translateX(2px);
 }
 
 .feature-options input[type="checkbox"] {
     cursor: pointer;
-    accent-color: #C20430;
+    accent-color: #4A1420;
 }
 
 /* Auto-detected Feature Badge */
@@ -315,7 +315,7 @@ small.field-hint {
 }
 
 .image-upload-zone:hover {
-    border-color: #C20430;
+    border-color: #4A1420;
     background: #e9ecef;
 }
 
@@ -365,7 +365,7 @@ small.field-hint {
 }
 
 .photo-preview:hover {
-    border-color: #C20430;
+    border-color: #4A1420;
     transform: scale(1.02);
 }
 
@@ -379,7 +379,7 @@ small.field-hint {
     position: absolute;
     top: 0.5rem;
     right: 0.5rem;
-    background: #C20430;
+    background: #4A1420;
     color: white;
     border: none;
     width: 30px;
@@ -427,13 +427,13 @@ small.field-hint {
     width: 20px;
     height: 20px;
     cursor: pointer;
-    accent-color: #C20430;
+    accent-color: #4A1420;
 }
 
 /* Photo Assignment UI with Modern Polish */
 .photo-progress-tracker {
     background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
-    border: 2px solid #C20430;
+    border: 2px solid #4A1420;
     border-radius: 12px;
     padding: 1.5rem;
     margin-bottom: 1.5rem;
@@ -479,7 +479,7 @@ small.field-hint {
 }
 
 .progress-bar-fill {
-    background: linear-gradient(90deg, #dc3545 0%, #ff6b4a 25%, #FFA500 50%, #9E0328 75%, #28a745 100%);
+    background: linear-gradient(90deg, #dc3545 0%, #ff6b4a 25%, #FFA500 50%, #3a0f18 75%, #28a745 100%);
     height: 100%;
     transition: width 0.5s ease;
     display: flex;
@@ -529,7 +529,7 @@ small.field-hint {
 }
 
 .page-card:hover {
-    border-color: #C20430;
+    border-color: #4A1420;
     transform: translateY(-2px);
 }
 
@@ -539,7 +539,7 @@ small.field-hint {
 }
 
 .page-number {
-    background: #C20430;
+    background: #4A1420;
     color: white;
     width: 40px;
     height: 40px;
@@ -554,7 +554,7 @@ small.field-hint {
 
 .page-label {
     font-weight: 600;
-    color: #C20430;
+    color: #4A1420;
     margin-bottom: 0.25rem;
 }
 
@@ -585,7 +585,7 @@ small.field-hint {
 }
 
 .page-assign-btn {
-    background: #C20430;
+    background: #4A1420;
     color: white;
     border: none;
     padding: 0.5rem 1rem;
@@ -606,7 +606,7 @@ small.field-hint {
 }
 
 .photo-preview.selected {
-    border-color: #9E0328;
+    border-color: #3a0f18;
     box-shadow: 0 0 0 3px rgba(255, 107, 107, 0.3);
     transform: scale(1.05);
 }
@@ -627,7 +627,7 @@ small.field-hint {
 .floor-plan-upload-zone:hover,
 .logo-upload-zone:hover,
 .agent-photo-zone:hover {
-    border-color: #C20430;
+    border-color: #4A1420;
     background: #e9ecef;
 }
 
@@ -662,7 +662,7 @@ small.field-hint {
 }
 
 .preview-remove-btn {
-    background: #C20430;
+    background: #4A1420;
     color: white;
     border: none;
     padding: 0.5rem 1rem;
@@ -701,7 +701,7 @@ small.field-hint {
 }
 
 .wizard-card:hover {
-    border-color: #C20430;
+    border-color: #4A1420;
     transform: translateY(-4px);
     box-shadow: 0 8px 24px rgba(44, 95, 124, 0.15);
 }
@@ -738,7 +738,7 @@ small.field-hint {
 }
 
 .btn-wizard {
-    background: linear-gradient(135deg, #C20430 0%, #a02818 100%);
+    background: linear-gradient(135deg, #4A1420 0%, #a02818 100%);
     color: white;
     border: none;
     padding: 0.75rem 2rem;
@@ -756,7 +756,7 @@ small.field-hint {
 
 /* PROBLEM 7: Visual Hierarchy - Required Fields */
 .required-indicator {
-    color: #C20430;
+    color: #4A1420;
     font-weight: bold;
     margin-right: 0.25rem;
 }
@@ -837,12 +837,12 @@ small.field-hint {
 }
 
 .tone-card:hover .tone-card-content {
-    border-color: #C20430;
+    border-color: #4A1420;
     background: #fff;
 }
 
 .tone-card input[type="radio"]:checked + .tone-card-content {
-    border-color: #C20430;
+    border-color: #4A1420;
     background: linear-gradient(135deg, #e8f4f8 0%, #fff 100%);
     box-shadow: 0 4px 12px rgba(44, 95, 124, 0.15);
 }
@@ -870,7 +870,7 @@ small.field-hint {
     font-size: 0.9rem;
     line-height: 1.6;
     font-style: italic;
-    border-left: 3px solid #C20430;
+    border-left: 3px solid #4A1420;
     padding-left: 1rem;
 }
 
@@ -913,7 +913,7 @@ small.field-hint {
 }
 
 .progress-bar {
-    background: linear-gradient(90deg, #dc3545 0%, #ff6b4a 25%, #FFA500 50%, #9E0328 75%, #28a745 100%);
+    background: linear-gradient(90deg, #dc3545 0%, #ff6b4a 25%, #FFA500 50%, #3a0f18 75%, #28a745 100%);
     height: 100%;
     width: 0%;
     transition: width 0.3s ease;
@@ -955,7 +955,7 @@ small.field-hint {
 }
 
 .progress-step.active .step-icon {
-    color: #C20430;
+    color: #4A1420;
     animation: spin 1s linear infinite;
 }
 
@@ -993,7 +993,7 @@ small.field-hint {
 }
 
 #saveStatus.saving {
-    color: #9E0328;
+    color: #3a0f18;
 }
 
 #saveStatus.saved {
@@ -1010,7 +1010,7 @@ small.field-hint {
     padding: 2rem;
     border-radius: 12px;
     margin-bottom: 2rem;
-    border-left: 4px solid #C20430;
+    border-left: 4px solid #4A1420;
 }
 
 .results-intro h2 {
@@ -1036,7 +1036,7 @@ small.field-hint {
 }
 
 .variant-card:hover {
-    border-color: #C20430;
+    border-color: #4A1420;
     box-shadow: 0 4px 12px rgba(44, 95, 124, 0.1);
 }
 
@@ -1063,7 +1063,7 @@ small.field-hint {
 }
 
 .variant-badge {
-    background: #C20430;
+    background: #4A1420;
     color: white;
     padding: 0.25rem 0.75rem;
     border-radius: 4px;
@@ -1073,14 +1073,14 @@ small.field-hint {
 
 .variant-recommendation {
     background: #e8f4f8;
-    border-left: 4px solid #C20430;
+    border-left: 4px solid #4A1420;
     padding: 0.75rem 1rem;
     margin-bottom: 1rem;
     border-radius: 4px;
 }
 
 .variant-recommendation strong {
-    color: #C20430;
+    color: #4A1420;
 }
 
 .variant-content {
@@ -1232,14 +1232,14 @@ small.field-hint {
 }
 
 .section-action-btn:hover {
-    background: #C20430;
+    background: #4A1420;
     color: white;
-    border-color: #C20430;
+    border-color: #4A1420;
 }
 
 .section-editing {
     background: #fff;
-    border: 2px solid #C20430;
+    border: 2px solid #4A1420;
     padding: 1rem;
 }
 
@@ -1285,7 +1285,7 @@ small.field-hint {
 .photo-number-badge {
     position: absolute;
     top: 8px;
-    background: linear-gradient(135deg, #C20430 0%, #1a4d61 100%);
+    background: linear-gradient(135deg, #4A1420 0%, #1a4d61 100%);
     color: white;
     width: 28px;
     height: 28px;
@@ -1334,11 +1334,11 @@ small.field-hint {
 
 /* Different colors for different categories */
 .photo-number-badge.category-cover {
-    background: linear-gradient(135deg, #9E0328 0%, #d49a3a 100%);
+    background: linear-gradient(135deg, #3a0f18 0%, #d49a3a 100%);
 }
 
 .photo-number-badge.category-exterior {
-    background: linear-gradient(135deg, #C20430 0%, #1a4d61 100%);
+    background: linear-gradient(135deg, #4A1420 0%, #1a4d61 100%);
 }
 
 .photo-number-badge.category-interior {
@@ -1394,7 +1394,7 @@ small.field-hint {
 }
 
 .category-section:hover {
-    border-color: #C20430 !important;
+    border-color: #4A1420 !important;
     box-shadow:
         0 8px 24px rgba(44, 95, 124, 0.12),
         0 4px 8px rgba(0,0,0,0.08) !important;
@@ -1431,7 +1431,7 @@ small.field-hint {
     box-shadow:
         0 4px 12px rgba(44, 95, 124, 0.15),
         0 2px 4px rgba(0,0,0,0.08) !important;
-    border: 2px solid #C20430 !important;
+    border: 2px solid #4A1420 !important;
     position: relative;
     overflow: hidden;
 }
@@ -1473,8 +1473,8 @@ small.field-hint {
 
 /* Completion Tracker - Navy with Yellow Accents */
 #completionTracker {
-    background: linear-gradient(135deg, #1a3a52 0%, #C20430 100%) !important;
-    border: 3px solid #9E0328 !important;
+    background: linear-gradient(135deg, #1a3a52 0%, #4A1420 100%) !important;
+    border: 3px solid #3a0f18 !important;
     box-shadow: 0 8px 24px rgba(255, 107, 107, 0.25), 0 4px 12px rgba(0,0,0,0.3) !important;
     color: #ffffff !important;
 }
@@ -1492,7 +1492,7 @@ small.field-hint {
 }
 
 #completionPercentage {
-    color: #9E0328 !important;
+    color: #3a0f18 !important;
     text-shadow: 0 2px 4px rgba(0,0,0,0.3);
     font-weight: bold !important;
 }
@@ -1507,22 +1507,22 @@ small.field-hint {
 }
 
 #completionTracker .completion-item.completed {
-    color: #9E0328 !important;
+    color: #3a0f18 !important;
     font-weight: 600 !important;
 }
 
 #completionTracker svg {
-    stroke: #9E0328 !important;
+    stroke: #3a0f18 !important;
 }
 
 /* Progress circle with yellow accent */
 #completionTracker circle {
-    stroke: #9E0328 !important;
+    stroke: #3a0f18 !important;
 }
 
 /* Section titles in tracker */
 #completionTracker .tracker-section-title {
-    color: #9E0328 !important;
+    color: #3a0f18 !important;
     font-weight: 600 !important;
 }
 
@@ -1537,8 +1537,8 @@ small.field-hint {
 }
 
 #exampleBrochureSection h3 {
-    color: #C20430 !important;
-    border-left: 4px solid #C20430 !important;
+    color: #4A1420 !important;
+    border-left: 4px solid #4A1420 !important;
     padding-left: 1rem !important;
     background: linear-gradient(90deg, rgba(44, 95, 124, 0.05) 0%, transparent 100%) !important;
     padding: 0.75rem 0 0.75rem 1rem !important;
@@ -1549,7 +1549,7 @@ small.field-hint {
 }
 
 #exampleBrochureSection label {
-    color: #C20430 !important;
+    color: #4A1420 !important;
     font-weight: 600 !important;
 }
 
@@ -1563,18 +1563,18 @@ small.field-hint {
 }
 
 #exampleBrochureSection select:hover {
-    border-color: #C20430 !important;
+    border-color: #4A1420 !important;
     box-shadow: 0 2px 4px rgba(44, 95, 124, 0.08) !important;
 }
 
 #exampleBrochureSection select:focus {
-    border-color: #C20430 !important;
+    border-color: #4A1420 !important;
     outline: none !important;
     box-shadow: 0 0 0 3px rgba(44, 95, 124, 0.1), 0 4px 12px rgba(44, 95, 124, 0.08) !important;
 }
 
 #brochurePdfUploadZone {
-    border: 2px dashed #C20430 !important;
+    border: 2px dashed #4A1420 !important;
     background: #f8f9fa !important;
     border-radius: 8px !important;
     padding: 2rem !important;
@@ -1585,7 +1585,7 @@ small.field-hint {
 
 #brochurePdfUploadZone:hover {
     background: #e9f4f8 !important;
-    border-color: #9E0328 !important;
+    border-color: #3a0f18 !important;
 }
 
 
@@ -1699,7 +1699,7 @@ small.field-hint {
 }
 
 .page-builder-photo-category-header:hover {
-    border-color: #C20430;
+    border-color: #4A1420;
     background: #f0f7fc;
 }
 
@@ -1724,12 +1724,12 @@ small.field-hint {
 }
 
 .page-builder-photo-thumb:hover {
-    border-color: #C20430;
+    border-color: #4A1420;
     transform: scale(1.05);
 }
 
 .page-builder-photo-thumb.selected {
-    border-color: #C20430;
+    border-color: #4A1420;
     box-shadow: 0 0 0 3px rgba(23, 162, 184, 0.3);
 }
 
@@ -1749,12 +1749,12 @@ small.field-hint {
 }
 
 .page-builder-page-card:hover {
-    border-color: #C20430;
+    border-color: #4A1420;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .page-builder-page-card.active {
-    border-color: #C20430;
+    border-color: #4A1420;
     background: #f0f7fc;
 }
 
@@ -1786,7 +1786,7 @@ small.field-hint {
 .page-builder-page-title input:focus {
     outline: none;
     background: white;
-    border: 2px solid #C20430;
+    border: 2px solid #4A1420;
 }
 
 .page-builder-page-actions {
@@ -1821,7 +1821,7 @@ small.field-hint {
 
 .page-builder-page-photos.has-photos {
     border-style: solid;
-    border-color: #C20430;
+    border-color: #4A1420;
 }
 
 .page-builder-page-photos.drop-target {
@@ -1875,7 +1875,7 @@ small.field-hint {
 
 .page-builder-page-badge {
     display: inline-block;
-    background: #C20430;
+    background: #4A1420;
     color: white;
     padding: 0.25rem 0.5rem;
     border-radius: 12px;
@@ -1889,14 +1889,14 @@ small.field-hint {
 }
 
 .page-builder-page-badge.warning {
-    background: #9E0328;
+    background: #3a0f18;
     color: white;
 }
 
 /* Page Preview Cards (in main section) */
 .page-preview-card {
     background: white;
-    border: 2px solid #C20430;
+    border: 2px solid #4A1420;
     border-radius: 8px;
     padding: 1rem;
     display: flex;
@@ -1994,7 +1994,7 @@ small.field-hint {
 }
 
 .page-builder-content-block:hover {
-    border-color: #C20430;
+    border-color: #4A1420;
     box-shadow: 0 2px 8px rgba(23, 162, 184, 0.1);
 }
 
@@ -2069,12 +2069,12 @@ small.field-hint {
 /* Specific block type styles */
 .page-builder-content-block.block-details {
     background: linear-gradient(135deg, #fff5f5 0%, #ffffff 100%);
-    border-left: 3px solid #9E0328;
+    border-left: 3px solid #3a0f18;
 }
 
 .page-builder-content-block.block-location {
     background: linear-gradient(135deg, #f0f7fc 0%, #ffffff 100%);
-    border-left: 3px solid #C20430;
+    border-left: 3px solid #4A1420;
 }
 
 .page-builder-content-block.block-features {
@@ -2117,7 +2117,7 @@ small.field-hint {
 
 .page-builder-page-content.drag-over {
     background: #e3f2fd;
-    border: 2px dashed #C20430;
+    border: 2px dashed #4A1420;
 }
 
 /* Improve photo block display */
@@ -2202,7 +2202,7 @@ small.field-hint {
 .sortable-ghost {
     opacity: 0.4;
     background: #f0f7fc !important;
-    border: 2px dashed #C20430 !important;
+    border: 2px dashed #4A1420 !important;
 }
 
 /* Chosen element (item being dragged) */
@@ -2239,5 +2239,5 @@ small.field-hint {
 /* Visual feedback for drag-over state */
 .drag-over {
     background: #f0f7fc;
-    border-color: #C20430 !important;
+    border-color: #4A1420 !important;
 }
