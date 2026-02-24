@@ -140,13 +140,19 @@ const KnightFrankTemplate = (function() {
         /* Page structure */
         .brochure-page {
             width: 297mm;
-            min-height: 210mm;
+            height: 210mm;
             background: ${brand.background};
             margin: 20px auto;
             box-shadow: 0 4px 20px rgba(0,0,0,0.15);
             position: relative;
             overflow: hidden;
             page-break-after: always;
+        }
+        /* Prevent grid children from overflowing their cells */
+        .brochure-page > * {
+            overflow: hidden;
+            min-width: 0;
+            min-height: 0;
         }
 
         /* Cover page */
@@ -220,10 +226,11 @@ const KnightFrankTemplate = (function() {
         }
         .summary-page .image-section {
             position: relative;
+            overflow: hidden;
         }
         .summary-page .image-section img {
             width: 100%;
-            height: 210mm;
+            height: 100%;
             object-fit: cover;
         }
         .summary-page .image-section .caption {
@@ -436,10 +443,11 @@ const KnightFrankTemplate = (function() {
         }
         .property-page .main-image {
             grid-row: span 2;
+            overflow: hidden;
         }
         .property-page .main-image img {
             width: 100%;
-            height: 210mm;
+            height: 100%;
             object-fit: cover;
         }
         .property-page .text-section {
