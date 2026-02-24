@@ -886,11 +886,24 @@ const KnightFrankTemplate = (function() {
      * Generate Property Description Page (Page 4)
      */
     function generatePropertyPage(address, description, photos, brand) {
-        const mainPhoto = photos.kitchen?.[0] || photos.living?.[0] || photos.interior?.[0];
-        const sidePhotos = [
-            photos.living?.[1] || photos.reception?.[0],
-            photos.dining?.[0] || photos.interior?.[1]
-        ].filter(Boolean);
+        const mainPhoto = photos.kitchen?.[0] || photos.living?.[0] || photos.interior?.[0] || photos.all?.[1];
+        // Build side photos from available interior shots, excluding the main photo
+        const candidates = [
+            photos.living?.[0], photos.living?.[1], photos.reception?.[0],
+            photos.dining?.[0], photos.interior?.[0], photos.interior?.[1],
+            photos.bedroom?.[0], photos.bathroom?.[0],
+            photos.all?.[2], photos.all?.[3]
+        ].filter(p => p && p !== mainPhoto);
+        // Deduplicate by id
+        const seen = new Set();
+        const sidePhotos = [];
+        for (const p of candidates) {
+            if (!seen.has(p.id || p.name)) {
+                seen.add(p.id || p.name);
+                sidePhotos.push(p);
+                if (sidePhotos.length >= 2) break;
+            }
+        }
 
         const propertyName = address.split(',')[0] || address;
 
@@ -917,9 +930,12 @@ const KnightFrankTemplate = (function() {
      * Generate Bedrooms Page (Page 5) - adaptive layout based on photos available
      */
     function generateBedroomsPage(description, photos, brand) {
+        // Fill up to 4 photos: bedrooms first, then bathrooms, then any interior fallbacks
         const bedroomPhotos = [
             ...(photos.bedroom || []),
-            ...(photos.bathroom || [])
+            ...(photos.bathroom || []),
+            ...(photos.living || []),
+            ...(photos.interior || [])
         ].slice(0, 4);
 
         // Simpler 2-column layout: photos left, text right
