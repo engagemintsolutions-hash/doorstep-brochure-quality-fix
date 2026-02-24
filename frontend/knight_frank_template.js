@@ -34,6 +34,7 @@ const KnightFrankTemplate = (function() {
         const photos = data.photos || [];
         const location = data.location || {};
         const agent = data.agent || {};
+        brand.agentName = agent.officeName || agent.name || 'Doorstep';
         const floorPlan = data.floorPlan || null;
         const siteMap = data.siteMap || null;
 
@@ -206,13 +207,8 @@ const KnightFrankTemplate = (function() {
             position: absolute;
             top: 30px;
             right: 40px;
-            color: white;
-            background: rgba(255,255,255,0.95);
-            padding: 10px 15px;
-            border-radius: 4px;
-        }
-        .cover-page .logo svg {
-            color: ${brand.primary};
+            background: transparent;
+            padding: 0;
         }
 
         /* Summary page - split layout */
@@ -385,51 +381,55 @@ const KnightFrankTemplate = (function() {
             margin-top: 10px;
         }
 
-        /* Location page (formerly Situation) */
+        /* Location page - full-width hero photo with text below */
         .location-page {
             display: grid;
-            grid-template-columns: 1fr 1.5fr;
+            grid-template-columns: 1fr;
+            grid-template-rows: 0.45fr 0.55fr;
             gap: 0;
         }
+        .location-page .location-hero {
+            overflow: hidden;
+            position: relative;
+        }
+        .location-page .location-hero img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .location-page .location-hero .photo-caption {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            padding: 6px 15px;
+            background: rgba(0,0,0,0.45);
+            color: white;
+            font-size: 11px;
+        }
         .location-page .text-section {
-            padding: 50px 40px;
+            padding: 30px 50px;
             background: ${brand.background};
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
         }
         .location-page h2 {
             font-family: ${FONTS.heading};
             font-size: 26px;
             font-weight: 500;
-            margin-bottom: 25px;
+            margin-bottom: 20px;
             padding-left: 15px;
             border-left: 4px solid ${brand.primary};
             color: ${brand.text};
         }
         .location-page .text-content {
-            font-size: 14px;
+            font-size: 13px;
             line-height: 1.6;
             color: #333333;
             text-align: justify;
+            column-count: 2;
+            column-gap: 30px;
         }
         .location-page .text-content p {
-            margin-bottom: 12px;
-        }
-        .location-page .photo-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            grid-template-rows: 1fr 1fr;
-            gap: 3px;
-        }
-        .location-page .photo-grid .photo-container,
-        .location-page .photo-grid img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        .location-page .photo-grid > :first-child {
-            grid-row: span 2;
+            margin-bottom: 10px;
         }
 
         /* Property description page */
@@ -578,6 +578,46 @@ const KnightFrankTemplate = (function() {
             object-fit: cover;
         }
 
+        /* Photo spread (no floor plan fallback) */
+        .photo-spread-page {
+            display: grid !important;
+            grid-template-columns: 1.4fr 1fr !important;
+            gap: 0;
+        }
+        .photo-spread-page .spread-hero {
+            overflow: hidden;
+        }
+        .photo-spread-page .spread-hero .photo-container,
+        .photo-spread-page .spread-hero img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .photo-spread-page .spread-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+        .photo-spread-page .spread-sidebar h2 {
+            font-family: ${FONTS.heading};
+            font-size: 22px;
+            font-weight: 500;
+            padding: 20px 25px 15px;
+            margin: 0;
+            border-left: 4px solid ${brand.primary};
+            margin-left: 15px;
+            color: ${brand.text};
+        }
+        .photo-spread-page .spread-sidebar .photo-container {
+            flex: 1;
+            overflow: hidden;
+        }
+        .photo-spread-page .spread-sidebar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
         /* Gardens page */
         .gardens-page {
             display: grid;
@@ -679,10 +719,28 @@ const KnightFrankTemplate = (function() {
             color: ${brand.textLight};
         }
         .details-page .legal-section {
-            font-size: 8px;
+            font-size: 9px;
             color: #999;
             line-height: 1.5;
             margin-top: auto;
+        }
+        .details-page .info-divider {
+            height: 1px;
+            background: ${brand.primary}30;
+            margin: 12px 0;
+        }
+        .details-page .info-section h3 {
+            padding-left: 10px;
+            border-left: 3px solid ${brand.primary};
+        }
+        .details-page .doorstep-footer-logo {
+            margin-top: 15px;
+            text-align: center;
+            opacity: 0.4;
+        }
+        .details-page .doorstep-footer-logo img {
+            height: 20px;
+            width: auto;
         }
         .details-page .photo-column {
             display: grid;
@@ -767,6 +825,32 @@ const KnightFrankTemplate = (function() {
             display: none;
         }
 
+        /* Page footer with page numbers */
+        .page-footer {
+            position: absolute;
+            bottom: 8mm;
+            left: 15mm;
+            right: 15mm;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 6px;
+            border-top: 1px solid ${brand.primary}33;
+            z-index: 20;
+        }
+        .page-footer .footer-agent {
+            font-family: ${FONTS.body};
+            font-size: 8px;
+            color: ${brand.textLight};
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .page-footer .footer-page-num {
+            font-family: ${FONTS.body};
+            font-size: 9px;
+            color: ${brand.textLight};
+        }
+
         /* Print styles */
         @media print {
             body {
@@ -784,6 +868,16 @@ const KnightFrankTemplate = (function() {
             }
         }
         `;
+    }
+
+    /**
+     * Generate page footer with accent line and page number
+     */
+    function generatePageFooter(pageNum, brand) {
+        return `<div class="page-footer">
+            <span class="footer-agent">${escapeHtml(brand.agentName || 'Doorstep')}</span>
+            <span class="footer-page-num">${pageNum}</span>
+        </div>`;
     }
 
     /**
@@ -874,6 +968,7 @@ const KnightFrankTemplate = (function() {
                     </div>
                 </div>
             </div>
+            ${generatePageFooter(2, brand)}
         </div>`;
     }
 
@@ -881,40 +976,22 @@ const KnightFrankTemplate = (function() {
      * Generate Location Page (Page 3) - renamed from "Situation"
      */
     function generateLocationPage(situation, photos, brand) {
-        // Location page should show EXTERIOR and GARDEN photos, not interior
-        const locationPhotos = [
-            photos.exterior?.[0],
-            photos.garden?.[0],
-            photos.exterior?.[1] || photos.aerial?.[0],
-            photos.garden?.[1] || photos.view?.[0]
-        ].filter(Boolean).slice(0, 4);
-
-        // Pad with exterior/garden only (never interior photos on location page)
-        while (locationPhotos.length < 4) {
-            const idx = locationPhotos.length;
-            const fallback = photos.exterior?.[idx] || photos.garden?.[idx];
-            if (fallback && !locationPhotos.includes(fallback)) {
-                locationPhotos.push(fallback);
-            } else {
-                break;
-            }
-        }
+        // Use the best exterior/aerial photo as the hero
+        const heroPhoto = photos.exterior?.[0] || photos.aerial?.[0] || photos.garden?.[0];
 
         return `
         <div class="brochure-page location-page">
+            <div class="location-hero">
+                <img src="${heroPhoto?.url || heroPhoto?.dataUrl || ''}" alt="Location">
+                <span class="photo-caption">${escapeHtml(heroPhoto?.description || heroPhoto?.category || '')}</span>
+            </div>
             <div class="text-section">
                 <h2>Location</h2>
                 <div class="text-content" data-editable="location">
                     ${situation}
                 </div>
             </div>
-            <div class="photo-grid">
-                ${locationPhotos.map((photo, i) => `
-                    <div class="photo-container">
-                        <img src="${photo?.url || photo?.dataUrl || ''}" alt="Location ${i + 1}">
-                    </div>
-                `).join('')}
-            </div>
+            ${generatePageFooter(3, brand)}
         </div>`;
     }
 
@@ -963,6 +1040,7 @@ const KnightFrankTemplate = (function() {
                     </div>
                 `).join('')}
             </div>
+            ${generatePageFooter(4, brand)}
         </div>`;
     }
 
@@ -995,6 +1073,7 @@ const KnightFrankTemplate = (function() {
                     ${description}
                 </div>
             </div>
+            ${generatePageFooter(5, brand)}
         </div>`;
     }
 
@@ -1005,16 +1084,33 @@ const KnightFrankTemplate = (function() {
         const sqft = property.sqft || '';
         const sqm = sqft ? Math.round(parseInt(sqft) * 0.0929) : '';
 
-        // When no floor plan, show a full photo spread instead of placeholder
+        // When no floor plan, show a designed photo gallery spread
         if (!floorPlan) {
             const allExterior = [
                 ...(photos.exterior || []),
                 ...(photos.garden || []),
                 ...(photos.pool || [])
             ].slice(0, 4);
+            const heroPhoto = allExterior[0];
+            const sidePhotos = allExterior.slice(1, 4);
             return `
-            <div class="brochure-page floorplans-page" style="display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 1fr 1fr; gap: 3px;">
-                ${allExterior.map(p => `<div class="photo-container"><img src="${p?.url || p?.dataUrl || ''}" style="width:100%;height:100%;object-fit:cover;" alt="Property"><span class="photo-caption">${escapeHtml(p?.description || p?.category || p?.room || '')}</span></div>`).join('')}
+            <div class="brochure-page floorplans-page photo-spread-page">
+                <div class="spread-hero">
+                    <div class="photo-container">
+                        <img src="${heroPhoto?.url || heroPhoto?.dataUrl || ''}" alt="Property exterior">
+                        <span class="photo-caption">${escapeHtml(heroPhoto?.description || heroPhoto?.category || heroPhoto?.room || '')}</span>
+                    </div>
+                </div>
+                <div class="spread-sidebar">
+                    <h2>Exterior &amp; Grounds</h2>
+                    ${sidePhotos.map(p => `
+                        <div class="photo-container">
+                            <img src="${p?.url || p?.dataUrl || ''}" alt="Property">
+                            <span class="photo-caption">${escapeHtml(p?.description || p?.category || p?.room || '')}</span>
+                        </div>
+                    `).join('')}
+                </div>
+                ${generatePageFooter(6, brand)}
             </div>`;
         }
 
@@ -1047,6 +1143,7 @@ const KnightFrankTemplate = (function() {
                     <img src="${photo?.url || photo?.dataUrl || ''}" alt="Exterior">
                 `).join('')}
             </div>
+            ${generatePageFooter(6, brand)}
         </div>`;
     }
 
@@ -1082,6 +1179,7 @@ const KnightFrankTemplate = (function() {
                     </div>
                 `).join('')}
             </div>
+            ${generatePageFooter(7, brand)}
         </div>`;
     }
 
@@ -1108,8 +1206,12 @@ const KnightFrankTemplate = (function() {
                 <h3>Services</h3>
                 <p class="info-content" data-editable="services">${property.services || 'Mains water and electricity. Gas central heating. Mains drainage.'}</p>
 
+                <div class="info-divider"></div>
+
                 <h3>Directions</h3>
                 <p class="info-content">Postcode: ${property.postcode || 'Available on request'}</p>
+
+                <div class="info-divider"></div>
 
                 <h3>Property information</h3>
                 <div class="info-table">
@@ -1131,10 +1233,16 @@ const KnightFrankTemplate = (function() {
                     </div>
                 </div>
 
+                <div class="info-divider"></div>
+
                 <div class="legal-section">
                     <p><strong>Fixtures and fittings:</strong> A list of the fitted carpets, curtains, light fittings and other items fixed to the property which are included in the sale (or may be available by separate negotiation) will be provided by the Seller's Solicitors.</p>
                     <br>
-                    <p><strong>Important Notice:</strong> 1. Particulars: These particulars are not an offer or contract, nor part of one. You should not rely on statements by the agent in the particulars or by word of mouth or in writing ("information") as being factually accurate about the property, its condition or its value. Neither the agent nor any joint agent has any authority to make any representations about the property, and accordingly any information given is entirely without responsibility on the part of the agents, seller(s) or lessor(s). 2. Photos, Videos etc: The photographs, property videos and virtual viewings etc. show only certain parts of the property as they appeared at the time they were taken. Areas, measurements and distances given are approximate only. 3. Regulations etc: Any reference to alterations to, or use of, any part of the property does not mean that any necessary planning, building regulations or other consent has been obtained.</p>
+                    <p><strong>Important Notice:</strong> These particulars are not an offer or contract, nor part of one. You should not rely on statements by the agent as being factually accurate about the property, its condition or its value. Areas, measurements and distances given are approximate only.</p>
+                </div>
+
+                <div class="doorstep-footer-logo">
+                    <img src="${brand.logoUrl || '/static/images/doorstep-logo.png'}" alt="Doorstep">
                 </div>
             </div>
             <div class="photo-column">
@@ -1142,6 +1250,7 @@ const KnightFrankTemplate = (function() {
                     <img src="${photo?.url || photo?.dataUrl || ''}" alt="Property view">
                 `).join('')}
             </div>
+            ${generatePageFooter(8, brand)}
         </div>`;
     }
 

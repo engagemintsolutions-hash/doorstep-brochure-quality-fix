@@ -1647,10 +1647,11 @@ function renderKnightFrankBrochure() {
             /* Explicit grid/flex overrides per page type */
             .brochure-page.cover-page { display: block !important; }
             .brochure-page.summary-page { display: grid !important; grid-template-columns: 1fr 1fr !important; }
-            .brochure-page.location-page { display: grid !important; grid-template-columns: 1fr 1fr !important; }
+            .brochure-page.location-page { display: grid !important; grid-template-columns: 1fr !important; grid-template-rows: 0.45fr 0.55fr !important; }
             .brochure-page.property-page { display: grid !important; grid-template-columns: 1.2fr 1fr 0.8fr !important; }
             .brochure-page.bedrooms-page-v2 { display: grid !important; grid-template-columns: 1.2fr 1fr !important; }
             .brochure-page.floorplans-page { display: grid !important; grid-template-columns: 1fr 1fr !important; }
+            .brochure-page.floorplans-page.photo-spread-page { display: grid !important; grid-template-columns: 1.4fr 1fr !important; }
             .brochure-page.gardens-page { display: grid !important; grid-template-columns: 1fr 1fr !important; }
             .brochure-page.details-page { display: grid !important; grid-template-columns: 1fr 1fr 1fr !important; }
             .brochure-page.back-cover { display: block !important; }
